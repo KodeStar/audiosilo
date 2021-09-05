@@ -1,12 +1,12 @@
 <template>
-  <div class="relative flex items-top min-h-screen bg-gray-100 w-full overflow-hidden">
+  <div class="relative flex items-top min-h-screen bg-gray-100 dark:bg-dark-300 w-full overflow-hidden">
     <div class="flex flex-col items-top h-screen w-full">
-      <div class="bg-white flex items-center w-full h-20 border-b border-gray-200">
+      <div class="bg-white dark:bg-dark-300 dark:text-white flex items-center w-full h-20 border-b border-gray-200 dark:border-gray-800">
         <div class="w-72 p-3 px-5">
           <NuxtLink class="flex items-center" to="/">
             <i class="fa-thin fa-computer-speaker fa-2xl mr-2"></i>
             <div class="flex flex-col">
-              <div class="uppercase text-purple-400 leading-none">Audio<span class="font-semibold text-gray-500">Serve</span></div>
+              <div class="uppercase text-purple-400 font-extrabold leading-none">Audio<span class="font-light text-gray-400">Serve</span></div>
               <div class="leading-none text-xs text-gray-400">{{ group }}</div>
             </div>
           </NuxtLink>
@@ -14,13 +14,13 @@
         <div class="p-3 px-0 w-full">
           <input
             type="text"
-            class="bg-gray-100 p-5 py-3 rounded-2xl w-full max-w-xl"
+            class="bg-gray-100 dark:bg-dark-100 dark:border dark:border-gray-800 p-5 py-3 rounded-2xl w-full max-w-xl"
             placeholder="Search..."
           />
         </div>
       </div>
       <div class="flex w-full">
-        <div class="w-72 p-8 px-3 min-h-screen bg-white border-r border-gray-200">
+        <div class="w-72 p-8 px-3 min-h-screen bg-white dark:bg-gradient-to-br dark:from-dark-200 dark:to-dark-300 dark:text-white border-r border-gray-200 dark:border-gray-800">
           <NuxtLink class="flex items-center my-2 p-2" to="/">
             <i class="fa-thin fa-layer-group mr-2 fa-lg fa-rotate-by" style="--fa-rotate-angle: 115deg;"></i>
             Library
@@ -29,6 +29,27 @@
             <i class="fa-thin fa-gear mr-2 fa-lg"></i>
             Settings
           </NuxtLink>
+
+          <div class="flex items-center justify-center w-full mb-12">
+            <label for="toggleB" class="flex items-center cursor-pointer">
+              <!-- toggle -->
+              <div class="relative">
+                <!-- input -->
+                <input @click="toggleTheme" type="checkbox" id="toggleB" class="sr-only">
+                <!-- line -->
+                <div class="block bg-gray-600 w-14 h-8 rounded-full"></div>
+                <!-- dot -->
+                <div class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition flex items-center justify-center">
+                  <i v-show="currentTheme === 'light'" class="fa-light fa-brightness"></i>
+                  <i v-show="currentTheme === 'dark'" class="fa-light fa-moon"></i>
+                </div>
+              </div>
+              <!-- label -->
+              <div class="ml-3 text-gray-700 font-medium">
+                Toggle Me!
+              </div>
+            </label>
+          </div>
 
         </div>
         <div class="p-3 px-5 w-full content-area overflow-auto">
@@ -42,7 +63,7 @@
             <div
               v-for="(subfolder, index) in folder.subfolders"
               :key="index"
-              class="bg-white p-5 rounded-lg my-2 w-full text-gray-600 max-w-xl cursor-pointer"
+              class="bg-white dark:bg-dark-200 dark:border dark:border-gray-800 p-5 rounded-lg my-2 w-full text-gray-600 max-w-xl cursor-pointer"
               @click="selectFolder(subfolder)"
             >
               <i class="fa-thin fa-folder mr-2 fa-lg"></i>
@@ -59,7 +80,7 @@
             <div
               v-for="(file, index) in folder.files"
               :key="index"
-              class="bg-white p-5 rounded-lg my-2 w-full max-w-xl cursor-pointer"
+              class="bg-white dark:bg-dark-200 dark:border dark:border-gray-800 p-5 rounded-lg my-2 w-full max-w-xl cursor-pointer"
               @click="selectFile(file)"
             >
               <i class="fa-thin fa-file-audio mr-2 fa-lg"></i>
@@ -70,13 +91,13 @@
         </div>
       </div>
       <div v-if="loginsecret===null" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex justify-center items-center">
-        <div class="bg-white  rounded-lg flex flex-col p-12">
+        <div class="bg-white dark:bg-dark-300 dark:text-white rounded-lg flex flex-col p-12">
 
           <div class="flex justify-center mb-5">
             <NuxtLink class="flex items-center" to="/">
               <i class="fa-thin text-5xl fa-computer-speaker mr-2"></i>
               <div class="flex flex-col">
-                <div class="uppercase text-purple-400 text-2xl leading-none">Audio<span class="font-semibold text-gray-500">Serve</span></div>
+                <div class="uppercase text-purple-400 font-extrabold text-2xl leading-none">Audio<span class="font-light text-gray-400">Serve</span></div>
               </div>
             </NuxtLink>
           </div>
@@ -98,7 +119,7 @@
         </div>
       </div>
     </div>
-    <div :class="{'-mr-96': rightbar === false}" class="transition-all border-l h-screen border-gray-200 w-full max-w-sm items-top flex bg-white flex-col">
+    <div :class="{'-mr-96': rightbar === false}" class="transition-all border-l h-screen border-gray-200 dark:border-gray-800 w-full max-w-sm items-top flex bg-white flex-col">
       <folder-details v-if="folder !== null && folder.files.length === 0" :details="folder" :name="foldername" :fake="isfake"></folder-details>
       <book-details v-if="folder !== null && folder.files.length > 0" :details="folder" :name="foldername" :fake="isfake"></book-details>
     </div>
@@ -148,6 +169,9 @@ export default {
   computed: {
     isfake () {
       return this.loginsecret === 'fakeit'
+    },
+    currentTheme () {
+      return localStorage.getItem('user-theme') || 'light'
     }
   },
 
@@ -155,6 +179,17 @@ export default {
     async fetchFolder () {
       const folder = await this.$axios.$get(this.corsproxy + this.server + 'folder/')
       this.folder = folder
+    },
+    setTheme (theme) {
+      localStorage.setItem('user-theme', theme)
+    },
+    toggleTheme () {
+      const activeTheme = localStorage.getItem('user-theme')
+      if (activeTheme === 'light') {
+        this.setTheme('dark')
+      } else {
+        this.setTheme('light')
+      }
     },
     fakeit () {
       this.loginsecret = 'fakeit'
