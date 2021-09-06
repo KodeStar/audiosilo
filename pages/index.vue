@@ -1,7 +1,7 @@
 <template>
   <div class="relative flex items-top min-h-screen bg-gray-100 w-full overflow-hidden">
     <div class="flex flex-col items-top h-screen w-full">
-      <div class="bg-white flex items-center w-full h-20 border-b border-gray-200">
+      <div class="bg-white flex items-center w-full h-20 border-b border-gray-200 relative">
         <div class="w-72 p-3 px-5">
           <NuxtLink class="flex items-center" to="/">
             <i class="fa-thin fa-computer-speaker fa-2xl mr-2" />
@@ -15,24 +15,28 @@
             </div>
           </NuxtLink>
         </div>
-        <div class="p-3 px-0 w-full">
+        <div :class="{ mobilesearch: search, flex: search }" class="p-3 px-0 w-full items-center">
           <input
             type="text"
-            class="hidden lg:block bg-gray-100 p-5 py-3 rounded-2xl w-full max-w-xl"
+            class="lg:block bg-gray-100 lg:p-5 lg:py-3 rounded-2xl w-full max-w-xl mr-2"
+            :class="{ block: search, hidden: !search }"
             placeholder="Search..."
           >
-          <div class="flex lg:hidden justify-end text-lg mr-1">
-            <div class="bg-gray-100 rounded w-10 h-10 flex justify-center items-center mx-1">
+          <div>
+          <div @click="search = false" :class="{ flex: search, hidden: !search }" class="rounded-full bg-gray-300 w-8 h-8 justify-center items-center"><i class="fa-thin fa-times fa-fw" /></div>
+          </div>
+          <div :class="{ hidden: search }" class="flex lg:hidden justify-end text-lg mr-1">
+            <div @click="search = true" class="bg-gray-100 rounded w-10 h-10 flex justify-center items-center mx-1">
               <i class="fa-thin fa-magnifying-glass" />
             </div>
-            <div class="bg-gray-100 rounded w-10 h-10 flex justify-center items-center mx-1">
+            <div @click="menu = !menu" class="bg-gray-100 rounded w-10 h-10 flex justify-center items-center mx-1">
               <i class="fa-thin fa-bars" />
             </div>
           </div>
         </div>
       </div>
-      <div class="flex w-full">
-        <div class="w-72 -ml-72 lg:ml-0 p-8 px-3 min-h-screen bg-white border-r border-gray-200">
+      <div class="flex w-full relative">
+        <div :class="{ '-translate-x-full': !menu, 'translate-x-0': menu }" class="transition-all w-screen transform lg:translate-x-0 lg:w-72 p-8 px-3 min-h-screen bg-white border-r border-gray-200 absolute inset-0 lg:relative">
           <NuxtLink class="flex items-center my-2 p-2" to="/">
             <i class="fa-thin fa-layer-group mr-2 fa-lg fa-rotate-by" style="--fa-rotate-angle: 115deg;" />
             Library
@@ -42,7 +46,7 @@
             Settings
           </NuxtLink>
         </div>
-        <div class="p-3 px-5 w-full content-area overflow-auto">
+        <div class="p-3 px-5 w-screen lg:w-full content-area overflow-auto">
           <template v-if="folder && folder.subfolders">
             <div
               v-if="folder.subfolders.length > 0"
@@ -157,7 +161,9 @@ export default {
       secret: null,
       loginsecret: null,
       fake: fakeIt(),
-      rightbar: false
+      rightbar: false,
+      search: false,
+      menu: false
     }
   },
 

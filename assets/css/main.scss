@@ -5,3 +5,15 @@ body, * {
 .content-area {
   height: calc(100vh - 5rem);
 }
+.mobilesearch {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 15px 15px;
+  background: white;
+  input {
+    padding: 0.75rem 1.25rem;
+  }
+}
