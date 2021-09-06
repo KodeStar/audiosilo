@@ -5,8 +5,10 @@
     </div>
     <div class="text-xl flex justify-center px-8 font-bold">{{ name }}</div>
     <button class="text-white bg-purple-400 font-normal rounded-lg mx-8 my-4 p-3"><i class="fa-light fa-circle-play"></i> Listen</button>
-    <div :class="{ active: readmore }" class="text px-8 description-text text-sm readmore" v-html="description"></div>
-    <div @click="readmore = !readmore" class="px-8 text-purple-400 font-normal text-sm cursor-pointer">{{ moretext }}</div>
+    <template v-if="description">
+      <div :class="{ active: readmore }" class="text px-8 description-text text-sm readmore" v-html="description"></div>
+      <div @click="readmore = !readmore" class="px-8 text-purple-400 font-normal text-sm cursor-pointer">{{ moretext }}</div>
+    </template>
     <div class="px-8 mt-3 font-normal text-sm">Progress</div>
     <div class="flex px-8 pt-1 items-center">
       <div class="relative flex-grow mr-2">
@@ -22,8 +24,8 @@
 
 <script>
 export default {
-  name: 'FolderDetails',
-  props: ['details', 'name', 'fake'],
+  name: 'BookDetails',
+  props: ['details', 'name', 'fake', 'server'],
   data () {
     return {
       readmore: false,
@@ -37,7 +39,7 @@ export default {
     },
     image () {
       if (this.details && this.details.cover) {
-        const src = (this.fake) ? 'https://m.media-amazon.com/images/I/51y-ivhKErL._SL500_.jpg' : this.details.cover.path
+        const src = (this.fake) ? 'https://m.media-amazon.com/images/I/51y-ivhKErL._SL500_.jpg' : this.server + 'cover/' + this.details.cover.path
         return src
       }
       return null

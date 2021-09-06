@@ -11,7 +11,7 @@
 <script>
 export default {
   name: 'FolderDetails',
-  props: ['details', 'name', 'fake'],
+  props: ['details', 'name', 'fake', 'server'],
   data () {
     return {
     }
@@ -19,7 +19,7 @@ export default {
   computed: {
     image () {
       if (this.details && this.details.cover) {
-        const src = (this.fake) ? 'https://cdn.britannica.com/12/172012-050-A9AFF8AF/Jane-Austen-Cassandra-engraving-portrait-1810.jpg' : this.details.cover.path
+        const src = (this.fake) ? 'https://cdn.britannica.com/12/172012-050-A9AFF8AF/Jane-Austen-Cassandra-engraving-portrait-1810.jpg' : this.server + 'cover/' + this.details.cover.path
         return src
       }
       return null
