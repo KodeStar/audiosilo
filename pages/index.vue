@@ -4,32 +4,43 @@
       <div class="bg-white flex items-center w-full h-20 border-b border-gray-200">
         <div class="w-72 p-3 px-5">
           <NuxtLink class="flex items-center" to="/">
-            <i class="fa-thin fa-computer-speaker fa-2xl mr-2"></i>
+            <i class="fa-thin fa-computer-speaker fa-2xl mr-2" />
             <div class="flex flex-col">
-              <div class="uppercase text-purple-400 leading-none">Audio<span class="font-semibold text-gray-500">Serve</span></div>
-              <div class="leading-none text-xs text-gray-400">{{ group }}</div>
+              <div class="uppercase text-purple-400 leading-none">
+                Audio<span class="font-semibold text-gray-500">Serve</span>
+              </div>
+              <div class="leading-none text-xs text-gray-400">
+                {{ group }}
+              </div>
             </div>
           </NuxtLink>
         </div>
         <div class="p-3 px-0 w-full">
           <input
             type="text"
-            class="bg-gray-100 p-5 py-3 rounded-2xl w-full max-w-xl"
+            class="hidden lg:block bg-gray-100 p-5 py-3 rounded-2xl w-full max-w-xl"
             placeholder="Search..."
-          />
+          >
+          <div class="flex lg:hidden justify-end text-lg mr-1">
+            <div class="bg-gray-100 rounded w-10 h-10 flex justify-center items-center mx-1">
+              <i class="fa-thin fa-magnifying-glass" />
+            </div>
+            <div class="bg-gray-100 rounded w-10 h-10 flex justify-center items-center mx-1">
+              <i class="fa-thin fa-bars" />
+            </div>
+          </div>
         </div>
       </div>
       <div class="flex w-full">
-        <div class="w-72 p-8 px-3 min-h-screen bg-white border-r border-gray-200">
+        <div class="w-72 -ml-72 lg:ml-0 p-8 px-3 min-h-screen bg-white border-r border-gray-200">
           <NuxtLink class="flex items-center my-2 p-2" to="/">
-            <i class="fa-thin fa-layer-group mr-2 fa-lg fa-rotate-by" style="--fa-rotate-angle: 115deg;"></i>
+            <i class="fa-thin fa-layer-group mr-2 fa-lg fa-rotate-by" style="--fa-rotate-angle: 115deg;" />
             Library
           </NuxtLink>
           <NuxtLink class="flex items-center my-2 p-2" to="/">
-            <i class="fa-thin fa-gear mr-2 fa-lg"></i>
+            <i class="fa-thin fa-gear mr-2 fa-lg" />
             Settings
           </NuxtLink>
-
         </div>
         <div class="p-3 px-5 w-full content-area overflow-auto">
           <template v-if="folder && folder.subfolders">
@@ -45,7 +56,7 @@
               class="bg-white p-5 rounded-lg my-2 w-full text-gray-600 max-w-xl cursor-pointer"
               @click="selectFolder(subfolder)"
             >
-              <i class="fa-thin fa-folder mr-2 fa-lg"></i>
+              <i class="fa-thin fa-folder mr-2 fa-lg" />
               {{ subfolder.name }}
             </div>
           </template>
@@ -62,7 +73,7 @@
               class="bg-white p-5 rounded-lg my-2 w-full max-w-xl cursor-pointer"
               @click="selectFile(file)"
             >
-              <i class="fa-thin fa-file-audio mr-2 fa-lg"></i>
+              <i class="fa-thin fa-file-audio mr-2 fa-lg" />
               {{ file.name }}
             </div>
 
@@ -71,36 +82,40 @@
       </div>
       <div v-if="loginsecret===null" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex justify-center items-center">
         <div class="bg-white  rounded-lg flex flex-col p-12">
-
           <div class="flex justify-center mb-5">
             <NuxtLink class="flex items-center" to="/">
-              <i class="fa-thin text-5xl fa-computer-speaker mr-2"></i>
+              <i class="fa-thin text-5xl fa-computer-speaker mr-2" />
               <div class="flex flex-col">
-                <div class="uppercase text-purple-400 text-2xl leading-none">Audio<span class="font-semibold text-gray-500">Serve</span></div>
+                <div class="uppercase text-purple-400 text-2xl leading-none">
+                  Audio<span class="font-semibold text-gray-500">Serve</span>
+                </div>
               </div>
             </NuxtLink>
           </div>
-
           <div class="flex items-center my-2">
-          <label class="w-28">Server</label>
-          <input class="w-96 bg-gray-100 p-5 py-3 rounded-2xl" type="text" v-model="server" />
+            <label class="w-28">Server</label>
+            <input v-model="server" class="w-96 bg-gray-100 p-5 py-3 rounded-2xl" type="text">
           </div>
           <div class="flex items-center my-2">
-          <label class="w-28">Shared Secret</label>
-          <input class="w-96 bg-gray-100 p-5 py-3 rounded-2xl" type="text" v-model="secret" />
+            <label class="w-28">Shared Secret</label>
+            <input v-model="secret" class="w-96 bg-gray-100 p-5 py-3 rounded-2xl" type="text">
           </div>
           <div class="flex items-center my-2">
-          <label class="w-28">Group</label>
-          <input class="w-96 bg-gray-100 p-5 py-3 rounded-2xl" type="text" v-model="group" />
+            <label class="w-28">Group</label>
+            <input v-model="group" class="w-96 bg-gray-100 p-5 py-3 rounded-2xl" type="text">
           </div>
-          <button class="bg-purple-400 text-white w-full mt-3 p-3 rounded-xl text-lg" @click="login">Login</button>
-          <button class="mt-3" @click="fakeit">Fake It</button>
+          <button class="bg-purple-400 text-white w-full mt-3 p-3 rounded-xl text-lg" @click="login">
+            Login
+          </button>
+          <button class="mt-3" @click="fakeit">
+            Fake It
+          </button>
         </div>
       </div>
     </div>
     <div :class="{'-mr-96': rightbar === false}" class="transition-all border-l h-screen border-gray-200 w-full max-w-sm items-top flex bg-white flex-col">
-      <folder-details v-if="folder !== null && folder.files.length === 0" :details="folder" :name="foldername" :fake="isfake"></folder-details>
-      <book-details v-if="folder !== null && folder.files.length > 0" :details="folder" :name="foldername" :fake="isfake"></book-details>
+      <folder-details v-if="folder !== null && folder.files.length === 0" :server="server" :details="folder" :name="foldername" :fake="isfake" />
+      <book-details v-if="folder !== null && folder.files.length > 0" :server="server" :details="folder" :name="foldername" :fake="isfake" />
     </div>
   </div>
 </template>
@@ -135,7 +150,7 @@ export default {
   data () {
     return {
       group: 'Test',
-      server: 'http://localhost:3333/',
+      server: 'http://192.168.0.20:3333/',
       folder: null,
       foldername: '',
       corsproxy: '',
@@ -145,15 +160,21 @@ export default {
       rightbar: false
     }
   },
+
   computed: {
     isfake () {
       return this.loginsecret === 'fakeit'
     }
   },
 
+  mounted () {
+    // this.fetchFolder()
+    console.log('mounted')
+  },
+
   methods: {
-    async fetchFolder () {
-      const folder = await this.$axios.$get(this.corsproxy + this.server + 'folder/')
+    async fetchFolder (name = '') {
+      const folder = await this.$axios.$get(this.corsproxy + this.server + 'folder/' + name)
       this.folder = folder
     },
     fakeit () {
@@ -165,45 +186,47 @@ export default {
       if (this.isfake) {
         this.folder = this.fake[encodeURIComponent(subfolder.name)]
         this.foldername = subfolder.name
+      } else {
+        this.fetchFolder(encodeURIComponent(subfolder.path))
       }
       this.rightbar = true
     },
     login () {
-      console.log('secret is ' + this.secret)
-      const secretBytes = new (TextEncoder)('utf-8').encode(this.secret)
-      const randomBytes = new Uint8Array(32)
-      window.crypto.getRandomValues(randomBytes)
-      const concatedBytes = new Uint8Array(secretBytes.length + randomBytes.length)
-      concatedBytes.set(secretBytes)
-      concatedBytes.set(randomBytes, secretBytes.length)
-      let digestPromise
-      if (!window.crypto.subtle) {
-        digestPromise = Promise.resolve(sha256.arrayBuffer(concatedBytes))
-      } else {
-        digestPromise = window.crypto.subtle.digest('SHA-256', concatedBytes)
-      }
-      return digestPromise
-        .then((s) => {
-          const thesecret = base64js.fromByteArray(randomBytes) + '|' + base64js.fromByteArray(new Uint8Array(s))
-          console.log(thesecret)
-          const bodyFormData = 'secret=' + thesecret
-          this.$axios.$post(this.corsproxy + this.server + 'authenticate', bodyFormData, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }).then((response) => {
-            console.log(response)
-            this.loginsecret = response
+      if (this.secret) {
+        console.log('secret is ' + this.secret)
+        const secretBytes = new (TextEncoder)('utf-8').encode(this.secret)
+        const randomBytes = new Uint8Array(32)
+        window.crypto.getRandomValues(randomBytes)
+        const concatedBytes = new Uint8Array(secretBytes.length + randomBytes.length)
+        concatedBytes.set(secretBytes)
+        concatedBytes.set(randomBytes, secretBytes.length)
+        let digestPromise
+        if (!window.crypto.subtle) {
+          digestPromise = Promise.resolve(sha256.arrayBuffer(concatedBytes))
+        } else {
+          digestPromise = window.crypto.subtle.digest('SHA-256', concatedBytes)
+        }
+        return digestPromise
+          .then((s) => {
+            const thesecret = base64js.fromByteArray(randomBytes) + '|' + base64js.fromByteArray(new Uint8Array(s))
+            console.log(thesecret)
+            const bodyFormData = 'secret=' + thesecret
+            this.$axios.$post(this.corsproxy + this.server + 'authenticate', bodyFormData, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }).then((response) => {
+              console.log(response)
+              this.loginsecret = response
+            })
+            /* return ajax({
+                url: baseUrl + "/authenticate",
+                type: "POST",
+                data: { secret: secret }
+
+            }); */
           })
-          /* return ajax({
-              url: baseUrl + "/authenticate",
-              type: "POST",
-              data: { secret: secret }
-
-          }); */
-        })
+      } else {
+        this.loginsecret = 'noauth'
+        this.fetchFolder()
+      }
     }
-  },
-  mounted () {
-    // this.fetchFolder()
-    console.log('mounted')
   }
-
 }
 </script>
