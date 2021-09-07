@@ -2,7 +2,7 @@
   <div class="relative flex items-top min-h-screen bg-gray-100 w-full overflow-hidden">
     <div class="flex flex-col items-top h-screen w-full">
       <div class="bg-white flex items-center w-full h-20 border-b border-gray-200 relative">
-        <div class="w-72 p-3 px-5">
+        <div class="w-72 p-3 px-5 h-20 flex items-center">
           <NuxtLink class="flex items-center" to="/">
             <i class="fa-thin fa-computer-speaker fa-2xl mr-2" />
             <div class="flex flex-col">
@@ -15,14 +15,9 @@
             </div>
           </NuxtLink>
         </div>
-        <div :class="{ mobilesearch: search, flex: search }" class="p-3 px-0 w-full items-center">
-          <input
-            type="text"
-            class="lg:block bg-gray-100 lg:p-5 lg:py-3 rounded-2xl w-full max-w-xl mr-2"
-            :class="{ block: search, hidden: !search }"
-            placeholder="Search..."
-          >
-          <div>
+        <div :class="{ mobilesearch: search, flex: search }" class="px-0 w-full items-center">
+          <floating-label-input :class="{ block: search, hidden: !search }" v-model="searchterm" title="Search..." />
+          <div class="ml-3">
           <div @click="search = false" :class="{ flex: search, hidden: !search }" class="rounded-full bg-gray-300 w-8 h-8 justify-center items-center"><i class="fa-thin fa-times fa-fw" /></div>
           </div>
           <div :class="{ hidden: search }" class="flex lg:hidden justify-end text-lg mr-1">
@@ -50,9 +45,19 @@
           <template v-if="folder && folder.subfolders">
             <div
               v-if="folder.subfolders.length > 0"
-              class="mt-8 text-lg"
+              class="mt-8 text-xl font-bold text-gray-700"
             >
               Folders
+              <div v-if="breadcrumbs.length > 1" class="breadcrumbs flex-col lg:flex-row">
+                <span
+                  v-for="(breadcrumb, index) in breadcrumbs"
+                  :key="index"
+                  :class="{active: breadcrumb.active }"
+                  @click="selectFolder({ path: breadcrumb.link })"
+                >
+                  {{ breadcrumb.name }}
+                </span>
+              </div>
             </div>
             <div
               v-for="(subfolder, index) in folder.subfolders"
@@ -67,9 +72,19 @@
           <template v-if="folder && folder.files">
             <div
               v-if="folder.files.length > 0"
-              class="mt-8 text-lg"
+              class="mt-8 text-xl font-bold text-gray-700"
             >
               Files
+              <div v-if="breadcrumbs.length > 1" class="breadcrumbs flex-col lg:flex-row">
+                <span
+                  v-for="(breadcrumb, index) in breadcrumbs"
+                  :key="index"
+                  :class="{active: breadcrumb.active }"
+                  @click="selectFolder({ path: breadcrumb.link })"
+                >
+                  {{ breadcrumb.name }}
+                </span>
+              </div>
             </div>
             <div
               v-for="(file, index) in folder.files"
@@ -84,8 +99,8 @@
           </template>
         </div>
       </div>
-      <div v-if="loginsecret===null" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex justify-center items-center">
-        <div class="bg-white  rounded-lg flex flex-col p-12">
+      <div v-if="loginStatus===false" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex justify-center items-center">
+        <div class="bg-white  rounded-lg flex flex-col p-8 w-full max-w-md m-4">
           <div class="flex justify-center mb-5">
             <NuxtLink class="flex items-center" to="/">
               <i class="fa-thin text-5xl fa-computer-speaker mr-2" />
@@ -96,23 +111,11 @@
               </div>
             </NuxtLink>
           </div>
-          <div class="flex items-center my-2">
-            <label class="w-28">Server</label>
-            <input v-model="server" class="w-96 bg-gray-100 p-5 py-3 rounded-2xl" type="text">
-          </div>
-          <div class="flex items-center my-2">
-            <label class="w-28">Shared Secret</label>
-            <input v-model="secret" class="w-96 bg-gray-100 p-5 py-3 rounded-2xl" type="text">
-          </div>
-          <div class="flex items-center my-2">
-            <label class="w-28">Group</label>
-            <input v-model="group" class="w-96 bg-gray-100 p-5 py-3 rounded-2xl" type="text">
-          </div>
+          <floating-label-input class="my-2" v-model="server" title="Server" />
+          <floating-label-input class="my-2" v-model="secret" title="Shared Secret" />
+          <floating-label-input class="my-2" v-model="group" title="Group" />
           <button class="bg-purple-400 text-white w-full mt-3 p-3 rounded-xl text-lg" @click="login">
             Login
-          </button>
-          <button class="mt-3" @click="fakeit">
-            Fake It
           </button>
         </div>
       </div>
@@ -121,13 +124,16 @@
       <folder-details v-if="folder !== null && folder.files.length === 0" :server="server" :details="folder" :name="foldername" :fake="isfake" />
       <book-details v-if="folder !== null && folder.files.length > 0" :server="server" :details="folder" :name="foldername" :fake="isfake" />
     </div>
+    <div :class="{'-mr-96': player === false}" class="transition-all absolute right-0 border-l h-screen border-gray-200 w-full max-w-sm items-top flex bg-white flex-col">
+      <player v-if="folder !== null" :server="server" :details="folder" />
+    </div>
   </div>
 </template>
 
 <script>
-import { sha256 } from 'js-sha256'
-import base64js from 'base64-js'
 import FolderDetails from '../components/FolderDetails'
+import FloatingLabelInput from '~/components/FloatingLabelInput.vue'
+import Player from '~/components/Player.vue'
 
 function fakeIt () {
   return {
@@ -149,7 +155,9 @@ function fakeIt () {
 export default {
   name: 'App',
   components: {
-    FolderDetails
+    FolderDetails,
+    FloatingLabelInput,
+    Player
   },
   data () {
     return {
@@ -158,24 +166,74 @@ export default {
       folder: null,
       foldername: '',
       corsproxy: '',
-      secret: null,
-      loginsecret: null,
       fake: fakeIt(),
       rightbar: false,
       search: false,
-      menu: false
+      menu: false,
+      searchterm: ''
     }
   },
 
   computed: {
     isfake () {
-      return this.loginsecret === 'fakeit'
+      return this.$store.state.app.loginsecret === 'fakeit'
+    },
+    currentFolder () {
+      return this.$route.query.folder || ''
+    },
+    loginStatus () {
+      return this.$store.state.app.loginStatus
+    },
+    loginsecret () {
+      return this.$store.state.app.loginsecret
+    },
+    player () {
+      return this.$store.state.app.player
+    },
+    breadcrumbs () {
+      const breadcrumbs = [{
+        name: 'Home',
+        link: '/',
+        active: false
+      }]
+      if (this.$route.query.folder) {
+        if (this.$route.query.folder !== '/') {
+          const segments = this.$route.query.folder.split('/')
+          for (let i = 0; i < segments.length; i++) {
+            breadcrumbs.push({
+              name: segments[i],
+              link: segments.slice(0, i + 1).join('/'),
+              active: (i === segments.length - 1)
+            })
+          }
+        }
+      }
+      return breadcrumbs
+    }
+  },
+
+  watch: {
+    '$route' (to, from) {
+      if (to !== from) {
+        if (to.query.folder) {
+          this.fetchFolder(to.query.folder)
+        } else {
+          this.fetchFolder()
+        }
+      }
+    },
+    loginStatus (to, from) {
+      if (to !== from) {
+        if (to !== false) {
+          this.fetchFolder(this.currentFolder)
+        }
+      }
     }
   },
 
   mounted () {
+    this.$store.commit('app/initialiseApp')
     // this.fetchFolder()
-    console.log('mounted')
   },
 
   methods: {
@@ -184,11 +242,11 @@ export default {
       this.folder = folder
     },
     fakeit () {
-      this.loginsecret = 'fakeit'
+      this.$store.commit('app/loginsecret', 'fakeit')
       this.folder = this.fake.base
     },
     selectFolder (subfolder) {
-      console.log(encodeURIComponent(subfolder.name))
+      this.$router.push({ path: '/', query: { folder: subfolder.path } })
       if (this.isfake) {
         this.folder = this.fake[encodeURIComponent(subfolder.name)]
         this.foldername = subfolder.name
@@ -198,40 +256,11 @@ export default {
       this.rightbar = true
     },
     login () {
-      if (this.secret) {
-        console.log('secret is ' + this.secret)
-        const secretBytes = new (TextEncoder)('utf-8').encode(this.secret)
-        const randomBytes = new Uint8Array(32)
-        window.crypto.getRandomValues(randomBytes)
-        const concatedBytes = new Uint8Array(secretBytes.length + randomBytes.length)
-        concatedBytes.set(secretBytes)
-        concatedBytes.set(randomBytes, secretBytes.length)
-        let digestPromise
-        if (!window.crypto.subtle) {
-          digestPromise = Promise.resolve(sha256.arrayBuffer(concatedBytes))
-        } else {
-          digestPromise = window.crypto.subtle.digest('SHA-256', concatedBytes)
-        }
-        return digestPromise
-          .then((s) => {
-            const thesecret = base64js.fromByteArray(randomBytes) + '|' + base64js.fromByteArray(new Uint8Array(s))
-            console.log(thesecret)
-            const bodyFormData = 'secret=' + thesecret
-            this.$axios.$post(this.corsproxy + this.server + 'authenticate', bodyFormData, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }).then((response) => {
-              console.log(response)
-              this.loginsecret = response
-            })
-            /* return ajax({
-                url: baseUrl + "/authenticate",
-                type: "POST",
-                data: { secret: secret }
-
-            }); */
-          })
-      } else {
-        this.loginsecret = 'noauth'
-        this.fetchFolder()
-      }
+      this.$store.dispatch('app/login', {
+        server: this.server,
+        group: this.group,
+        secret: this.secret
+      })
     }
   }
 }

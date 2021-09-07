@@ -3,7 +3,7 @@ body, * {
   font-weight: 300;
 }
 .content-area {
-  height: calc(100vh - 5rem);
+  height: calc(100vh - 6rem);
 }
 .mobilesearch {
   position: absolute;
@@ -15,5 +15,52 @@ body, * {
   background: white;
   input {
     padding: 0.75rem 1.25rem;
+  }
+}
+
+.label-floating input:not(:-moz-placeholder-shown), .label-floating select:not(:-moz-placeholder-shown) {
+  padding-top: 1.6rem;
+  padding-bottom: 0.25rem;
+}
+
+.label-floating input:not(:-ms-input-placeholder), .label-floating select:not(:-ms-input-placeholder) {
+  padding-top: 1.6rem;
+  padding-bottom: 0.25rem;
+}
+
+.label-floating input:not(:placeholder-shown),
+.label-floating select:not(:placeholder-shown) {
+  padding-top: 1.6rem;
+  padding-bottom: 0.25rem;
+}
+
+.label-floating input:not(:-moz-placeholder-shown) ~ label, .label-floating select:not(:-moz-placeholder-shown) ~ label {
+  @apply text-purple-500 py-2 font-semibold;
+  font-size: 0.8rem;
+  -moz-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+}
+
+.label-floating input:not(:-ms-input-placeholder) ~ label, .label-floating select:not(:-ms-input-placeholder) ~ label {
+  @apply text-purple-500 py-2 font-semibold;
+  font-size: 0.8rem;
+  -ms-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+}
+
+.label-floating input:not(:placeholder-shown) ~ label,
+.label-floating select:not(:placeholder-shown) ~ label {
+  @apply text-purple-500 py-2 font-semibold;
+  font-size: 0.8rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.breadcrumbs {
+  @apply mb-4;
+  span {
+    @apply text-sm text-gray-400 underline mr-2 cursor-pointer;
+    &.active {
+      @apply font-normal font-semibold text-gray-300 no-underline text-purple-400;
+    }
   }
 }

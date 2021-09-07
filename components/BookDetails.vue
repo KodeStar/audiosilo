@@ -4,7 +4,7 @@
       <img class="block shadow rounded-md" :src="image" />
     </div>
     <div class="text-xl flex justify-center px-8 font-bold">{{ name }}</div>
-    <button class="text-white bg-purple-400 font-normal rounded-lg mx-8 my-4 p-3"><i class="fa-light fa-circle-play"></i> Listen</button>
+    <button @click="listen" class="text-white bg-purple-400 font-normal rounded-lg mx-8 my-4 p-3"><i class="fa-light fa-circle-play"></i> Listen</button>
     <template v-if="description">
       <div :class="{ active: readmore }" class="text px-8 description-text text-sm readmore" v-html="description"></div>
       <div @click="readmore = !readmore" class="px-8 text-purple-400 font-normal text-sm cursor-pointer">{{ moretext }}</div>
@@ -50,7 +50,13 @@ export default {
       }
       return ''
     }
+  },
+  methods: {
+    listen () {
+      this.$store.commit('app/player', true)
+    }
   }
+
 }
 </script>
 <style lang="scss">
