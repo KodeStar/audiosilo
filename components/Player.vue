@@ -78,8 +78,9 @@ export default {
       remaining: '13h27m remaining',
       editPlaybackSpeed: false,
       player: null,
-      soundid: null,
-      playing: false
+      // soundid: null,
+      playing: false,
+      seek: 0
     }
   },
 
@@ -92,13 +93,16 @@ export default {
     },
     playbackSpeed () {
       return Number.parseFloat(this.groupDetails.playback_speed).toFixed(2)
+    },
+    transcode () {
+      return this.$store.state.app.transcode
     }
   },
 
   mounted () {
     console.log('mount player')
     this.player = new Howl({
-      src: [this.server + 'audio/' + this.details.files[0].path + '?trans=m'],
+      src: [this.server + 'audio/' + this.details.files[0].path + '?trans=' + this.transcode],
       html5: true
     })
   },
@@ -116,12 +120,14 @@ export default {
     },
     play () {
       console.log('play file')
-      this.soundid = this.player.play()
+      this.player.seek(this.seek)
+      this.player.play()
       this.playing = true
     },
     pause () {
       console.log('pause file')
-      this.player.pause(this.soundid)
+      this.player.pause()
+      this.seek = this.player.seek()
       this.playing = false
     },
     updatePlaybackSpeed (event) {

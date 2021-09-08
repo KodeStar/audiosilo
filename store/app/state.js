@@ -17,6 +17,7 @@ export default function () {
     },
     folderDescription: '',
     secret: null,
-    player: false
+    player: false,
+    transcode: 'h'
   }
 }
