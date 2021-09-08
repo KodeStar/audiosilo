@@ -4,7 +4,7 @@
       <img class="block shadow rounded-md" :src="image" />
     </div>
     <div class="text-xl flex justify-center px-8 font-bold">{{ name }}</div>
-    <div class="text px-8 description-text text-sm" v-html="description"></div>
+    <div class="text px-8 description-text text-sm prose" v-html="description"></div>
   </div>
 </template>
 

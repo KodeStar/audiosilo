@@ -13,6 +13,7 @@
   "dependencies": {
     "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/pwa": "^3.3.5",
+    "@tailwindcss/typography": "^0.4.1",
     "base64-js": "^1.5.1",
     "core-js": "^3.15.1",
     "howler": "^2.2.3",

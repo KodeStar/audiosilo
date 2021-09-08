@@ -104,7 +104,7 @@ export async function getDescription (context, path) {
   if (mime === 'text/html') {
     output = response.data
   } else if (mime === 'text/x-markdown' || mime === 'text/markdown') {
-    output = marked(response.data, { sanitize: true })
+    output = marked(response.data)
   } else if (mime === 'text/plain') {
     const lines = response.data.split(/\r?\n/)
     for (const line of lines) {
