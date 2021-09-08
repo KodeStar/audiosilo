@@ -46,9 +46,11 @@ export default {
   },
 
   mounted () {
+    const path = (this.details && this.details.description) ? this.details.description.path : null
+    const cover = (this.details && this.details.cover) ? this.server + 'cover/' + this.details.cover.path : null
     this.$store.dispatch('app/getBookDetails', {
-      description: this.details.description.path,
-      cover: this.server + 'cover/' + this.details.cover.path
+      description: path,
+      cover
     })
   },
 

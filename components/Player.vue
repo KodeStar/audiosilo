@@ -28,9 +28,13 @@
         </span>
       </div>
       <div class="cursor-pointer">
-        <span class="fa-layers fa-fw fa-6x">
+        <span v-show="!playing" @click="togglePlay" class="fa-layers fa-fw fa-6x">
           <i class="fa-solid fa-circle text-gray-600"></i>
           <i class="fa-inverse fa-solid fa-play" data-fa-transform="shrink-10"></i>
+        </span>
+        <span v-show="playing" @click="togglePlay" class="fa-layers fa-fw fa-6x">
+          <i class="fa-solid fa-circle text-gray-600"></i>
+          <i class="fa-inverse fa-solid fa-pause" data-fa-transform="shrink-10"></i>
         </span>
       </div>
       <div class="">
@@ -62,6 +66,9 @@
 </template>
 
 <script>
+// import { Howl, Howler } from 'howler'
+import { Howl } from 'howler'
+
 export default {
   name: 'Player',
   props: ['details', 'server'],
@@ -69,7 +76,10 @@ export default {
     return {
       percent: 30,
       remaining: '13h27m remaining',
-      editPlaybackSpeed: false
+      editPlaybackSpeed: false,
+      player: null,
+      soundid: null,
+      playing: false
     }
   },
 
@@ -85,9 +95,34 @@ export default {
     }
   },
 
+  mounted () {
+    console.log('mount player')
+    this.player = new Howl({
+      src: [this.server + 'audio/' + this.details.files[0].path + '?trans=m'],
+      html5: true
+    })
+  },
+
   methods: {
     closePlayer () {
       this.$store.commit('app/player', false)
+    },
+    togglePlay () {
+      if (this.playing) {
+        this.pause()
+      } else {
+        this.play()
+      }
+    },
+    play () {
+      console.log('play file')
+      this.soundid = this.player.play()
+      this.playing = true
+    },
+    pause () {
+      console.log('pause file')
+      this.player.pause(this.soundid)
+      this.playing = false
     },
     updatePlaybackSpeed (event) {
       this.$store.commit('app/playbackSpeed', event.target.value)
@@ -95,10 +130,12 @@ export default {
     increasePlaybackSpeed () {
       const newspeed = parseFloat(this.playbackSpeed) + parseFloat('0.05')
       this.$store.commit('app/playbackSpeed', newspeed.toFixed(2))
+      this.player.rate(newspeed.toFixed(2))
     },
     decreasePlaybackSpeed () {
       const newspeed = parseFloat(this.playbackSpeed) - parseFloat('0.05')
       this.$store.commit('app/playbackSpeed', newspeed.toFixed(2))
+      this.player.rate(newspeed.toFixed(2))
     }
   }
 }
