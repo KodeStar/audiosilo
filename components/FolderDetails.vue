@@ -25,12 +25,23 @@ export default {
       return null
     },
     description () {
-      if (this.fake) {
-        return '<p>Jane Austen (16 December 1775 â€“ 18 July 1817) was an English novelist known primarily for her six major novels, which interpret, critique and comment upon the British landed gentry at the end of the 18th century. Austen\'s plots often explore the dependence of women on marriage in the pursuit of favourable social standing and economic security. Her works critique the novels of sensibility of the second half of the 18th century and are part of the transition to 19th-century literary realism. Her use of biting irony, along with her realism, humour, and social commentary, have long earned her acclaim among critics, scholars, and popular audiences alike.</p><p>With the publication of Sense and Sensibility (1811), Pride and Prejudice (1813), Mansfield Park (1814) and Emma (1816), she achieved success as a published writer. She wrote two other novels, Northanger Abbey and Persuasion, both published posthumously in 1818, and began another, eventually titled Sanditon, but died before its completion. She also left behind three volumes of juvenile writings in manuscript, the short epistolary novel Lady Susan, and another unfinished novel, The Watsons. Her six full-length novels have rarely been out of print, although they were published anonymously and brought her moderate success and little fame during her lifetime.</p>'
-      }
-      return ''
+      return this.$store.state.app.folderDescription
     }
+  },
+  watch: {
+    details (to, from) {
+      console.log(to)
+      console.log(from)
+      if (to !== from && to.description) {
+        console.log('update description')
+        this.$store.dispatch('app/getFolderDescription', this.details.description.path)
+      }
+    }
+  },
+
+  mounted () {
   }
+
 }
 </script>
 <style lang="scss">

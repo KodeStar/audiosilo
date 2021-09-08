@@ -38,19 +38,20 @@ export default {
       return (this.readmore) ? 'Less..' : 'More..'
     },
     image () {
-      if (this.details && this.details.cover) {
-        const src = (this.fake) ? 'https://m.media-amazon.com/images/I/51y-ivhKErL._SL500_.jpg' : this.server + 'cover/' + this.details.cover.path
-        return src
-      }
-      return null
+      return this.$store.state.app.book.cover
     },
     description () {
-      if (this.fake) {
-        return '<p>One of Jane Austen’s most beloved works, Pride and Prejudice, is vividly brought to life by Academy Award nominee Rosamund Pike (Gone Girl). In her bright and energetic performance of this British classic, she expertly captures Austen’s signature wit and tone. Her attention to detail, her literary background, and her performance in the 2005 feature film version of the novel provide the perfect foundation from which to convey the story of Elizabeth Bennett, her four sisters, and the inimitable Mr. Darcy.</p><p>In Pride and Prejudice, the Bennett sisters try to find their way in the repressive strictures of 19th century society. Austen shows the folly of judging by first impressions and the experience of falling in love, and she superbly describes a world which, despite being more than two centuries old, still resonates with modern concerns.</p>'
-      }
-      return ''
+      return this.$store.state.app.book.description
     }
   },
+
+  mounted () {
+    this.$store.dispatch('app/getBookDetails', {
+      description: this.details.description.path,
+      cover: this.server + 'cover/' + this.details.cover.path
+    })
+  },
+
   methods: {
     listen () {
       this.$store.commit('app/player', true)

@@ -6,6 +6,30 @@ export function player (state, data) {
   state.player = data
 }
 
+export function groupDetails (state, data) {
+  state.groupDetails = data
+}
+
+export function playbackSpeed (state, data) {
+  state.groupDetails.playback_speed = data
+}
+
+export function book (state, data) {
+  state.book = data
+}
+
+export function description (state, data) {
+  state.book.description = data
+}
+
+export function cover (state, data) {
+  state.book.cover = data
+}
+
+export function folderDescription (state, data) {
+  state.folderDescription = data
+}
+
 export function loginStatus (state, data) {
   state.loginStatus = data
 }

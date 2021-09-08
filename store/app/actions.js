@@ -1,4 +1,5 @@
 import axios from 'axios'
+import marked from 'marked'
 import { sha256 } from 'js-sha256'
 import base64js from 'base64-js'
 
@@ -78,4 +79,40 @@ export function login (context, data) {
   // ping(context)
   return response
   */
+}
+
+export async function getFolderDescription (context, path) {
+  const description = await getDescription(context, path)
+  context.commit('folderDescription', description)
+}
+
+export async function getBookDetails (context, book) {
+  const description = await getDescription(context, book.description)
+  context.commit('description', description)
+  context.commit('cover', book.cover)
+}
+
+export async function getDescription (context, path) {
+  const description = context.state.server + 'desc/' + path
+  const response = await axios.get(description)
+  console.log(response)
+  console.log(response.headers['content-type'])
+
+  const mime = response.headers['content-type']
+  let output = ''
+  let para = ''
+  if (mime === 'text/html') {
+    output = response.data
+  } else if (mime === 'text/x-markdown' || mime === 'text/markdown') {
+    output = marked(response.data, { sanitize: true })
+  } else if (mime === 'text/plain') {
+    const lines = response.data.split(/\r?\n/)
+    for (const line of lines) {
+      para += '<p>' + line + '</p>'
+    }
+    output = para
+  } else {
+    output = response.data
+  }
+  return output
 }

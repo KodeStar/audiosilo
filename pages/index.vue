@@ -45,7 +45,7 @@
           <template v-if="folder && folder.subfolders">
             <div
               v-if="folder.subfolders.length > 0"
-              class="mt-8 text-xl font-bold text-gray-700"
+              class="mt-8 text-xl font-bold text-gray-600"
             >
               Folders
               <div v-if="breadcrumbs.length > 1" class="breadcrumbs flex-col lg:flex-row">
@@ -72,7 +72,7 @@
           <template v-if="folder && folder.files">
             <div
               v-if="folder.files.length > 0"
-              class="mt-8 text-xl font-bold text-gray-700"
+              class="mt-8 text-xl font-bold text-gray-600"
             >
               Files
               <div v-if="breadcrumbs.length > 1" class="breadcrumbs flex-col lg:flex-row">
@@ -124,7 +124,7 @@
       <folder-details v-if="folder !== null && folder.files.length === 0" :server="server" :details="folder" :name="foldername" :fake="isfake" />
       <book-details v-if="folder !== null && folder.files.length > 0" :server="server" :details="folder" :name="foldername" :fake="isfake" />
     </div>
-    <div :class="{'-mr-96': player === false}" class="transition-all absolute right-0 border-l h-screen border-gray-200 w-full max-w-sm items-top flex bg-white flex-col">
+    <div :class="{'translate-y-full': player === false}" class="transition-all transform absolute right-0 border-l h-screen border-gray-200 w-full max-w-sm items-top flex bg-white flex-col">
       <player v-if="folder !== null && player !== false" :server="server" :details="folder" />
     </div>
   </div>
@@ -246,6 +246,8 @@ export default {
       this.folder = this.fake.base
     },
     selectFolder (subfolder) {
+      this.$store.commit('app/folderDescription', '')
+      this.$store.commit('app/player', false)
       this.$router.push({ path: '/', query: { folder: subfolder.path } })
       if (this.isfake) {
         this.folder = this.fake[encodeURIComponent(subfolder.name)]
