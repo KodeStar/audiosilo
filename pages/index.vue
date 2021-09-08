@@ -125,7 +125,7 @@
       <book-details v-if="folder !== null && folder.files.length > 0" :server="server" :details="folder" :name="foldername" :fake="isfake" />
     </div>
     <div :class="{'-mr-96': player === false}" class="transition-all absolute right-0 border-l h-screen border-gray-200 w-full max-w-sm items-top flex bg-white flex-col">
-      <player v-if="folder !== null" :server="server" :details="folder" />
+      <player v-if="folder !== null && player !== false" :server="server" :details="folder" />
     </div>
   </div>
 </template>
