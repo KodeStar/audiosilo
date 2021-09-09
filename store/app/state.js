@@ -18,6 +18,7 @@ export default function () {
     folderDescription: '',
     secret: null,
     player: false,
-    transcode: '0'
+    transcode: '0',
+    rightbar: false
   }
 }

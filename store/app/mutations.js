@@ -2,6 +2,10 @@ export function loginsecret (state, data) {
   state.loginsecret = data
 }
 
+export function rightbar (state, data) {
+  state.rightbar = data
+}
+
 export function player (state, data) {
   state.player = data
 }

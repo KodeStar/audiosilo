@@ -40,6 +40,10 @@ export default {
   },
 
   mounted () {
+    // check if it should be mounted
+    if (this.image || this.description) {
+      this.$store.commit('app/rightbar', true)
+    }
   }
 
 }

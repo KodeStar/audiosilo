@@ -175,7 +175,6 @@ export default {
       foldername: '',
       corsproxy: '',
       fake: fakeIt(),
-      rightbar: false,
       search: false,
       menu: false,
       searchterm: '',
@@ -192,6 +191,9 @@ export default {
     },
     loginStatus () {
       return this.$store.state.app.loginStatus
+    },
+    rightbar () {
+      return this.$store.state.app.rightbar
     },
     loginsecret () {
       return this.$store.state.app.loginsecret
@@ -264,7 +266,7 @@ export default {
       } else {
         this.fetchFolder(encodeURIComponent(subfolder.path))
       }
-      this.rightbar = true
+      // this.$store.commit('app/rightbar', true)
     },
     logout () {
       this.$store.commit('app/loginStatus', false)

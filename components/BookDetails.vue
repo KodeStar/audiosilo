@@ -54,6 +54,7 @@ export default {
   },
 
   async mounted () {
+    this.$store.commit('app/rightbar', true)
     const keys = await caches.keys()
     console.log('keys')
     console.log(keys)
@@ -78,10 +79,9 @@ export default {
       await caches.delete(cacheName)
       const cacheStorage = await caches.open(cacheName)
 
-      this.details.files.forEach(async (file) => {
+      await this.details.files.forEach(async (file) => {
         await cacheStorage.add(this.server + 'download/' + file.path + '?trans=0')
       })
-
       console.log('files cached ' + cacheName)
     }
   }
