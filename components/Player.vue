@@ -27,7 +27,7 @@
           <span class="text-sm absolute inset-0 flex justify-center items-center" style="">30</span>
         </span>
       </div>
-      <div class="cursor-pointer">
+      <div class="cursor-pointer relative">
         <span v-show="!playing" @click="togglePlay" class="fa-layers fa-fw fa-6x">
           <i class="fa-solid fa-circle text-gray-600"></i>
           <i class="fa-inverse fa-solid fa-play" data-fa-transform="shrink-10"></i>
@@ -35,6 +35,10 @@
         <span v-show="playing" @click="togglePlay" class="fa-layers fa-fw fa-6x">
           <i class="fa-solid fa-circle text-gray-600"></i>
           <i class="fa-inverse fa-solid fa-pause" data-fa-transform="shrink-10"></i>
+        </span>
+        <span v-show="loading" @click="togglePlay" class="fa-layers fa-fw fa-6x absolute inset-0 opacity-70">
+          <i class="fa-solid fa-circle text-gray-600"></i>
+          <i class="fa-inverse fa-light fa-spinner-third fa-spin" data-fa-transform="shrink-2"></i>
         </span>
       </div>
       <div class="">
@@ -66,8 +70,9 @@
 </template>
 
 <script>
-// import { Howl, Howler } from 'howler'
-import { Howl } from 'howler'
+import { sha256 } from 'js-sha256'
+import { Howl, Howler } from 'howler'
+// import { Howl } from 'howler'
 
 export default {
   name: 'Player',
@@ -78,9 +83,10 @@ export default {
       remaining: '13h27m remaining',
       editPlaybackSpeed: false,
       player: null,
-      // soundid: null,
+      soundid: null,
       playing: false,
-      seek: 0
+      seek: 0,
+      loading: false
     }
   },
 
@@ -96,15 +102,37 @@ export default {
     },
     transcode () {
       return this.$store.state.app.transcode
+    },
+    hash () {
+      return sha256(this.$route.fullPath)
     }
   },
 
-  mounted () {
-    console.log('mount player')
+  async mounted () {
+    const cacheName = `audioserv-${this.hash}`
+    const cacheStorage = await caches.open(cacheName)
+    const cachedResponse = await cacheStorage.match('BillionaireBoy.m4b')
+    const src = (cachedResponse !== undefined) ? cachedResponse.url : this.server + 'audio/' + this.details.files[0].path + '?trans=' + this.transcode
+    console.log(cachedResponse)
     this.player = new Howl({
-      src: [this.server + 'audio/' + this.details.files[0].path + '?trans=' + this.transcode],
+      src,
+      // src: ['BillionaireBoy.m4b'],
       html5: true
     })
+    const that = this
+    this.player.on('play', function () {
+      console.log('on play')
+      that.loading = false
+    }).on('load', function () {
+      console.log('on load')
+    }).on('loaderror', function (id, err) {
+      console.log('load error')
+      console.log(id)
+      console.log(err)
+    })
+    console.log('m4a' + Howler.codecs('m4a'))
+    console.log('m4b' + Howler.codecs('m4b'))
+    console.log('aac' + Howler.codecs('aac'))
   },
 
   methods: {
@@ -119,15 +147,20 @@ export default {
       }
     },
     play () {
+      this.loading = true
       console.log('play file')
-      this.player.seek(this.seek)
-      this.player.play()
+      this.player.seek(this.seek, this.soundid)
+      if (this.soundid !== null) {
+        this.player.play(this.soundid)
+      } else {
+        this.soundid = this.player.play()
+      }
       this.playing = true
     },
     pause () {
       console.log('pause file')
-      this.player.pause()
-      this.seek = this.player.seek()
+      this.player.pause(this.soundid)
+      this.seek = this.player.seek(null, this.soundid)
       this.playing = false
     },
     updatePlaybackSpeed (event) {

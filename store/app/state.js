@@ -18,6 +18,6 @@ export default function () {
     folderDescription: '',
     secret: null,
     player: false,
-    transcode: 'h'
+    transcode: '0'
   }
 }

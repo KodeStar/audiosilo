@@ -40,6 +40,10 @@
             <i class="fa-thin fa-gear mr-2 fa-lg" />
             Settings
           </NuxtLink>
+          <NuxtLink class="flex items-center my-2 p-2" to="/">
+            <i class="fa-thin fa-gear mr-2 fa-lg" />
+            Cached
+          </NuxtLink>
         </div>
         <div class="p-3 px-5 w-screen lg:w-full content-area overflow-auto">
           <template v-if="folder && folder.subfolders">

@@ -19,10 +19,12 @@
       <div class="text-sm">{{ percent }}%</div>
     </div>
     <div class="px-8 text-xs">{{ remaining }}</div>
+    <div @click="download" class="">Download</div>
   </div>
 </template>
 
 <script>
+import { sha256 } from 'js-sha256'
 export default {
   name: 'BookDetails',
   props: ['details', 'name', 'fake', 'server'],
@@ -42,10 +44,20 @@ export default {
     },
     description () {
       return this.$store.state.app.book.description
+    },
+    transcode () {
+      return this.$store.state.app.transcode
+    },
+    hash () {
+      return sha256(this.$route.fullPath)
     }
   },
 
-  mounted () {
+  async mounted () {
+    const keys = await caches.keys()
+    console.log('keys')
+    console.log(keys)
+
     const path = (this.details && this.details.description) ? this.details.description.path : null
     const cover = (this.details && this.details.cover) ? this.server + 'cover/' + this.details.cover.path : null
     this.$store.dispatch('app/getBookDetails', {
@@ -57,6 +69,20 @@ export default {
   methods: {
     listen () {
       this.$store.commit('app/player', true)
+    },
+    async download () {
+      console.log('download')
+      const isPersisted = await navigator.storage.persist()
+      console.log(`Persisted storage granted: ${isPersisted}`)
+      const cacheName = `audioserv-${this.hash}`
+      await caches.delete(cacheName)
+      const cacheStorage = await caches.open(cacheName)
+
+      this.details.files.forEach(async (file) => {
+        await cacheStorage.add(this.server + 'download/' + file.path + '?trans=0')
+      })
+
+      console.log('files cached ' + cacheName)
     }
   }
 
