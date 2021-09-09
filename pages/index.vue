@@ -170,7 +170,6 @@ export default {
   data () {
     return {
       group: 'Test',
-      server: 'https://tower.coderior.com:3000/',
       folder: null,
       foldername: '',
       corsproxy: '',
@@ -191,6 +190,9 @@ export default {
     },
     loginStatus () {
       return this.$store.state.app.loginStatus
+    },
+    server () {
+      return this.$store.state.app.server
     },
     rightbar () {
       return this.$store.state.app.rightbar
