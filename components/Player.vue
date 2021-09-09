@@ -80,7 +80,6 @@ export default {
   data () {
     return {
       percent: 30,
-      remaining: '13h27m remaining',
       editPlaybackSpeed: false,
       player: null,
       soundid: null,
@@ -105,20 +104,41 @@ export default {
     },
     hash () {
       return sha256(this.$route.fullPath)
+    },
+    totalTime () {
+      let total = 0
+      this.details.files.forEach((file) => {
+        total += file.meta.duration
+      })
+      return total
+    },
+    remaining () {
+      const remaining = this.totalTime - this.seek
+      return this.secondsToTime(remaining) + ' remaining'
     }
   },
 
   async mounted () {
     const cacheName = `audioserv-${this.hash}`
     const cacheStorage = await caches.open(cacheName)
-    const cachedResponse = await cacheStorage.match('BillionaireBoy.m4b')
-    const src = (cachedResponse !== undefined) ? cachedResponse.url : this.server + 'audio/' + this.details.files[0].path + '?trans=' + this.transcode
+    const cachedResponse = await cacheStorage.match(this.server + 'download/' + this.details.files[0].path)
+    let url = null
+    if (cachedResponse !== undefined) {
+      url = 'data:' + cachedResponse.headers.get('content-type') + ';base64,' + btoa(cachedResponse.body)
+      // const blob = new Blob([cachedResponse.body], { type: cachedResponse.headers.get('content-type') })
+      // url = window.URL.createObjectURL(blob)
+      console.log(cachedResponse)
+      console.log(url)
+    }
+    const src = (cachedResponse !== undefined) ? [url] : this.server + 'download/' + this.details.files[0].path
     console.log(cachedResponse)
     this.player = new Howl({
       src,
+      format: [cachedResponse.headers.get('content-type')],
       // src: ['BillionaireBoy.m4b'],
       html5: true
     })
+    this.player.load()
     const that = this
     this.player.on('play', function () {
       console.log('on play')
@@ -145,6 +165,14 @@ export default {
       } else {
         this.play()
       }
+    },
+    secondsToTime (secs) {
+      const hours = Math.floor(secs / (60 * 60))
+
+      const divisorForMinutes = secs % (60 * 60)
+      const minutes = Math.floor(divisorForMinutes / 60)
+
+      return hours + 'h' + minutes + 'm'
     },
     play () {
       this.loading = true
