@@ -178,7 +178,8 @@ export default {
       rightbar: false,
       search: false,
       menu: false,
-      searchterm: ''
+      searchterm: '',
+      secret: ''
     }
   },
 
@@ -264,6 +265,9 @@ export default {
         this.fetchFolder(encodeURIComponent(subfolder.path))
       }
       this.rightbar = true
+    },
+    logout () {
+      this.$store.commit('app/loginStatus', false)
     },
     login () {
       this.$store.dispatch('app/login', {
