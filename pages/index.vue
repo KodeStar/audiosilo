@@ -44,6 +44,10 @@
             <i class="fa-thin fa-gear mr-2 fa-lg" />
             Cached
           </NuxtLink>
+          <div @click="logout">
+            <i class="fa-thin fa-gear mr-2 fa-lg" />
+            Logout
+          </div>
         </div>
         <div class="p-3 px-5 w-screen lg:w-full content-area overflow-auto">
           <template v-if="folder && folder.subfolders">
@@ -166,7 +170,7 @@ export default {
   data () {
     return {
       group: 'Test',
-      server: 'http://192.168.0.20:3333/',
+      server: 'https://tower.coderior.com:3000/',
       folder: null,
       foldername: '',
       corsproxy: '',
