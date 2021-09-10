@@ -44,7 +44,7 @@
             <i class="fa-thin fa-gear mr-2 fa-lg" />
             Cached
           </NuxtLink>
-          <div @click="logout">
+          <div class="flex items-center my-2 p-2" @click="logout">
             <i class="fa-thin fa-gear mr-2 fa-lg" />
             Logout
           </div>
@@ -119,7 +119,7 @@
               </div>
             </NuxtLink>
           </div>
-          <floating-label-input class="my-2" v-model="server" title="Server" />
+          <floating-label-input class="my-2" :value="server" @input="updateServer" title="Server" />
           <floating-label-input class="my-2" v-model="secret" title="Shared Secret" />
           <floating-label-input class="my-2" v-model="group" title="Group" />
           <button class="bg-purple-400 text-white w-full mt-3 p-3 rounded-xl text-lg" @click="login">
@@ -129,8 +129,8 @@
       </div>
     </div>
     <div :class="{'-mr-96': rightbar === false}" class="transition-all border-l h-screen border-gray-200 w-full max-w-sm items-top flex bg-white flex-col">
-      <folder-details v-if="folder !== null && folder.files.length === 0" :server="server" :details="folder" :name="foldername" :fake="isfake" />
-      <book-details v-if="folder !== null && folder.files.length > 0" :server="server" :details="folder" :name="foldername" :fake="isfake" />
+      <folder-details v-if="folder !== null && folder.files && folder.files.length === 0" :server="server" :details="folder" :name="foldername" :fake="isfake" />
+      <book-details v-if="folder !== null && folder.files && folder.files.length > 0" :server="server" :details="folder" :name="foldername" :fake="isfake" />
     </div>
     <div :class="{'translate-y-full': player === false}" class="transition-all transform absolute right-0 border-l h-screen border-gray-200 w-full max-w-sm items-top flex bg-white flex-col">
       <player v-if="folder !== null && player !== false" :server="server" :details="folder" />
@@ -170,7 +170,6 @@ export default {
   data () {
     return {
       group: 'Test',
-      folder: null,
       foldername: '',
       corsproxy: '',
       fake: fakeIt(),
@@ -193,6 +192,9 @@ export default {
     },
     server () {
       return this.$store.state.app.server
+    },
+    folder () {
+      return this.$store.state.app.folder
     },
     rightbar () {
       return this.$store.state.app.rightbar
@@ -252,18 +254,21 @@ export default {
   methods: {
     async fetchFolder (name = '') {
       const folder = await this.$axios.$get(this.corsproxy + this.server + 'folder/' + name)
-      this.folder = folder
+      this.$store.commit('app/folder', folder)
+    },
+    updateServer (input) {
+      this.$store.commit('app/server', input)
     },
     fakeit () {
       this.$store.commit('app/loginsecret', 'fakeit')
-      this.folder = this.fake.base
+      this.$store.commit('app/folder', this.fake.base)
     },
     selectFolder (subfolder) {
       this.$store.commit('app/folderDescription', '')
       this.$store.commit('app/player', false)
       this.$router.push({ path: '/', query: { folder: subfolder.path } })
       if (this.isfake) {
-        this.folder = this.fake[encodeURIComponent(subfolder.name)]
+        this.$store.commit('app/folder', this.fake[encodeURIComponent(subfolder.name)])
         this.foldername = subfolder.name
       } else {
         this.fetchFolder(encodeURIComponent(subfolder.path))

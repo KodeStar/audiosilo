@@ -86,10 +86,46 @@ export async function getFolderDescription (context, path) {
   context.commit('folderDescription', description)
 }
 
-export async function getBookDetails (context, book) {
-  const description = await getDescription(context, book.description)
-  context.commit('description', description)
-  context.commit('cover', book.cover)
+export async function getBookDetails (context, hash) {
+  let book = await this.$localForage.getItem(hash)
+  if (!book) {
+    let description = null
+    if (context.state.folder.description.path) {
+      description = await getDescription(context, context.state.folder.description.path)
+    }
+    let cover = null
+    if (context.state.folder.cover) {
+      cover = context.state.server + 'cover/' + context.state.folder.cover.path
+    }
+
+    book = {
+      hash,
+      name: 'Unknown',
+      author: 'Unknown',
+      description,
+      cover,
+      seek: 0
+    }
+    await this.$localForage.setItem(hash, book)
+  }
+
+  context.commit('book', book)
+}
+
+export async function updateBookDetails (context, item) {
+  const currentbook = context.state.book
+  const updates = item.book
+  const book = {
+    ...currentbook,
+    ...updates
+  }
+  await this.$localForage.setItem(item.hash, book)
+  context.commit('book', book)
+}
+
+export async function setBookDetails (context, book) {
+  await this.$localForage.setItem(book.hash, book)
+  context.commit('book', book)
 }
 
 export async function getDescription (context, path) {
@@ -115,4 +151,32 @@ export async function getDescription (context, path) {
     output = response.data
   }
   return output
+}
+
+export async function fileIsCached (context, details) {
+  const cacheName = `audioserv-${details.hash}`
+  const cacheStorage = await caches.open(cacheName)
+  const cachedResponse = await cacheStorage.match(details.file)
+  return (cachedResponse !== undefined)
+}
+
+export async function getCachedFile (context, details) {
+  const cacheName = `audioserv-${details.hash}`
+  const cacheStorage = await caches.open(cacheName)
+  const cachedResponse = await cacheStorage.match(details.file)
+  let url = null
+  if (cachedResponse !== undefined) {
+    const blob = await cachedResponse.blob()
+    url = URL.createObjectURL(blob)
+  }
+  const re = /(?:\.([^.]+))?$/
+
+  return {
+    src: url,
+    format: re.exec(cachedResponse.url)[1]
+  }
+}
+
+export async function cacheFile (context, path) {
+
 }

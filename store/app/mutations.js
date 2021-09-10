@@ -22,6 +22,10 @@ export function book (state, data) {
   state.book = data
 }
 
+export function folder (state, data) {
+  state.folder = data
+}
+
 export function description (state, data) {
   state.book.description = data
 }
@@ -36,6 +40,10 @@ export function folderDescription (state, data) {
 
 export function loginStatus (state, data) {
   state.loginStatus = data
+}
+
+export function server (state, data) {
+  state.server = data
 }
 
 export function initialiseApp (state) {

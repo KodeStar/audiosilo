@@ -12,7 +12,7 @@
     <div class="px-8 mt-3 font-normal text-sm">Progress</div>
     <div class="flex px-8 pt-1 items-center">
       <div class="relative flex-grow mr-2">
-        <div class="overflow-hidden h-2 text-xs flex rounded bg-purple-200">
+        <div class="overflow-hidden h-1 text-xs flex rounded bg-purple-200">
           <div :style="{ width: percent + '%'}" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-purple-400"></div>
         </div>
       </div>
@@ -52,8 +52,6 @@ export default {
   data () {
     return {
       readmore: false,
-      percent: 30,
-      remaining: '13h27m remaining',
       cached: false,
       downloading: false
     }
@@ -71,9 +69,29 @@ export default {
     transcode () {
       return this.$store.state.app.transcode
     },
+    seek () {
+      return this.$store.state.app.book.seek
+    },
     hash () {
       return sha256(this.$route.fullPath)
+    },
+    totalTime () {
+      let total = 0
+      this.details.files.forEach((file) => {
+        total += file.meta.duration
+      })
+      return total
+    },
+    remaining () {
+      const remaining = this.totalTime - this.seek
+      return this.secondsToTime(remaining) + ' remaining'
+    },
+    percent () {
+      const remaining = this.totalTime - this.seek
+      const percent = (remaining / this.totalTime) * 100
+      return 100 - percent.toFixed(0)
     }
+
   },
 
   async mounted () {
@@ -82,18 +100,24 @@ export default {
     console.log('keys')
     console.log(keys)
 
-    const path = (this.details && this.details.description) ? this.details.description.path : null
-    const cover = (this.details && this.details.cover) ? this.server + 'cover/' + this.details.cover.path : null
-    this.$store.dispatch('app/getBookDetails', {
-      description: path,
-      cover
-    })
+    // const path = (this.details && this.details.description) ? this.details.description.path : null
+    // const cover = (this.details && this.details.cover) ? this.server + 'cover/' + this.details.cover.path : null
+    this.$store.dispatch('app/getBookDetails', this.hash)
   },
 
   methods: {
     listen () {
       this.$store.commit('app/player', true)
     },
+    secondsToTime (secs) {
+      const hours = Math.floor(secs / (60 * 60))
+
+      const divisorForMinutes = secs % (60 * 60)
+      const minutes = Math.floor(divisorForMinutes / 60)
+
+      return hours + 'h' + minutes + 'm'
+    },
+
     async download () {
       console.log('download')
       this.downloading = true
