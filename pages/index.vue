@@ -128,9 +128,14 @@
         </div>
       </div>
     </div>
-    <div :class="{'-mr-96': rightbar === false}" class="transition-all border-l h-screen border-gray-200 w-full max-w-sm items-top flex bg-white flex-col">
+    <div :class="{'-mr-96': rightbar === false, 'translate-x-full': rightbar === false}" class="transform transition-all border-l h-screen border-gray-200 w-full max-w-sm items-top absolute lg:relative inset-0 flex bg-white flex-col">
       <folder-details v-if="folder !== null && folder.files && folder.files.length === 0" :server="server" :details="folder" :name="foldername" :fake="isfake" />
-      <book-details v-if="folder !== null && folder.files && folder.files.length > 0" :server="server" :details="folder" :name="foldername" :fake="isfake" />
+      <book-details
+        v-if="folder !== null && folder.files && folder.files.length > 0"
+        :server="server"
+        :details="folder"
+        :name="foldername"
+        :fake="isfake" />
     </div>
     <div :class="{'translate-y-full': player === false}" class="transition-all transform absolute right-0 border-l h-screen border-gray-200 w-full max-w-sm items-top flex bg-white flex-col">
       <player v-if="folder !== null && player !== false" :server="server" :details="folder" />

@@ -90,7 +90,7 @@ export async function getBookDetails (context, hash) {
   let book = await this.$localForage.getItem(hash)
   if (!book) {
     let description = null
-    if (context.state.folder.description.path) {
+    if (context.state.folder.description && context.state.folder.description.path) {
       description = await getDescription(context, context.state.folder.description.path)
     }
     let cover = null
@@ -177,6 +177,18 @@ export async function getCachedFile (context, details) {
   }
 }
 
-export async function cacheFile (context, path) {
+export async function cacheFile (context, details) {
+  const cacheName = `audioserv-${details.hash}`
+  const cacheStorage = await caches.open(cacheName)
+  await cacheStorage.add(details.file)
+}
 
+export async function tempCache (context, details) {
+  const alreadyCached = await fileIsCached(context, details)
+  if (alreadyCached) {
+    return getCachedFile(context, details)
+  }
+  await cacheFile(context, details)
+
+  return getCachedFile(context, details)
 }

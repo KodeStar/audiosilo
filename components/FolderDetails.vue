@@ -36,6 +36,11 @@ export default {
         console.log('update description')
         this.$store.dispatch('app/getFolderDescription', this.details.description.path)
       }
+      if (to.image || to.description) {
+        this.$store.commit('app/rightbar', true)
+      } else {
+        this.$store.commit('app/rightbar', false)
+      }
     }
   },
 

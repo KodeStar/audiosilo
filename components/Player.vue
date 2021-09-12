@@ -1,19 +1,29 @@
 <template>
   <div class="flex flex-col justify-between relative h-screen overflow-auto">
-    <div @click="closePlayer" class="absolute top-0 right-0 bg-gray-200 w-8 h-8 rounded-bl flex cursor-pointer justify-center items-center"><i class="fa-thin fa-chevron-down"></i></div>
+    <div @click="closePlayer" class="absolute top-0 right-0 w-8 h-8 rounded-bl flex cursor-pointer justify-center items-center"><i class="fa-thin fa-chevron-down"></i></div>
     <div>
       <div class="text p-8 pb-5 flex justify-center flex-shrink">
         <img class="block shadow rounded-md" :src="image" />
       </div>
       <div class="w-full px-8 flex flex-col text-center items-center">
         <div class="text-xl font-semibold flex mb-2">Chapter 1</div>
-        <div class="text-sm text-gray-400 mb-2">{{ details.files[0].name }} - Artist name</div>
-        <div class="flex w-full pt-1 items-center">
+        <!--<div class="text-sm text-gray-400 mb-2">{{ details.files[0].name }} - Artist name</div>-->
+        <div class="flex py-1 items-center w-full relative mb-1">
           <div class="relative flex-grow mr-2">
-              <input type="range" :value="localpercent" class="shadow-none w-full flex flex-col text-center whitespace-nowrap text-white justify-center bg-purple-400" />
+            <div class="overflow-hidden h-1 text-xs flex rounded bg-purple-200">
+              <div :style="{ width: localpercent + '%'}" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-purple-400"></div>
+            </div>
           </div>
+          <input
+            type="range"
+            min="0"
+            :max="currentFile.duration"
+            :value="current"
+            @input="updateSeek"
+            class="absolute playback-slider" />
         </div>
-        <div class="flex w-full justify-between">
+
+        <div class="flex w-full justify-between pointer-events-none">
           <div class="text-xs">{{ secondsToPlayback(current) }}</div>
           <div class="px-8 text-xs">{{ remaining }}</div>
           <div class="text-xs">-{{ secondsToPlayback(localremaining) }}</div>
@@ -21,7 +31,7 @@
       </div>
     </div>
 
-    <div class="flex items-center w-full justify-evenly my-5">
+    <div class="flex items-center w-full justify-evenly my-2">
       <div class="">
         <span  @click="seekBackwards" class="fa-layers fa-fw fa-3x relative">
           <i class="fa-thin fa-circle-notch fa-rotate-by" style="--fa-rotate-angle: -23deg;"></i>
@@ -45,15 +55,14 @@
       </div>
       <div class="">
         <span @click="seekForwards" class="fa-layers fa-fw fa-3x relative">
-          <!--<i class="fa-thin fa-circle-notch fa-rotate-by" style="--fa-rotate-angle: 23deg;"></i>-->
-          <i class="fa-thin fa-arrow-rotate-right fa-rotate-by" style="--fa-rotate-angle: 23deg;"></i>
-          <!--<i class="fa-solid fa-chevron-right" data-fa-transform="up-30" style="font-size: 12px;"></i>-->
+          <i class="fa-thin fa-circle-notch fa-rotate-by" style="--fa-rotate-angle: 23deg;"></i>
+          <i class="fa-solid fa-chevron-right" data-fa-transform="up-30" style="font-size: 12px;"></i>
           <span class="text-sm absolute inset-0 flex justify-center items-center" style="">45</span>
         </span>
       </div>
     </div>
-    <div class="p-5 w-full">
-      <div class="bg-gray-200 rounded p-3 px-6 w-full relative flex justify-between">
+    <div class="p-2 w-full">
+      <div class="bg-gray-100 rounded p-3 px-6 w-full relative flex justify-between">
         <button @click="editPlaybackSpeed = true" class="cursor-pointer">{{ playbackSpeed }}x</button>
         <button class="cursor-pointer"><i class="fa-thin fa-alarm-snooze"></i></button>
         <button class="cursor-pointer"><i class="fa-thin fa-airplay"></i></button>
@@ -84,11 +93,16 @@ export default {
     return {
       editPlaybackSpeed: false,
       player: null,
-      soundid: null,
       playing: false,
       loading: false,
       localremaining: 0,
-      current: 0
+      current: 0,
+      currentFile: {
+        index: 0,
+        start: 0,
+        duration: 0,
+        path: ''
+      }
     }
   },
 
@@ -128,73 +142,27 @@ export default {
       return 100 - percent.toFixed(0)
     },
     localpercent () {
-      const remaining = this.details.files[this.currentfile.index].meta.duration - this.localseek
-      const percent = (remaining / this.details.files[this.currentfile.index].meta.duration) * 100
-      return 100 - percent.toFixed(0)
-    },
-    currentfile () {
-      let start = 0
-      for (let i = 0, length = this.details.files.length; i < length; i++) {
-        console.log(start + this.details.files[i].meta.duration)
-        console.log('seek: ' + this.seek)
-        if (start + this.details.files[i].meta.duration > this.seek) {
-          return {
-            index: i,
-            start
-          }
-        }
-        start += this.details.files[i].meta.duration
+      if (this.player) {
+        const remaining = this.currentFile.duration - this.current
+        const percent = (remaining / this.currentFile.duration) * 100
+        return 100 - percent.toFixed(0)
       }
-      return {
-        index: 0,
-        start: 0
-      }
+      return 0
     },
     localseek () {
-      const value = this.seek - this.currentfile.start
+      const value = this.seek - this.currentFile.start
       return value.toFixed(0)
     }
   },
 
   async mounted () {
-    let src = this.server + 'audio/' + this.details.files[this.currentfile.index].path + '?trans=h'
-    let format = null
+    this.currentFile = this.getCurrentFile()
+    this.player = await this.loadFile(this.server + 'download/' + this.currentFile.path)
 
-    const filedetails = {
-      hash: this.hash,
-      file: this.server + 'download/' + this.details.files[this.currentfile.index].path
-    }
-    const isCached = await this.$store.dispatch('app/fileIsCached', filedetails)
-    if (isCached) {
-      const cachedFile = await this.$store.dispatch('app/getCachedFile', filedetails)
-      src = cachedFile.src
-      format = cachedFile.format
-    }
+    this.updatePlayerDetails()
 
-    this.player = new Howl({
-      src,
-      format,
-      html5: true
-    })
-
-    this.localremaining = this.getLocalRemaining()
+    // this.localremaining = this.getLocalRemaining()
     this.current = this.localseek
-
-    const that = this
-    this.player.on('play', function () {
-      console.log('on play')
-      that.loading = false
-      that.localremaining = that.getLocalRemaining()
-    }).on('pause', function () {
-      console.log('on pause')
-      clearInterval(that.timer)
-    }).on('load', function () {
-      console.log('on load')
-    }).on('loaderror', function (id, err) {
-      console.log('load error')
-      console.log(id)
-      console.log(err)
-    })
   },
 
   beforeDestroy () {
@@ -204,22 +172,142 @@ export default {
     clearInterval(this.timer)
   },
   methods: {
-    getLocalRemaining () {
-      if (!this.playing) {
-        return this.details.files[this.currentfile.index].meta.duration - this.localseek
+    updateSeek (event) {
+      console.log(event.target.value)
+      if (this.player.playing()) {
+        this.player.pause()
+        this.player.seek(event.target.value)
+        this.player.play()
+      } else {
+        this.player.seek(event.target.value)
+        this.current = event.target.value
       }
-      const output = this.details.files[this.currentfile.index].meta.duration - this.player.seek()
+    },
+    nextFile () {
+      return {
+        index: this.currentFile.index + 1,
+        start: this.currentFile.start + this.currentFile.duration,
+        duration: this.details.files[this.currentFile.index + 1].meta.duration,
+        path: this.details.files[this.currentFile.index + 1].path
+      }
+    },
+
+    prevFile () {
+      return {
+        index: this.currentFile.index - 1,
+        start: this.currentFile.start - this.currentFile.duration,
+        duration: this.details.files[this.currentFile.index - 1].meta.duration,
+        path: this.details.files[this.currentFile.index - 1].path
+      }
+    },
+
+    async loadFile (file) {
+      console.log('Loading file')
+      console.log(this.currentFile)
+
+      let format = null
+      let src = null
+
+      const filedetails = {
+        hash: this.hash,
+        // file: this.server + 'download/' + this.details.files[this.currentFile.index].path
+        file
+      }
+      const isCached = await this.$store.dispatch('app/fileIsCached', filedetails)
+      if (isCached) {
+        const cachedFile = await this.$store.dispatch('app/getCachedFile', filedetails)
+        src = cachedFile.src
+        format = cachedFile.format
+      } else {
+        const tempCache = await this.$store.dispatch('app/tempCache', {
+          hash: 'temp-' + this.hash,
+          file
+        })
+        src = tempCache.src
+        format = tempCache.format
+      }
+      const that = this
+      return new Howl({
+        src,
+        format,
+        html5: true,
+        onplay: () => {
+          that.loading = false
+          that.updatePlayerDetails()
+        },
+        onpause: () => {
+          console.log('pause file')
+        },
+        onloaderror: (id, err) => {
+          console.log('load error')
+          console.log(id)
+          console.log(err)
+        },
+        onend: async () => {
+          console.log('track ended')
+          that.player.unload()
+          that.player = null
+          await that.nextTrack()
+        }
+      })
+    },
+    async nextTrack () {
+      const nextFile = this.nextFile()
+      this.currentFile = nextFile
+
+      this.player = await this.loadFile(this.server + 'download/' + this.currentFile.path)
+      this.player.play()
+    },
+    async playTrack (index) {
+
+    },
+    getCurrentFile () {
+      let start = 0
+      for (let i = 0, length = this.details.files.length; i < length; i++) {
+        console.log(start + this.details.files[i].meta.duration)
+        console.log('seek: ' + this.seek)
+        if (start + this.details.files[i].meta.duration > this.seek) {
+          return {
+            index: i,
+            start,
+            duration: this.details.files[i].meta.duration,
+            path: this.details.files[i].path
+          }
+        }
+        start += this.details.files[i].meta.duration
+      }
+      return {
+        index: 0,
+        start: 0,
+        duration: 0,
+        path: ''
+      }
+    },
+    updatePlayerDetails () {
+      this.localremaining = this.getLocalRemaining()
+      this.current = this.getLocalSeek()
       if (this.playing === true) {
         const that = this
         setTimeout(function () {
-          that.localremaining = that.getLocalRemaining()
-          that.current = that.player.seek()
+          that.updatePlayerDetails()
         }, 1000)
       }
+    },
+    getLocalRemaining () {
+      if (!this.playing) {
+        return this.currentFile.duration - this.localseek
+      }
+      const output = this.currentFile.duration - this.player.seek()
       return output
     },
+    getLocalSeek () {
+      if (!this.playing) {
+        return this.localseek
+      }
+      return this.player.seek()
+    },
     fullseek (seek) {
-      return this.currentfile.start + seek
+      return this.currentFile.start + seek
     },
     extension (name) {
       const re = /(?:\.([^.]+))?$/
@@ -262,24 +350,18 @@ export default {
     },
     play () {
       this.loading = true
-      console.log('play file')
-      console.log(this.localseek)
-      if (this.soundid !== null) {
-        this.player.seek(this.localseek, this.soundid)
-        this.player.play(this.soundid)
-      } else {
-        this.player.seek(this.localseek)
-        this.soundid = this.player.play()
+      if (this.current) {
+        this.player.seek(this.current)
+        this.player.play()
       }
       this.playing = true
     },
     pause () {
-      console.log('pause file')
       this.player.pause(this.soundid)
       this.$store.dispatch('app/updateBookDetails', {
         hash: this.hash,
         book: {
-          seek: this.fullseek(this.player.seek(null, this.soundid))
+          seek: this.fullseek(this.player.seek())
         }
       })
       this.playing = false
@@ -297,29 +379,68 @@ export default {
       this.$store.commit('app/playbackSpeed', newspeed.toFixed(2))
       this.player.rate(newspeed.toFixed(2))
     },
-    seekForwards () {
-      const sound = this.player.pause()._sounds[0]
-      const currentSeek = sound._seek
-      const forwardTo = currentSeek + parseInt(this.groupDetails.seekForwards)
+    async seekForwards () {
+      this.player.pause()
+      let forwardTo = this.player.seek() + parseInt(this.groupDetails.seekForwards)
       const duration = this.player.duration()
+
       if (forwardTo >= duration) {
-        return
+        if (this.currentFile.index < this.details.files.length) {
+          forwardTo = forwardTo - this.currentFile.duration
+          this.currentFile = this.nextFile()
+          this.player = await this.loadFile(this.server + 'download/' + this.currentFile.path)
+        } else {
+          // do something here to finish the file
+        }
       }
-      console.log('skipping to ' + forwardTo + ' from ' + currentSeek)
+      console.log('> skipping to ' + forwardTo + ' from ' + this.player.seek())
       this.player.seek(forwardTo)
       this.player.play()
     },
-    seekBackwards () {
+    async seekBackwards () {
       const sound = this.player.pause()._sounds[0]
       const currentSeek = sound._seek
       let backwardTo = currentSeek - parseInt(this.groupDetails.seekBackwards)
       if (backwardTo <= 0) {
-        backwardTo = 0
+        if (this.currentFile.index > 0) {
+          this.currentFile = this.prevFile()
+          backwardTo = this.currentFile.duration + backwardTo
+          this.player = await this.loadFile(this.server + 'download/' + this.currentFile.path)
+        } else {
+          backwardTo = 0
+        }
       }
-      console.log('skipping to ' + backwardTo + ' from ' + currentSeek)
+      console.log('< skipping to ' + backwardTo + ' from ' + currentSeek)
       this.player.seek(backwardTo)
       this.player.play()
     }
   }
 }
 </script>
+<style lang="scss">
+.playback-slider {
+  @apply bg-transparent h-3 z-10;
+  -webkit-appearance: none;
+  width: 100%;
+  outline: none;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+
+  &::-webkit-slider-thumb {
+    @apply bg-purple-400 h-3 w-3;
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  &::-moz-range-thumb {
+    @apply bg-purple-400 h-3 w-3;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+}
+</style>

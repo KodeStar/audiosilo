@@ -102,7 +102,7 @@ export default {
 
     // const path = (this.details && this.details.description) ? this.details.description.path : null
     // const cover = (this.details && this.details.cover) ? this.server + 'cover/' + this.details.cover.path : null
-    this.$store.dispatch('app/getBookDetails', this.hash)
+    this.$store.dispatch('app/getBookDetails', sha256(this.$route.fullPath))
   },
 
   methods: {
