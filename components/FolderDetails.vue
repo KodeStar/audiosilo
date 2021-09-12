@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col overflow-auto">
-    <div class="text p-8 pb-5 flex justify-center">
+    <div class="text p-8 pb-5 flex flex-col justify-center">
       <img class="block shadow rounded-md" :src="image" />
     </div>
     <div class="text-xl flex justify-center px-8 font-bold">{{ name }}</div>
