@@ -1,5 +1,7 @@
 # audioserve-ui
 
+![Audioserve UI](https://i.imgur.com/5CGay89.png)
+
 ## Build Setup
 
 ```bash
