@@ -45,11 +45,12 @@ export function login (context, data) {
         }).then(async (response) => {
           // console.log(response)
           // get collections
-          const collections = await fetchCollections(context)
-
           loginsecret = await response.text()
+          VueCookies.set('audioserve_token', loginsecret)
           loginStatus = true
           context.commit('loginStatus', loginStatus)
+
+          const collections = await fetchCollections(context)
 
           setDetails(context, {
             ...data,
@@ -57,7 +58,6 @@ export function login (context, data) {
             collections: collections.names,
             currentCollection: 0
           })
-          VueCookies.set('audioserve_token', loginsecret)
         }).catch((err) => {
           console.log(err)
         })
