@@ -1,13 +1,7 @@
-import axios from 'axios'
 import marked from 'marked'
 import { sha256 } from 'js-sha256'
 import base64js from 'base64-js'
-
-export async function firelogin (context, data) {
-  const response = await axios.post(process.env.BACKEND_LOCATION + 'login', data)
-
-  return response
-}
+import VueCookies from 'vue-cookies'
 
 export function setDetails (context, data) {
   localStorage.setItem('server', data.server)
@@ -33,14 +27,29 @@ export function login (context, data) {
     } else {
       digestPromise = window.crypto.subtle.digest('SHA-256', concatedBytes)
     }
-    return digestPromise
+    digestPromise
       .then((s) => {
         const thesecret = base64js.fromByteArray(randomBytes) + '|' + base64js.fromByteArray(new Uint8Array(s))
         // console.log(thesecret)
-        const bodyFormData = 'secret=' + thesecret
-        axios.$post(data.corsproxy + data.server + 'authenticate', bodyFormData, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }).then((response) => {
+        const bodyFormData = 'secret=' + encodeURIComponent(thesecret)
+        fetch(data.server + 'authenticate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: bodyFormData
+        }).then(async (response) => {
           // console.log(response)
-          loginsecret = response
+          loginsecret = await response.text()
+          context.commit('loginStatus', true)
+
+          setDetails(context, {
+            ...data,
+            loginStatus
+          })
+          VueCookies.set('audioserve_token', loginsecret)
+        }).catch((err) => {
+          console.log(err)
         })
         /* return ajax({
             url: baseUrl + "/authenticate",
@@ -130,19 +139,25 @@ export async function setBookDetails (context, book) {
 
 export async function getDescription (context, path) {
   const description = context.state.server + 'desc/' + path
-  const response = await axios.get(description)
+  const response = await fetch(description, {
+    headers: {
+      Authorization: 'Bearer ' + VueCookies.get('audioserve_token')
+    }
+  })
   console.log(response)
-  console.log(response.headers['content-type'])
+  console.log(response.headers.get('Content-Type'))
 
-  const mime = response.headers['content-type']
+  const mime = response.headers.get('Content-Type')
+  const data = await response.text()
+  console.log(data)
   let output = ''
   let para = ''
   if (mime === 'text/html') {
-    output = response.data
+    output = data
   } else if (mime === 'text/x-markdown' || mime === 'text/markdown') {
-    output = marked(response.data)
+    output = marked(data)
   } else if (mime === 'text/plain') {
-    const lines = response.data.split(/\r?\n/)
+    const lines = data.split(/\r?\n/)
     for (const line of lines) {
       para += '<p>' + line + '</p>'
     }
@@ -154,14 +169,18 @@ export async function getDescription (context, path) {
 }
 
 export async function fileIsCached (context, details) {
-  const cacheName = `audioserv-${details.hash}`
-  const cacheStorage = await caches.open(cacheName)
-  const cachedResponse = await cacheStorage.match(details.file)
-  return (cachedResponse !== undefined)
+  const cacheName = context.state.cacheKey + details.hash
+  const exists = await caches.has(cacheName)
+  if (exists) {
+    const cacheStorage = await caches.open(cacheName)
+    const cachedResponse = await cacheStorage.match(details.file)
+    return (cachedResponse !== undefined)
+  }
+  return false
 }
 
 export async function getCachedFile (context, details) {
-  const cacheName = `audioserv-${details.hash}`
+  const cacheName = context.state.cacheKey + details.hash
   const cacheStorage = await caches.open(cacheName)
   const cachedResponse = await cacheStorage.match(details.file)
   let url = null
@@ -178,9 +197,16 @@ export async function getCachedFile (context, details) {
 }
 
 export async function cacheFile (context, details) {
-  const cacheName = `audioserv-${details.hash}`
+  const cacheName = context.state.cacheKey + details.hash
   const cacheStorage = await caches.open(cacheName)
-  await cacheStorage.add(details.file)
+  // await cacheStorage.add(details.file)
+  const response = await fetch(details.file, {
+    headers: {
+      Authorization: 'Bearer ' + VueCookies.get('audioserve_token')
+    }
+  })
+  console.log(response)
+  await cacheStorage.put(details.file, response)
 }
 
 export async function tempCache (context, details) {

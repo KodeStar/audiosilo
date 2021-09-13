@@ -9,21 +9,16 @@
 </template>
 
 <script>
+import VueCookies from 'vue-cookies'
 export default {
   name: 'FolderDetails',
   props: ['details', 'name', 'fake', 'server'],
   data () {
     return {
+      image: null
     }
   },
   computed: {
-    image () {
-      if (this.details && this.details.cover) {
-        const src = (this.fake) ? 'https://cdn.britannica.com/12/172012-050-A9AFF8AF/Jane-Austen-Cassandra-engraving-portrait-1810.jpg' : this.server + 'cover/' + this.details.cover.path
-        return src
-      }
-      return null
-    },
     description () {
       return this.$store.state.app.folderDescription
     }
@@ -41,6 +36,8 @@ export default {
       } else {
         this.$store.commit('app/rightbar', false)
       }
+      this.image = null
+      this.getImage()
     }
   },
 
@@ -48,6 +45,24 @@ export default {
     // check if it should be mounted
     if (this.image || this.description) {
       this.$store.commit('app/rightbar', true)
+      this.getImage()
+    }
+  },
+
+  methods: {
+    async getImage () {
+      if (this.details && this.details.cover) {
+        const src = this.server + 'cover/' + this.details.cover.path
+        const getcover = await fetch(src, {
+          headers: {
+            Authorization: 'Bearer ' + VueCookies.get('audioserve_token')
+          }
+        })
+        const cover = await getcover.blob()
+        const coverUrl = URL.createObjectURL(cover)
+
+        this.image = coverUrl
+      }
     }
   }
 

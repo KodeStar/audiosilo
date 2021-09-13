@@ -46,6 +46,7 @@
 
 <script>
 import { sha256 } from 'js-sha256'
+import VueCookies from 'vue-cookies'
 export default {
   name: 'BookDetails',
   props: ['details', 'name', 'fake', 'server'],
@@ -53,15 +54,13 @@ export default {
     return {
       readmore: false,
       cached: false,
-      downloading: false
+      downloading: false,
+      image: null
     }
   },
   computed: {
     moretext () {
       return (this.readmore) ? 'Less..' : 'More..'
-    },
-    image () {
-      return this.$store.state.app.book.cover
     },
     description () {
       return this.$store.state.app.book.description
@@ -99,7 +98,7 @@ export default {
     const keys = await caches.keys()
     console.log('keys')
     console.log(keys)
-
+    this.getImage()
     // const path = (this.details && this.details.description) ? this.details.description.path : null
     // const cover = (this.details && this.details.cover) ? this.server + 'cover/' + this.details.cover.path : null
     this.$store.dispatch('app/getBookDetails', sha256(this.$route.fullPath))
@@ -117,7 +116,20 @@ export default {
 
       return hours + 'h' + minutes + 'm'
     },
+    async getImage () {
+      if (this.details && this.details.cover) {
+        const src = this.server + 'cover/' + this.details.cover.path
+        const getcover = await fetch(src, {
+          headers: {
+            Authorization: 'Bearer ' + VueCookies.get('audioserve_token')
+          }
+        })
+        const cover = await getcover.blob()
+        const coverUrl = URL.createObjectURL(cover)
 
+        this.image = coverUrl
+      }
+    },
     async download () {
       console.log('download')
       this.downloading = true

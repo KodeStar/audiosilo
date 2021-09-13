@@ -1,5 +1,6 @@
 export default function () {
   return {
+    cacheKey: 'audioserve-',
     loginStatus: false,
     loginsecret: null,
     server: null,

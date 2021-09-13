@@ -166,10 +166,12 @@ export default {
   },
 
   beforeDestroy () {
+    console.log('clean up')
     if (this.player) {
       this.player.unload()
     }
-    clearInterval(this.timer)
+    // Delete any temp caches
+    caches.delete(this.$store.state.app.cacheKey + 'temp-' + this.hash)
   },
   methods: {
     updateSeek (event) {
@@ -288,9 +290,9 @@ export default {
       this.current = this.getLocalSeek()
       if (this.playing === true) {
         const that = this
-        setTimeout(function () {
+        window.requestAnimationFrame(function () {
           that.updatePlayerDetails()
-        }, 1000)
+        })
       }
     },
     getLocalRemaining () {

@@ -41,11 +41,11 @@
             Settings
           </NuxtLink>
           <NuxtLink class="flex items-center my-2 p-2" to="/">
-            <i class="fa-thin fa-gear mr-2 fa-lg" />
+            <i class="fa-thin fa-box-archive mr-2 fa-lg"></i>
             Cached
           </NuxtLink>
           <div class="flex items-center my-2 p-2" @click="logout">
-            <i class="fa-thin fa-gear mr-2 fa-lg" />
+            <i class="fa-thin fa-right-from-bracket mr-2 fa-lg"></i>
             Logout
           </div>
         </div>
@@ -144,6 +144,7 @@
 </template>
 
 <script>
+import VueCookies from 'vue-cookies'
 import FolderDetails from '../components/FolderDetails'
 import FloatingLabelInput from '~/components/FloatingLabelInput.vue'
 import Player from '~/components/Player.vue'
@@ -258,8 +259,22 @@ export default {
 
   methods: {
     async fetchFolder (name = '') {
-      const folder = await this.$axios.$get(this.corsproxy + this.server + 'folder/' + name)
-      this.$store.commit('app/folder', folder)
+      // console.log(VueCookies.get('audioserve_token'))
+      const folder = await fetch(this.corsproxy + this.server + 'folder/' + name, {
+        headers: {
+          Authorization: 'Bearer ' + VueCookies.get('audioserve_token')
+        }
+      })
+
+      if (folder.status !== 200) {
+        this.$store.commit('app/loginStatus', false)
+        return false
+      }
+
+      const json = await folder.json()
+      if (json) {
+        this.$store.commit('app/folder', json)
+      }
     },
     updateServer (input) {
       this.$store.commit('app/server', input)
