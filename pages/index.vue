@@ -253,7 +253,7 @@ export default {
   },
 
   mounted () {
-    this.$store.commit('app/initialiseApp')
+    this.$store.dispatch('app/initialiseApp')
     // this.fetchFolder()
   },
 

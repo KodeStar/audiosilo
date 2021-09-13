@@ -1,5 +1,7 @@
 export default function () {
   return {
+    collections: [],
+    currentCollection: 0,
     cacheKey: 'audioserve-',
     loginStatus: false,
     loginsecret: null,

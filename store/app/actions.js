@@ -2,12 +2,16 @@ import marked from 'marked'
 import { sha256 } from 'js-sha256'
 import base64js from 'base64-js'
 import VueCookies from 'vue-cookies'
+import localForage from 'localforage'
 
 export function setDetails (context, data) {
-  localStorage.setItem('server', data.server)
-  localStorage.setItem('group', data.group)
-  localStorage.setItem('loginsecret', data.secret)
-  localStorage.setItem('loginStatus', data.loginStatus)
+  console.log('set details')
+  // console.log(localForage)
+  localForage.setItem('server', data.server)
+  localForage.setItem('group', data.group)
+  localForage.setItem('loginStatus', data.loginStatus)
+  localForage.setItem('collections', data.collections)
+  localForage.setItem('currentCollection', data.currentCollection)
 }
 
 export function login (context, data) {
@@ -40,12 +44,18 @@ export function login (context, data) {
           body: bodyFormData
         }).then(async (response) => {
           // console.log(response)
+          // get collections
+          const collections = await fetchCollections(context)
+
           loginsecret = await response.text()
-          context.commit('loginStatus', true)
+          loginStatus = true
+          context.commit('loginStatus', loginStatus)
 
           setDetails(context, {
             ...data,
-            loginStatus
+            loginStatus,
+            collections: collections.names,
+            currentCollection: 0
           })
           VueCookies.set('audioserve_token', loginsecret)
         }).catch((err) => {
@@ -67,7 +77,6 @@ export function login (context, data) {
 
   setDetails(context, {
     ...data,
-    loginsecret,
     loginStatus
   })
 
@@ -90,13 +99,22 @@ export function login (context, data) {
   */
 }
 
+export async function fetchCollections (context) {
+  const collections = await fetch(context.state.server + 'collections', {
+    headers: {
+      Authorization: 'Bearer ' + VueCookies.get('audioserve_token')
+    }
+  })
+  return collections.json()
+}
+
 export async function getFolderDescription (context, path) {
   const description = await getDescription(context, path)
   context.commit('folderDescription', description)
 }
 
 export async function getBookDetails (context, hash) {
-  let book = await this.$localForage.getItem(hash)
+  let book = await localForage.getItem(hash)
   if (!book) {
     let description = null
     if (context.state.folder.description && context.state.folder.description.path) {
@@ -115,7 +133,7 @@ export async function getBookDetails (context, hash) {
       cover,
       seek: 0
     }
-    await this.$localForage.setItem(hash, book)
+    await localForage.setItem(hash, book)
   }
 
   context.commit('book', book)
@@ -128,12 +146,12 @@ export async function updateBookDetails (context, item) {
     ...currentbook,
     ...updates
   }
-  await this.$localForage.setItem(item.hash, book)
+  await localForage.setItem(item.hash, book)
   context.commit('book', book)
 }
 
 export async function setBookDetails (context, book) {
-  await this.$localForage.setItem(book.hash, book)
+  await localForage.setItem(book.hash, book)
   context.commit('book', book)
 }
 
@@ -217,4 +235,27 @@ export async function tempCache (context, details) {
   await cacheFile(context, details)
 
   return getCachedFile(context, details)
+}
+
+export async function initialiseApp (context) {
+  const server = await localForage.getItem('server')
+  const group = await localForage.getItem('group')
+  const loginStatus = await localForage.getItem('loginStatus')
+  const collections = await localForage.getItem('collections')
+  const currentCollection = await localForage.getItem('currentCollection')
+  if (server) {
+    context.commit('server', server)
+  }
+  if (group) {
+    context.commit('group', group)
+  }
+  if (loginStatus) {
+    context.commit('loginStatus', loginStatus)
+  }
+  if (collections) {
+    context.commit('collections', collections)
+  }
+  if (currentCollection) {
+    context.commit('currentCollection', currentCollection)
+  }
 }

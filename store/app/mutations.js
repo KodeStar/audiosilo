@@ -46,21 +46,14 @@ export function server (state, data) {
   state.server = data
 }
 
-export function initialiseApp (state) {
-  const server = localStorage.getItem('server')
-  const group = localStorage.getItem('group')
-  const loginsecret = localStorage.getItem('loginsecret')
-  const loginStatus = localStorage.getItem('loginStatus')
-  if (server) {
-    state.server = server
-  }
-  if (group) {
-    state.group = group
-  }
-  if (loginsecret) {
-    state.loginsecret = loginsecret
-  }
-  if (loginStatus) {
-    state.loginStatus = loginStatus
-  }
+export function group (state, data) {
+  state.group = data
+}
+
+export function collections (state, data) {
+  state.collections = data
+}
+
+export function currentCollection (state, data) {
+  state.currentCollection = data
 }
