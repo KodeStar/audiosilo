@@ -1,8 +1,8 @@
 <template>
   <div class="relative flex items-top min-h-screen bg-gray-100 w-full overflow-hidden">
     <div class="flex flex-col items-top h-screen w-full">
-      <div class="flex items-center w-full h-20 lg:h-28 border-b-0 border-gray-200 relative">
-        <div class="w-80 flex-shrink-0 flex-grow-0 border-r border-b border-gray-200 p-3 px-10 h-20 flex items-center">
+      <div class="flex items-center w-full h-20 lg:h-28 border-b border-gray-200 lg:border-b-0 border-gray-200 relative">
+        <div class="lg:w-80 flex-shrink-0 flex-grow-0 border-r lg:border-b p-3 px-10 h-20 flex items-center">
           <NuxtLink class="flex items-center" to="/">
             <i class="fa-light fa-computer-speaker fa-2xl mr-2" />
             <div class="flex flex-col">
@@ -31,19 +31,13 @@
         </div>
       </div>
       <div class="flex w-full relative">
-        <div :class="{ '-translate-x-full': !menu, 'translate-x-0': menu }" class="transition-all flex-shrink-0 flex-grow-0 w-screen transform lg:translate-x-0 lg:w-80 p-8 px-6 min-h-screen border-r border-gray-200 absolute inset-0 lg:relative">
-          <div class="hidden relative border border-gray-100 rounded-2xl appearance-none label-floating lg:hidden max-w-xl flex-grow">
-            <select :value="currentCollection" @change="changeCollection" class="w-full py-3 px-4 leading-normal rounded-2xl max-w-xl">
+        <div :class="{ '-translate-x-full': !menu, 'translate-x-0': menu }" class="transition-all z-40 bg-gray-100 flex-shrink-0 flex-grow-0 w-screen transform lg:translate-x-0 lg:w-80 p-8 px-6 min-h-screen border-r border-gray-200 absolute inset-0 lg:relative">
+          <div v-if="collections.length > 1" class="relative border border-gray-100 rounded-2xl appearance-none -mt-8 -mx-6 max-w-xl flex-grow">
+            <select :value="currentCollection" @change="changeCollection" class="w-full py-1 px-10 bg-gray-200 text-sm leading-normal max-w-xl">
               <option v-for="(option,index) in collections" :key="index" v-bind:value="index">
                 {{ option }}
               </option>
             </select>
-            <label
-              class="pointer-events-none font-normal select-none absolute block top-0 left-0 w-full px-5 py-3 leading-normal"
-            >
-              Collection
-            </label>
-
           </div>
 
           <NuxtLink class="flex items-center my-2 p-3 px-5" to="/">
@@ -121,7 +115,7 @@
           </template>
         </div>
       </div>
-      <div v-if="loginStatus===false" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex justify-center items-center">
+      <div v-if="loginStatus===false" class="fixed inset-0 bg-gray-900 bg-opacity-75 z-50 flex justify-center items-center">
         <div class="rounded-lg flex bg-gray-100 flex-col p-8 w-full max-w-md m-4">
           <div class="flex justify-center mb-5">
             <NuxtLink class="flex items-center" to="/">
