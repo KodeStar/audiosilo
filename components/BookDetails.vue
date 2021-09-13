@@ -1,19 +1,19 @@
 <template>
   <div class="flex flex-col overflow-auto pb-8">
-    <div class="text p-8 pb-5 flex flex-col justify-center">
+    <div class="text p-8 pb-5 px-12 flex flex-col justify-center">
       <img class="block shadow rounded-md" :src="image" />
     </div>
     <div class="text-xl flex justify-center px-8 font-bold">{{ name }}</div>
-    <button @click="listen" class="text-white bg-purple-400 font-normal rounded-lg mx-8 my-4 p-3"><i class="fa-light fa-circle-play"></i> Listen</button>
+    <button @click="listen" class="text-white bg-pink-600 font-normal rounded-lg mx-8 my-4 p-3"><i class="fa-light fa-circle-play"></i> Listen</button>
     <template v-if="description">
       <div :class="{ active: readmore }" class="text px-8 description-text text-sm readmore" v-html="description"></div>
-      <div @click="readmore = !readmore" class="px-8 text-purple-400 font-normal text-sm cursor-pointer">{{ moretext }}</div>
+      <div @click="readmore = !readmore" class="px-8 text-pink-600 font-normal text-sm cursor-pointer">{{ moretext }}</div>
     </template>
     <div class="px-8 mt-3 font-normal text-sm">Progress</div>
     <div class="flex px-8 pt-1 items-center">
       <div class="relative flex-grow mr-2">
-        <div class="overflow-hidden h-1 text-xs flex rounded bg-purple-200">
-          <div :style="{ width: percent + '%'}" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-purple-400"></div>
+        <div class="overflow-hidden h-1 text-xs flex rounded bg-pink-200">
+          <div :style="{ width: percent + '%'}" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-pink-600"></div>
         </div>
       </div>
       <div class="text-sm">{{ percent }}%</div>
@@ -49,7 +49,7 @@ import { sha256 } from 'js-sha256'
 import VueCookies from 'vue-cookies'
 export default {
   name: 'BookDetails',
-  props: ['details', 'name', 'fake', 'server'],
+  props: ['details', 'name', 'server'],
   data () {
     return {
       readmore: false,
@@ -118,7 +118,7 @@ export default {
     },
     async getImage () {
       if (this.details && this.details.cover) {
-        const src = this.server + 'cover/' + this.details.cover.path
+        const src = this.$store.getters['app/getServerUrl'] + 'cover/' + this.details.cover.path
         const getcover = await fetch(src, {
           headers: {
             Authorization: 'Bearer ' + VueCookies.get('audioserve_token')
@@ -140,16 +140,11 @@ export default {
       const cacheStorage = await caches.open(cacheName)
 
       await Promise.all(this.details.files.map((file) => {
-        return cacheStorage.add(this.server + 'download/' + file.path)
+        return cacheStorage.add(this.$store.getters['app/getServerUrl'] + 'download/' + file.path)
       }))
       this.downloading = false
       this.cached = true
 
-      /*
-      await this.details.files.forEach(async (file) => {
-        await cacheStorage.add(this.server + 'download/' + file.path + '?trans=0')
-      })
-      */
       console.log('files cached ' + cacheName)
     }
   }

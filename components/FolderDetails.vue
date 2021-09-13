@@ -12,7 +12,7 @@
 import VueCookies from 'vue-cookies'
 export default {
   name: 'FolderDetails',
-  props: ['details', 'name', 'fake', 'server'],
+  props: ['details', 'name', 'server'],
   data () {
     return {
       image: null
@@ -52,7 +52,7 @@ export default {
   methods: {
     async getImage () {
       if (this.details && this.details.cover) {
-        const src = this.server + 'cover/' + this.details.cover.path
+        const src = this.$store.getters['app/getServerUrl'] + 'cover/' + this.details.cover.path
         const getcover = await fetch(src, {
           headers: {
             Authorization: 'Bearer ' + VueCookies.get('audioserve_token')

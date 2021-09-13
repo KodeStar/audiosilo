@@ -1,17 +1,17 @@
 <template>
-  <div class="flex flex-col justify-between relative h-screen overflow-auto">
+  <div class="flex flex-col justify-between relative sidebar h-screen overflow-auto">
     <div @click="closePlayer" class="absolute top-0 right-0 w-8 h-8 rounded-bl flex cursor-pointer justify-center items-center"><i class="fa-thin fa-chevron-down"></i></div>
     <div>
-      <div class="text p-8 pb-5 flex justify-center flex-shrink">
+      <div class="text p-8 pb-5 pt-12 px-12 flex justify-center flex-shrink">
         <img class="block shadow rounded-md" :src="image" />
       </div>
       <div class="w-full px-8 flex flex-col text-center items-center">
-        <div class="text-xl font-semibold flex mb-2">Chapter 1</div>
+        <div class=" font-semibold flex mb-2">Chapter 1</div>
         <!--<div class="text-sm text-gray-400 mb-2">{{ details.files[0].name }} - Artist name</div>-->
         <div class="flex py-1 items-center w-full relative mb-1">
           <div class="relative flex-grow mr-2">
-            <div class="overflow-hidden h-1 text-xs flex rounded bg-purple-200">
-              <div :style="{ width: localpercent + '%'}" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-purple-400"></div>
+            <div class="overflow-hidden h-1 text-xs flex rounded bg-pink-200">
+              <div :style="{ width: localpercent + '%'}" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-pink-600"></div>
             </div>
           </div>
           <input
@@ -64,9 +64,9 @@
     <div class="p-2 w-full">
       <div class="bg-gray-100 rounded p-3 px-6 w-full relative flex justify-between">
         <button @click="editPlaybackSpeed = true" class="cursor-pointer">{{ playbackSpeed }}x</button>
-        <button class="cursor-pointer"><i class="fa-thin fa-alarm-snooze"></i></button>
-        <button class="cursor-pointer"><i class="fa-thin fa-airplay"></i></button>
-        <button class="cursor-pointer"><i class="fa-thin fa-sliders-up"></i></button>
+        <button class="cursor-pointer"><i class="fa-light fa-alarm-snooze"></i></button>
+        <button class="cursor-pointer"><i class="fa-light fa-airplay"></i></button>
+        <button class="cursor-pointer"><i class="fa-light fa-sliders-up"></i></button>
         <div v-if="editPlaybackSpeed" class="absolute inset-0 flex bg-gray-200 rounded justify-between p-3 px-6">
           <span>{{ playbackSpeed }}x</span>
           <div class="flex items-center">
@@ -157,7 +157,7 @@ export default {
 
   async mounted () {
     this.currentFile = this.getCurrentFile()
-    this.player = await this.loadFile(this.server + 'download/' + this.currentFile.path)
+    this.player = await this.loadFile(this.$store.getters['app/getServerUrl'] + 'download/' + this.currentFile.path)
 
     this.updatePlayerDetails()
 
@@ -212,7 +212,7 @@ export default {
 
       const filedetails = {
         hash: this.hash,
-        // file: this.server + 'download/' + this.details.files[this.currentFile.index].path
+        // file: this.$store.getters['app/getServerUrl'] + 'download/' + this.details.files[this.currentFile.index].path
         file
       }
       const isCached = await this.$store.dispatch('app/fileIsCached', filedetails)
@@ -257,7 +257,7 @@ export default {
       const nextFile = this.nextFile()
       this.currentFile = nextFile
 
-      this.player = await this.loadFile(this.server + 'download/' + this.currentFile.path)
+      this.player = await this.loadFile(this.$store.getters['app/getServerUrl'] + 'download/' + this.currentFile.path)
       this.player.play()
     },
     async playTrack (index) {
@@ -390,7 +390,7 @@ export default {
         if (this.currentFile.index < this.details.files.length) {
           forwardTo = forwardTo - this.currentFile.duration
           this.currentFile = this.nextFile()
-          this.player = await this.loadFile(this.server + 'download/' + this.currentFile.path)
+          this.player = await this.loadFile(this.$store.getters['app/getServerUrl'] + 'download/' + this.currentFile.path)
         } else {
           // do something here to finish the file
         }
@@ -407,7 +407,7 @@ export default {
         if (this.currentFile.index > 0) {
           this.currentFile = this.prevFile()
           backwardTo = this.currentFile.duration + backwardTo
-          this.player = await this.loadFile(this.server + 'download/' + this.currentFile.path)
+          this.player = await this.loadFile(this.$store.getters['app/getServerUrl'] + 'download/' + this.currentFile.path)
         } else {
           backwardTo = 0
         }
@@ -429,7 +429,7 @@ export default {
   transition: opacity .2s;
 
   &::-webkit-slider-thumb {
-    @apply bg-purple-400 h-3 w-3;
+    @apply bg-pink-600 h-3 w-3;
     -webkit-appearance: none;
     appearance: none;
     border-radius: 50%;
@@ -437,7 +437,7 @@ export default {
   }
 
   &::-moz-range-thumb {
-    @apply bg-purple-400 h-3 w-3;
+    @apply bg-pink-600 h-3 w-3;
     width: 10px;
     height: 10px;
     border-radius: 50%;

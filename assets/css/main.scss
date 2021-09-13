@@ -12,9 +12,15 @@ body, * {
   right: 0;
   bottom: 0;
   padding: 15px 15px;
-  background: white;
   input {
     padding: 0.75rem 1.25rem;
+  }
+}
+
+.label-floating {
+  label {
+    color: rgb(156, 163, 175);
+    font-weight: 300;
   }
 }
 
@@ -35,14 +41,14 @@ body, * {
 }
 
 .label-floating input:not(:-moz-placeholder-shown) ~ label, .label-floating select:not(:-moz-placeholder-shown) ~ label {
-  @apply text-purple-500 py-2 font-semibold;
+  @apply text-pink-600 py-2 font-normal;
   font-size: 0.8rem;
   -moz-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
 }
 
 .label-floating input:not(:-ms-input-placeholder) ~ label, .label-floating select:not(:-ms-input-placeholder) ~ label {
-  @apply text-purple-500 py-2 font-semibold;
+  @apply text-pink-600 py-2 font-normal;
   font-size: 0.8rem;
   -ms-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
@@ -50,7 +56,7 @@ body, * {
 
 .label-floating input:not(:placeholder-shown) ~ label,
 .label-floating select:not(:placeholder-shown) ~ label {
-  @apply text-purple-500 py-2 font-semibold;
+  @apply text-pink-600 py-2 font-normal;
   font-size: 0.8rem;
   transition: all 0.2s ease-in-out;
 }
@@ -60,7 +66,10 @@ body, * {
   span {
     @apply text-sm text-gray-400 underline mr-2 cursor-pointer;
     &.active {
-      @apply font-normal font-semibold text-gray-300 no-underline text-purple-400;
+      @apply font-normal font-normal text-gray-300 no-underline text-pink-600;
     }
   }
+}
+.sidebar {
+  background-color: #f9f9f9;
 }
