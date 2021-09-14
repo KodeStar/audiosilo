@@ -11,6 +11,7 @@ export default function () {
     search: false,
     searchterm: '',
     menu: false,
+    activepage: 'library',
     groupDetails: {
       playback_speed: 1,
       seekForwards: 45,

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col justify-between relative sidebar h-screen overflow-auto">
+  <div class="flex flex-col justify-between relative bg-gray-100 h-screen overflow-auto">
     <div @click="closePlayer" class="absolute top-0 right-0 w-8 h-8 rounded-bl flex cursor-pointer justify-center items-center"><i class="fa-thin fa-chevron-down"></i></div>
     <div>
       <div class="text p-8 pb-5 pt-12 px-12 flex justify-center flex-shrink">
@@ -10,7 +10,7 @@
         <!--<div class="text-sm text-gray-400 mb-2">{{ details.files[0].name }} - Artist name</div>-->
         <div class="flex py-1 items-center w-full relative mb-1">
           <div class="relative flex-grow mr-2">
-            <div class="overflow-hidden h-1 text-xs flex rounded bg-pink-200">
+            <div class="overflow-hidden h-1 text-xs flex rounded bg-gray-300">
               <div :style="{ width: localpercent + '%'}" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-pink-600"></div>
             </div>
           </div>
@@ -62,7 +62,7 @@
       </div>
     </div>
     <div class="p-2 w-full">
-      <div class="bg-gray-100 rounded p-3 px-6 w-full relative flex justify-between">
+      <div class="bg-gray-200 rounded p-3 px-6 w-full relative flex justify-between">
         <button @click="editPlaybackSpeed = true" class="cursor-pointer">{{ playbackSpeed }}x</button>
         <button class="cursor-pointer"><i class="fa-light fa-alarm-snooze"></i></button>
         <button class="cursor-pointer"><i class="fa-light fa-airplay"></i></button>

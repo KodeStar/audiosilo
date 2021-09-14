@@ -12,7 +12,7 @@
     <div class="px-8 mt-3 font-normal text-sm">Progress</div>
     <div class="flex px-8 pt-1 items-center">
       <div class="relative flex-grow mr-2">
-        <div class="overflow-hidden h-1 text-xs flex rounded bg-pink-200">
+        <div class="overflow-hidden h-1 text-xs flex rounded bg-gray-300">
           <div :style="{ width: percent + '%'}" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-pink-600"></div>
         </div>
       </div>

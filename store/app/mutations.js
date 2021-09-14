@@ -46,6 +46,10 @@ export function server (state, data) {
   state.server = data
 }
 
+export function secret (state, data) {
+  state.secret = data
+}
+
 export function group (state, data) {
   state.group = data
 }
@@ -68,4 +72,8 @@ export function searchterm (state, data) {
 
 export function menu (state, data) {
   state.menu = data
+}
+
+export function activepage (state, data) {
+  state.activepage = data
 }

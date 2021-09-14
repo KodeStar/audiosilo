@@ -3,7 +3,7 @@
     <input
       v-bind:value="value"
       v-on:input="$emit('input', $event.target.value)"
-      class="w-full py-3 px-5 bg-gray-200 shadow-inner leading-normal rounded-2xl max-w-xl"
+      class="w-full py-3 px-5 bg-gray-300 shadow-inner leading-normal rounded-2xl max-w-xl"
       type="text"
       :placeholder="title"
     >

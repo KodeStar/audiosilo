@@ -41,14 +41,14 @@ body, * {
 }
 
 .label-floating input:not(:-moz-placeholder-shown) ~ label, .label-floating select:not(:-moz-placeholder-shown) ~ label {
-  @apply text-pink-600 py-2 font-normal;
+  @apply text-gray-600 py-2 font-semibold;
   font-size: 0.8rem;
   -moz-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
 }
 
 .label-floating input:not(:-ms-input-placeholder) ~ label, .label-floating select:not(:-ms-input-placeholder) ~ label {
-  @apply text-pink-600 py-2 font-normal;
+  @apply text-gray-600 py-2 font-semibold;
   font-size: 0.8rem;
   -ms-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
@@ -56,7 +56,7 @@ body, * {
 
 .label-floating input:not(:placeholder-shown) ~ label,
 .label-floating select:not(:placeholder-shown) ~ label {
-  @apply text-pink-600 py-2 font-normal;
+  @apply text-gray-600 py-2 font-semibold;
   font-size: 0.8rem;
   transition: all 0.2s ease-in-out;
 }
@@ -75,13 +75,14 @@ body, * {
 }
 .nav {
   @apply transition;
+  border-left-width: 6px;
   &:hover {
     @apply filter drop-shadow-sm;
-    background-color: #fbfbfbe6;
+    background-color: #f0f1f3;
   }
-  &.nuxt-link-exact-active {
+  &.active {
     @apply border-pink-600 filter drop-shadow;
     border-left-width: 6px;
-    background-color: #fbfbfb;
+    background-color: #f9fafb;
   }
 }

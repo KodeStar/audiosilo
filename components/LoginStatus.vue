@@ -3,10 +3,10 @@
     <div class="rounded-lg flex bg-gray-100 flex-col p-8 w-full max-w-md m-4">
       <div class="flex justify-center mb-5">
         <NuxtLink class="flex items-center" to="/">
-          <i class="fa-light text-5xl fa-computer-speaker mr-2" />
+          <i class="fa-light text-5xl fa-computer-speaker mr-2 text-gray-600" />
           <div class="flex flex-col">
-            <div class="font-normal uppercase text-pink-600 text-2xl leading-none">
-              Audio<span class="font-semibold text-gray-500">Serve</span>
+            <div class="font-semibold uppercase text-pink-600 text-2xl leading-none">
+              Audio<span class="font-bold text-gray-600">Serve</span>
             </div>
           </div>
         </NuxtLink>
