@@ -8,6 +8,9 @@ export default function () {
     server: null,
     folder: null,
     group: null,
+    search: false,
+    searchterm: '',
+    menu: false,
     groupDetails: {
       playback_speed: 1,
       seekForwards: 45,

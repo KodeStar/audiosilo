@@ -1,62 +1,9 @@
 <template>
   <div class="relative flex items-top min-h-screen bg-gray-100 w-full overflow-hidden">
     <div class="flex flex-col items-top h-screen w-full">
-      <div class="flex items-center w-full h-20 lg:h-28 border-b border-gray-200 lg:border-b-0 border-gray-200 relative">
-        <div class="lg:w-80 flex-shrink-0 flex-grow-0 border-r lg:border-b p-3 px-10 h-20 flex items-center">
-          <NuxtLink class="flex items-center" to="/">
-            <i class="fa-light fa-computer-speaker fa-2xl mr-2" />
-            <div class="flex flex-col">
-              <div class="font-normal uppercase text-pink-600 leading-none">
-                Audio<span class="font-semibold text-gray-500">Serve</span>
-              </div>
-              <div class="leading-none text-xs text-gray-400">
-                {{ group }}
-              </div>
-            </div>
-          </NuxtLink>
-        </div>
-        <div :class="{ mobilesearch: search, flex: search }" class="px-0 px-12 w-full items-center">
-          <floating-label-input :class="{ block: search, hidden: !search }" v-model="searchterm" title="Search..." />
-          <div class="ml-3">
-          <div @click="search = false" :class="{ flex: search, hidden: !search }" class="rounded-full bg-gray-300 w-8 h-8 justify-center items-center"><i class="fa-thin fa-times fa-fw" /></div>
-          </div>
-          <div :class="{ hidden: search }" class="flex lg:hidden justify-end text-lg mr-1">
-            <div @click="search = true" class="bg-gray-100 rounded w-10 h-10 flex justify-center items-center mx-1">
-              <i class="fa-thin fa-magnifying-glass" />
-            </div>
-            <div @click="menu = !menu" class="bg-gray-100 rounded w-10 h-10 flex justify-center items-center mx-1">
-              <i class="fa-thin fa-bars" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="flex w-full relative">
-        <div :class="{ '-translate-x-full': !menu, 'translate-x-0': menu }" class="transition-all z-40 bg-gray-100 flex-shrink-0 flex-grow-0 w-screen transform lg:translate-x-0 lg:w-80 p-8 px-6 min-h-screen border-r border-gray-200 absolute inset-0 lg:relative">
-          <div v-if="collections.length > 1" class="relative border border-gray-100 rounded-2xl appearance-none -mt-8 -mx-6 max-w-xl flex-grow">
-            <select :value="currentCollection" @change="changeCollection" class="w-full py-1 px-10 bg-gray-200 text-sm leading-normal max-w-xl">
-              <option v-for="(option,index) in collections" :key="index" v-bind:value="index">
-                {{ option }}
-              </option>
-            </select>
-          </div>
-
-          <NuxtLink class="flex items-center my-2 p-3 px-5" to="/">
-            <i class="fa-light fa-rectangle-vertical-history mr-2 fa-lg"></i>
-            Library
-          </NuxtLink>
-          <NuxtLink class="flex items-center my-2 p-3 px-5" to="/">
-            <i class="fa-light fa-gear mr-2 fa-lg" />
-            Settings
-          </NuxtLink>
-          <NuxtLink class="flex items-center my-2 p-3 px-5" to="/">
-            <i class="fa-light fa-box-archive mr-2 fa-lg"></i>
-            Cached
-          </NuxtLink>
-          <div class="flex items-center my-2 p-3 px-5" @click="logout">
-            <i class="fa-light fa-right-from-bracket mr-2 fa-lg"></i>
-            Logout
-          </div>
-        </div>
+      <Header />
+      <div class="flex w-full relative h-screen">
+        <Nav />
         <div class="p-3 px-12 w-screen lg:w-full content-area overflow-auto">
           <template v-if="folder && folder.subfolders">
             <div
@@ -111,30 +58,10 @@
               <i class="fa-thin fa-file-audio mr-2 fa-lg" />
               {{ file.name }}
             </div>
-
           </template>
         </div>
       </div>
-      <div v-if="loginStatus===false" class="fixed inset-0 bg-gray-900 bg-opacity-75 z-50 flex justify-center items-center">
-        <div class="rounded-lg flex bg-gray-100 flex-col p-8 w-full max-w-md m-4">
-          <div class="flex justify-center mb-5">
-            <NuxtLink class="flex items-center" to="/">
-              <i class="fa-light text-5xl fa-computer-speaker mr-2" />
-              <div class="flex flex-col">
-                <div class="uppercase text-pink-600 text-2xl leading-none">
-                  Audio<span class="font-semibold text-gray-500">Serve</span>
-                </div>
-              </div>
-            </NuxtLink>
-          </div>
-          <floating-label-input class="my-2" :value="server" @input="updateServer" title="Server" />
-          <floating-label-input class="my-2" v-model="secret" title="Shared Secret" />
-          <floating-label-input class="my-2" v-model="group" title="Group" />
-          <button class="bg-pink-600 text-white w-full mt-3 p-3 rounded-xl text-lg" @click="login">
-            Login
-          </button>
-        </div>
-      </div>
+      <LoginStatus />
     </div>
     <div :class="{'-mr-96': rightbar === false, 'translate-x-full': rightbar === false}" class="transform transition-all border-l h-screen border-gray-200 w-full max-w-sm items-top absolute lg:relative inset-0 flex sidebar flex-col">
       <folder-details v-if="folder !== null && folder.files && folder.files.length === 0" :server="server" :details="folder" :name="foldername" />
@@ -153,24 +80,24 @@
 <script>
 import VueCookies from 'vue-cookies'
 import FolderDetails from '../components/FolderDetails'
-import FloatingLabelInput from '~/components/FloatingLabelInput.vue'
 import Player from '~/components/Player.vue'
+import Header from '~/components/Header.vue'
+import Nav from '~/components/Nav.vue'
+import LoginStatus from '~/components/LoginStatus.vue'
 
 export default {
   name: 'App',
   components: {
+    Header,
+    Nav,
     FolderDetails,
-    FloatingLabelInput,
-    Player
+    Player,
+    LoginStatus
   },
   data () {
     return {
-      group: 'Test',
       foldername: '',
       corsproxy: '',
-      search: false,
-      menu: false,
-      searchterm: '',
       secret: ''
     }
   },
@@ -187,6 +114,9 @@ export default {
     },
     folder () {
       return this.$store.state.app.folder
+    },
+    group () {
+      return this.$store.state.app.group
     },
     rightbar () {
       return this.$store.state.app.rightbar
@@ -302,16 +232,6 @@ export default {
       this.$router.push(route)
       this.fetchFolder(encodeURIComponent(subfolder.path))
       // this.$store.commit('app/rightbar', true)
-    },
-    logout () {
-      this.$store.commit('app/loginStatus', false)
-    },
-    login () {
-      this.$store.dispatch('app/login', {
-        server: this.server,
-        group: this.group,
-        secret: this.secret
-      })
     }
   }
 }

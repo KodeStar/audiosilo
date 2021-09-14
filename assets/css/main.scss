@@ -73,3 +73,15 @@ body, * {
 .sidebar {
   background-color: #f9f9f9;
 }
+.nav {
+  @apply transition;
+  &:hover {
+    @apply filter drop-shadow-sm;
+    background-color: #fbfbfbe6;
+  }
+  &.nuxt-link-exact-active {
+    @apply border-pink-600 filter drop-shadow;
+    border-left-width: 6px;
+    background-color: #fbfbfb;
+  }
+}

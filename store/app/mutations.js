@@ -57,3 +57,15 @@ export function collections (state, data) {
 export function currentCollection (state, data) {
   state.currentCollection = data
 }
+
+export function search (state, data) {
+  state.search = data
+}
+
+export function searchterm (state, data) {
+  state.searchterm = data
+}
+
+export function menu (state, data) {
+  state.menu = data
+}
