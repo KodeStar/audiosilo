@@ -206,11 +206,25 @@ export async function getCachedFile (context, details) {
     const blob = await cachedResponse.blob()
     url = URL.createObjectURL(blob)
   }
-  const re = /(?:\.([^.]+))?$/
+  // const re = /(?:\.([^.]+))?$/
+  let extension = 'mp3'
+  switch (response.headers.get('content-type')) {
+    case 'audio/aac': extension = 'aac'; break
+    case 'audio/mpeg': extension = 'mp3'; break
+    case 'video/mp4': extension = 'mp4'; break
+    case 'audio/ogg': extension = 'oga'; break
+    case 'audio/opus': extension = 'opus'; break
+    case 'audio/wav': extension = 'wav'; break
+    case 'audio/webm': extension = 'weba'; break
+    case 'audio/3gpp': extension = '3gp'; break
+    case 'audio/3gpp2': extension = '3g2'; break
+  }
+
 
   return {
     src: url,
-    format: re.exec(cachedResponse.url)[1]
+    // format: re.exec(cachedResponse.url)[1]
+    format: extension
   }
 }
 

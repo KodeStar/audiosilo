@@ -1,7 +1,9 @@
 body, * {
-  @apply text-gray-600;
   font-family: 'Roboto', sans-serif;
   font-weight: 300;
+}
+body {
+  @apply text-gray-600;
 }
 .content-area {
   height: calc(100vh - 6rem);
