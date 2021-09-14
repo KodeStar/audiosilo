@@ -28,7 +28,7 @@
       <div :class="{ mobilesearch: search, flex: search }" class="px-0 lg:px-12 w-full items-center">
         <floating-label-input :class="{ block: search, hidden: !search }" v-model="searchterm" title="Search..." />
         <div class="ml-3">
-        <div @click="search = false" :class="{ flex: search, hidden: !search }" class="rounded-full bg-gray-300 w-8 h-8 justify-center items-center"><i class="fa-thin fa-times fa-fw" /></div>
+          <div @click="search = false" :class="{ flex: search, hidden: !search }" class="rounded-full bg-gray-300 w-8 h-8 justify-center items-center"><i class="fa-thin fa-times fa-fw" /></div>
         </div>
         <div :class="{ hidden: search }" class="flex lg:hidden justify-end text-lg mr-1">
           <div @click="search = true" class="bg-gray-200 rounded w-10 h-10 flex justify-center items-center mx-1">
