@@ -216,7 +216,7 @@ export default {
         }
       })
 
-      if (folder.status !== 200) {
+      if (folder.status === 401) {
         this.$store.commit('app/loginStatus', false)
         return false
       }
