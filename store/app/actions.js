@@ -197,18 +197,9 @@ export async function fileIsCached (context, details) {
   return false
 }
 
-export async function getCachedFile (context, details) {
-  const cacheName = context.state.cacheKey + details.hash
-  const cacheStorage = await caches.open(cacheName)
-  const cachedResponse = await cacheStorage.match(details.file)
-  let url = null
-  if (cachedResponse !== undefined) {
-    const blob = await cachedResponse.blob()
-    url = URL.createObjectURL(blob)
-  }
-  // const re = /(?:\.([^.]+))?$/
+export function contentToExtension (mime) {
   let extension = 'mp3'
-  switch (cachedResponse.headers.get('content-type')) {
+  switch (mime) {
     case 'audio/aac': extension = 'aac'; break
     case 'audio/mpeg': extension = 'mp3'; break
     case 'video/mp4': extension = 'mp4'; break
@@ -219,6 +210,20 @@ export async function getCachedFile (context, details) {
     case 'audio/3gpp': extension = '3gp'; break
     case 'audio/3gpp2': extension = '3g2'; break
   }
+  return extension
+}
+
+export async function getCachedFile (context, details) {
+  const cacheName = context.state.cacheKey + details.hash
+  const cacheStorage = await caches.open(cacheName)
+  const cachedResponse = await cacheStorage.match(details.file)
+  let url = null
+  if (cachedResponse !== undefined) {
+    const blob = await cachedResponse.blob()
+    url = URL.createObjectURL(blob)
+  }
+  // const re = /(?:\.([^.]+))?$/
+  const extension = contentToExtension(cachedResponse.headers.get('content-type'))
 
   return {
     src: url,
@@ -237,7 +242,9 @@ export async function cacheFile (context, details) {
     }
   })
   console.log(response)
-  await cacheStorage.put(details.file, response)
+  const response2 = response.clone()
+  cacheStorage.put(details.file, response)
+  return response2
 }
 
 export async function tempCache (context, details) {
@@ -245,9 +252,22 @@ export async function tempCache (context, details) {
   if (alreadyCached) {
     return getCachedFile(context, details)
   }
-  await cacheFile(context, details)
+  const response = await cacheFile(context, details)
 
-  return getCachedFile(context, details)
+  // return getCachedFile(context, details)
+  let url = null
+  if (response !== undefined) {
+    const blob = await response.blob()
+    url = URL.createObjectURL(blob)
+  }
+  // const re = /(?:\.([^.]+))?$/
+  const extension = contentToExtension(response.headers.get('content-type'))
+
+  return {
+    src: url,
+    // format: re.exec(response.url)[1]
+    format: extension
+  }
 }
 
 export async function initialiseApp (context) {

@@ -89,3 +89,23 @@ body {
     background-color: #f9fafb;
   }
 }
+
+.page-leave-active {
+  transition-property: all;
+  transition-timing-function: ease-in-out;
+  transition-duration: 50ms;
+}
+.page-leave-to {
+  opacity: 100;
+}
+
+.page-enter-active {
+  transition-property: all;
+  transition-timing-function: ease-in-out;
+  transition-duration: 200ms;
+}
+
+.page-enter {
+  transform: translateX(100%);
+  opacity: 0.7;
+}

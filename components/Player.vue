@@ -48,7 +48,7 @@
           <i class="fa-solid fa-circle text-gray-600"></i>
           <i class="fa-inverse fa-solid fa-pause" data-fa-transform="shrink-10"></i>
         </span>
-        <span v-show="loading" @click="togglePlay" class="fa-layers fa-fw fa-6x absolute inset-0 opacity-70">
+        <span v-show="loading" class="fa-layers fa-fw fa-6x absolute inset-0 opacity-70">
           <i class="fa-solid fa-circle text-gray-600"></i>
           <i class="fa-inverse fa-light fa-spinner-third fa-spin" data-fa-transform="shrink-2"></i>
         </span>
@@ -152,12 +152,17 @@ export default {
     localseek () {
       const value = this.seek - this.currentFile.start
       return value.toFixed(0)
+    },
+    fileUrl () {
+      // return this.$store.getters['app/getServerUrl'] + 'download/' + this.currentFile.path
+      return this.$store.getters['app/getServerUrl'] + 'audio/' + this.currentFile.path + '?trans=0'
     }
   },
 
   async mounted () {
+    this.loading = true
     this.currentFile = this.getCurrentFile()
-    this.player = await this.loadFile(this.$store.getters['app/getServerUrl'] + 'download/' + this.currentFile.path)
+    this.player = await this.loadFile(this.fileUrl)
 
     this.updatePlayerDetails()
 
@@ -210,6 +215,9 @@ export default {
       let format = null
       let src = null
 
+      // const src = this.fileUrl
+      // const format = null
+
       const filedetails = {
         hash: this.hash,
         // file: this.$store.getters['app/getServerUrl'] + 'download/' + this.details.files[this.currentFile.index].path
@@ -239,6 +247,23 @@ export default {
         },
         onpause: () => {
           console.log('pause file')
+          const current = that.player.seek()
+          that.$store.dispatch('app/updateBookDetails', {
+            hash: that.hash,
+            book: {
+              seek: that.fullseek(current)
+            }
+          })
+          that.playing = false
+          console.log(that.current)
+          console.log(that.player.seek())
+          console.log(current)
+          setTimeout(function () {
+            that.updatePlayerDetails(current)
+          }, 100) // for some reson the status keeps trying to show up as a few seconds behind
+        },
+        onload: () => {
+          that.loading = false
         },
         onloaderror: (id, err) => {
           console.log('load error')
@@ -257,7 +282,7 @@ export default {
       const nextFile = this.nextFile()
       this.currentFile = nextFile
 
-      this.player = await this.loadFile(this.$store.getters['app/getServerUrl'] + 'download/' + this.currentFile.path)
+      this.player = await this.loadFile(this.fileUrl)
       this.player.play()
     },
     async playTrack (index) {
@@ -285,9 +310,9 @@ export default {
         path: ''
       }
     },
-    updatePlayerDetails () {
+    updatePlayerDetails (current) {
       this.localremaining = this.getLocalRemaining()
-      this.current = this.getLocalSeek()
+      this.current = current || this.getLocalSeek()
       if (this.playing === true) {
         const that = this
         window.requestAnimationFrame(function () {
@@ -359,14 +384,7 @@ export default {
       this.playing = true
     },
     pause () {
-      this.player.pause(this.soundid)
-      this.$store.dispatch('app/updateBookDetails', {
-        hash: this.hash,
-        book: {
-          seek: this.fullseek(this.player.seek())
-        }
-      })
-      this.playing = false
+      this.player.pause()
     },
     updatePlaybackSpeed (event) {
       this.$store.commit('app/playbackSpeed', event.target.value)
@@ -390,7 +408,7 @@ export default {
         if (this.currentFile.index < this.details.files.length) {
           forwardTo = forwardTo - this.currentFile.duration
           this.currentFile = this.nextFile()
-          this.player = await this.loadFile(this.$store.getters['app/getServerUrl'] + 'download/' + this.currentFile.path)
+          this.player = await this.loadFile(this.fileUrl)
         } else {
           // do something here to finish the file
         }
@@ -407,7 +425,7 @@ export default {
         if (this.currentFile.index > 0) {
           this.currentFile = this.prevFile()
           backwardTo = this.currentFile.duration + backwardTo
-          this.player = await this.loadFile(this.$store.getters['app/getServerUrl'] + 'download/' + this.currentFile.path)
+          this.player = await this.loadFile(this.fileUrl)
         } else {
           backwardTo = 0
         }
