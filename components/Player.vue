@@ -3,8 +3,8 @@
     <div @click="closePlayer" class="absolute top-0 right-0 w-8 h-8 rounded-bl flex cursor-pointer justify-center items-center"><i class="fa-thin fa-chevron-down"></i></div>
     <div>
       <div class="text p-8 pb-5 pt-12 flex justify-center flex-shrink">
-        <div class="w-80 h-80 bg-gray-300 rounded-md shadow-inner p-4">
-          <img class="block rounded-md" :src="image" />
+        <div class="w-80 h-80 bg-gray-300 justify-center flex items-center rounded-md shadow-inner p-4">
+          <img class="block rounded-md h-full" :src="image" />
         </div>
       </div>
       <div class="w-full px-8 flex flex-col text-center items-center">

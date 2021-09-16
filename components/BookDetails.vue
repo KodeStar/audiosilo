@@ -1,8 +1,8 @@
 <template>
   <div class="flex flex-col overflow-auto pb-8">
     <div class="text p-8 pb-5 flex flex-col justify-center">
-      <div class="w-80 h-80 bg-gray-300 rounded-md shadow-inner p-4">
-        <img class="block rounded-md" :src="image" />
+      <div class="w-80 h-80 bg-gray-300 justify-center flex items-center rounded-md shadow-inner p-4">
+        <img class="block rounded-md h-full" :src="image" />
       </div>
     </div>
     <div class="text-xl flex justify-center px-8 font-bold">{{ name }}</div>
