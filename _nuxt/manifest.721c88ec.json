@@ -4,43 +4,43 @@
   "description": "![Audioserve UI](https://i.imgur.com/47nzR9h.png)",
   "icons": [
     {
-      "src": "/_nuxt/icons/icon_64x64.e3e9fb.png",
+      "src": "/_nuxt/icons/icon_64x64.41a9b6.png",
       "sizes": "64x64",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/_nuxt/icons/icon_120x120.e3e9fb.png",
+      "src": "/_nuxt/icons/icon_120x120.41a9b6.png",
       "sizes": "120x120",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/_nuxt/icons/icon_144x144.e3e9fb.png",
+      "src": "/_nuxt/icons/icon_144x144.41a9b6.png",
       "sizes": "144x144",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/_nuxt/icons/icon_152x152.e3e9fb.png",
+      "src": "/_nuxt/icons/icon_152x152.41a9b6.png",
       "sizes": "152x152",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/_nuxt/icons/icon_192x192.e3e9fb.png",
+      "src": "/_nuxt/icons/icon_192x192.41a9b6.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/_nuxt/icons/icon_384x384.e3e9fb.png",
+      "src": "/_nuxt/icons/icon_384x384.41a9b6.png",
       "sizes": "384x384",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/_nuxt/icons/icon_512x512.e3e9fb.png",
+      "src": "/_nuxt/icons/icon_512x512.41a9b6.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
