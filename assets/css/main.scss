@@ -65,11 +65,11 @@ body {
 }
 
 .breadcrumbs {
-  @apply mb-4;
+  @apply mb-6 mt-2;
   span {
-    @apply text-sm text-gray-400 underline mr-2 cursor-pointer;
+    @apply text-sm text-gray-500 font-normal mr-2 p-2 py-1 bg-gray-300 bg-opacity-40 hover:bg-opacity-60 rounded cursor-pointer;
     &.active {
-      @apply font-normal font-normal text-gray-300 no-underline text-pink-600;
+      @apply font-normal font-medium text-gray-300 no-underline text-pink-600;
     }
   }
 }

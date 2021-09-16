@@ -24,9 +24,9 @@
         </div>
 
         <div class="flex w-full justify-between pointer-events-none">
-          <div class="text-xs">{{ secondsToPlayback(current) }}</div>
+          <div class="text-xs">{{ $formatToPlayback(current) }}</div>
           <div class="px-8 text-xs">{{ remaining }}</div>
-          <div class="text-xs">-{{ secondsToPlayback(localremaining) }}</div>
+          <div class="text-xs">-{{ $formatToPlayback(localremaining) }}</div>
         </div>
       </div>
     </div>
@@ -134,7 +134,7 @@ export default {
     },
     remaining () {
       const remaining = this.totalTime - this.seek
-      return this.secondsToTime(remaining) + ' remaining'
+      return this.$formatToTime(remaining, 2, false) + ' remaining'
     },
     percent () {
       const remaining = this.totalTime - this.seek
@@ -349,31 +349,6 @@ export default {
       } else {
         this.play()
       }
-    },
-    secondsToTime (secs) {
-      const hours = Math.floor(secs / (60 * 60))
-
-      const divisorForMinutes = secs % (60 * 60)
-      const minutes = Math.floor(divisorForMinutes / 60)
-
-      return hours + 'h' + minutes + 'm'
-    },
-    secondsToPlayback (secs) {
-      const hours = Math.floor(secs / (60 * 60))
-
-      const divisorForMinutes = secs % (60 * 60)
-      const minutes = Math.floor(divisorForMinutes / 60)
-
-      const divisorForSeconds = divisorForMinutes % 60
-      const seconds = Math.ceil(divisorForSeconds)
-
-      let output = ''
-
-      if (hours > 0) {
-        output += hours + ':'
-      }
-
-      return output + String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0')
     },
     play () {
       this.loading = true

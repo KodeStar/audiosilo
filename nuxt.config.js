@@ -29,6 +29,7 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    '~/plugins/audio.js'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -62,7 +63,7 @@ export default {
   },
   googleFonts: {
     families: {
-      Roboto: [100,300,400,600,700],
+      Roboto: [100,300,400,500,600,700],
     }
   }
 }

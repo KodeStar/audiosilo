@@ -83,7 +83,7 @@ export default {
     },
     remaining () {
       const remaining = this.totalTime - this.seek
-      return this.secondsToTime(remaining) + ' remaining'
+      return this.$formatToTime(remaining, 2, false) + ' remaining'
     },
     percent () {
       const remaining = this.totalTime - this.seek
@@ -107,14 +107,6 @@ export default {
   methods: {
     listen () {
       this.$store.commit('app/player', true)
-    },
-    secondsToTime (secs) {
-      const hours = Math.floor(secs / (60 * 60))
-
-      const divisorForMinutes = secs % (60 * 60)
-      const minutes = Math.floor(divisorForMinutes / 60)
-
-      return hours + 'h' + minutes + 'm'
     },
     async getImage () {
       if (this.details && this.details.cover) {
