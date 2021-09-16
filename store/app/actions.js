@@ -162,12 +162,12 @@ export async function getDescription (context, path) {
       Authorization: 'Bearer ' + VueCookies.get('audioserve_token')
     }
   })
-  console.log(response)
-  console.log(response.headers.get('Content-Type'))
+  // console.log(response)
+  // console.log(response.headers.get('Content-Type'))
 
   const mime = response.headers.get('Content-Type')
   const data = await response.text()
-  console.log(data)
+  // console.log(data)
   let output = ''
   let para = ''
   if (mime === 'text/html') {

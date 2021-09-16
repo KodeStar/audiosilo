@@ -1,21 +1,12 @@
 <template>
-  <div class="p-3 px-6 lg:px-12 w-screen lg:w-full content-area overflow-auto">
+  <div class="p-3 px-6 lg:px-12 w-screen lg:w-full content-area overflow-auto lg:border-l border-gray-100">
     <div v-if="folder && folder.subfolders">
       <div
         v-if="folder.subfolders.length > 0"
         class="my-6 text-xl font-bold text-gray-600"
       >
         Folders
-        <div v-if="breadcrumbs.length > 1" class="breadcrumbs flex-col lg:flex-row">
-          <span
-            v-for="(breadcrumb, index) in breadcrumbs"
-            :key="index"
-            :class="{active: breadcrumb.active }"
-            @click="selectFolder({ path: breadcrumb.link })"
-          >
-            {{ breadcrumb.name }}
-          </span>
-        </div>
+        <BreadCrumbs v-on:selectFolder="selectFolder" />
       </div>
       <div
         v-for="(subfolder, index) in folder.subfolders"
@@ -37,16 +28,7 @@
         class="my-6 text-xl font-bold text-gray-600"
       >
         Files
-        <div v-if="breadcrumbs.length > 1" class="breadcrumbs flex-col lg:flex-row">
-          <span
-            v-for="(breadcrumb, index) in breadcrumbs"
-            :key="index"
-            :class="{active: breadcrumb.active }"
-            @click="selectFolder({ path: breadcrumb.link })"
-          >
-            {{ breadcrumb.name }}
-          </span>
-        </div>
+        <BreadCrumbs v-on:selectFolder="selectFolder" />
       </div>
       <div
         v-for="(file, index) in folder.files"
@@ -65,9 +47,14 @@
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 448 512"><path fill="currentColor" d="M448 368v-320C448 21.49 426.5 0 400 0h-320C35.82 0 0 35.82 0 80V448c0 35.35 28.65 64 64 64h368c8.844 0 16-7.156 16-16S440.8 480 432 480H416v-66.95C434.6 406.4 448 388.8 448 368zM32 80C32 53.49 53.49 32 80 32H96v352H64c-11.71 0-22.55 3.389-32 8.9V80zM384 480H64c-17.64 0-32-14.36-32-32s14.36-32 32-32h320V480zM400 384H128V32h272C408.8 32 416 39.17 416 48v320C416 376.8 408.8 384 400 384zM352 128H192C183.2 128 176 135.2 176 144S183.2 160 192 160h160c8.844 0 16-7.156 16-16S360.8 128 352 128zM352 224H192C183.2 224 176 231.2 176 240S183.2 256 192 256h160c8.844 0 16-7.156 16-16S360.8 224 352 224z"></path></svg>
         </div>
-        <div class="px-5 flex flex-col">
-          <span class="text-sm font-medium">{{ file.name }}</span>
-          <span class="text-xs text-gray-500"><span class="font-normal">Duration:</span> <span class="">{{ $formatToTime(file.meta.duration, 3, false) }}</span> <span class="ml-2 font-normal">Bitrate:</span> <span class="">{{ file.meta.bitrate }}</span>kbps</span>
+        <div class="flex justify-between w-full items-center">
+          <div class="px-5 flex flex-col">
+            <span class="text-sm font-medium">{{ file.name }}</span>
+            <span class="text-xs text-gray-500"><span class="font-normal">Duration:</span> <span class="">{{ $formatToTime(file.meta.duration, 3, false) }}</span> <span class="ml-2 font-normal">Bitrate:</span> <span class="">{{ file.meta.bitrate }}</span>kbps</span>
+          </div>
+          <div class="px-4">
+            <div class="w-4 h-4 bg-gray-200 rounded-full"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -123,26 +110,6 @@ export default {
     },
     player () {
       return this.$store.state.app.player
-    },
-    breadcrumbs () {
-      const breadcrumbs = [{
-        name: 'Home',
-        link: '/',
-        active: false
-      }]
-      if (this.$route.query.folder) {
-        if (this.$route.query.folder !== '/') {
-          const segments = this.$route.query.folder.split('/')
-          for (let i = 0; i < segments.length; i++) {
-            breadcrumbs.push({
-              name: segments[i],
-              link: segments.slice(0, i + 1).join('/'),
-              active: (i === segments.length - 1)
-            })
-          }
-        }
-      }
-      return breadcrumbs
     }
   },
 
@@ -208,9 +175,6 @@ export default {
       if (json) {
         this.$store.commit('app/folder', json)
       }
-    },
-    changeCollection (event) {
-      this.$store.commit('app/currentCollection', event.target.value)
     },
     updateServer (input) {
       this.$store.commit('app/server', input)

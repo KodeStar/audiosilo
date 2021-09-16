@@ -2,7 +2,7 @@
   <div class="relative flex items-top min-h-screen bg-gray-200 w-full overflow-hidden">
     <div class="flex flex-col items-top h-screen w-full">
       <Header />
-      <div class="flex w-full relative h-screen">
+      <div class="flex w-full relative h-screen border-t border-gray-100 lg:border-t-0">
         <Nav />
           <Nuxt />
         </div>

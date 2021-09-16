@@ -1,7 +1,9 @@
 <template>
   <div class="flex flex-col overflow-auto pb-8">
-    <div class="text p-8 pb-5 px-12 flex flex-col justify-center">
-      <img class="block shadow rounded-md" :src="image" />
+    <div class="text p-8 pb-5 flex flex-col justify-center">
+      <div class="w-80 h-80 bg-gray-300 rounded-md shadow-inner p-4">
+        <img class="block rounded-md" :src="image" />
+      </div>
     </div>
     <div class="text-xl flex justify-center px-8 font-bold">{{ name }}</div>
     <button @click="listen" class="text-white bg-pink-600 font-normal rounded-lg mx-8 my-4 p-3"><i class="fa-light fa-circle-play"></i> Listen</button>
@@ -93,11 +95,9 @@ export default {
 
   },
 
-  async mounted () {
+  /* async */ mounted () {
     this.$store.commit('app/rightbar', true)
-    const keys = await caches.keys()
-    console.log('keys')
-    console.log(keys)
+    // const keys = await caches.keys()
     this.getImage()
     // const path = (this.details && this.details.description) ? this.details.description.path : null
     // const cover = (this.details && this.details.cover) ? this.server + 'cover/' + this.details.cover.path : null

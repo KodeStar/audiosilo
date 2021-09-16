@@ -1,5 +1,5 @@
 <template>
-  <div class="p-3 px-6 lg:px-12 w-screen lg:w-full content-area overflow-auto">
+  <div class="p-3 px-6 lg:px-12 w-screen lg:w-full content-area overflow-auto lg:border-l border-gray-100">
     <h2 class="my-6 text-xl font-bold text-gray-600">Cached Books</h2>
   </div>
 </template>

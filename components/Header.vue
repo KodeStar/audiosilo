@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-top h-screen w-full">
+  <div class="flex flex-col items-top lg:h-screen w-full">
     <div class="flex items-center w-full h-20 lg:h-24 border-b border-gray-300 lg:border-b-0 relative">
       <div class="lg:w-80 flex-shrink-0 flex-grow-0 lg:border-r lg:border-b border-gray-300 p-3 px-6 lg:px-8 h-20 lg:h-24 flex items-center">
         <NuxtLink class="flex items-center" to="/">
@@ -16,7 +16,7 @@
           </div>
         </NuxtLink>
       </div>
-      <div :class="{ mobilesearch: search, flex: search }" class="px-0 lg:px-12 w-full items-center">
+      <div :class="{ mobilesearch: search, flex: search }" class="px-0 lg:px-12 w-full items-center flex items-center lg:border-l border-gray-100 h-20 lg:h-24">
         <floating-label-input :class="{ block: search, hidden: !search }" v-model="searchterm" title="Search..." />
         <div class="ml-3">
           <div @click="search = false" :class="{ flex: search, hidden: !search }" class="rounded-full bg-gray-300 w-8 h-8 justify-center items-center"><i class="fa-thin fa-times fa-fw" /></div>
