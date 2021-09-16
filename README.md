@@ -1,6 +1,6 @@
 # audioserve-ui
 
-![Audioserve UI](https://i.imgur.com/47nzR9h.png)
+![Audioserve UI](https://i.imgur.com/9T3cALq.png)
 
 ## Build Setup
 
