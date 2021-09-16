@@ -12,10 +12,17 @@ export default {
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: '' },
-      { name: 'format-detection', content: 'telephone=no' }
+      { name: 'format-detection', content: 'telephone=no' },
+      { name: 'msapplication-TileColor', content: '#f1f1f1' },
+      { name: 'theme-color', content: '#f1f1f1' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
+      { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
+      { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png' },
+      { rel: 'mask-icon', color: '#db2777', href: '/safari-pinned-tab.svg' }
+
     ],
     script: [
       { hid: 'fontawesome', src: 'https://kit.fontawesome.com/45281d8712.js', defer: false, crossorigin: 'anonymous' }
