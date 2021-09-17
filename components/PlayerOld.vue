@@ -86,7 +86,7 @@
 <script>
 import { sha256 } from 'js-sha256'
 // import { Howl, Howler } from 'howler'
-import { Howl } from 'howler'
+// import { Howl } from 'howler'
 
 export default {
   name: 'Player',
@@ -239,6 +239,7 @@ export default {
         format = tempCache.format
       }
       const that = this
+      const Howl = []
       return new Howl({
         src,
         format,
