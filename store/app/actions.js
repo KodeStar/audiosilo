@@ -138,15 +138,25 @@ export async function getBookDetails (context, hash) {
 
   context.commit('book', book)
 }
-
-export async function updateBookDetails (context, item) {
+export async function resetBook (context) {
+  await context.dispatch('updateBookDetails', {
+    seek: 0
+  })
+  context.commit('player/currentFile', {
+    index: 0,
+    start: 0,
+    duration: context.rootState.player.files[0].meta.duration,
+    path: context.rootState.player.files[0].path
+  }, { root: true })
+  context.commit('player/current', null, { root: true })
+}
+export async function updateBookDetails (context, updates) {
   const currentbook = context.state.book
-  const updates = item.book
   const book = {
     ...currentbook,
     ...updates
   }
-  await localForage.setItem(item.hash, book)
+  await localForage.setItem(context.state.book.hash, book)
   context.commit('book', book)
 }
 

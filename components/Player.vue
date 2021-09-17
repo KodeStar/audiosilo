@@ -157,13 +157,13 @@ export default {
     }
   },
 
-  async mounted () {
-    console.log('this.player.src')
-    console.log(this.player.src)
-    if (this.player.src === '') {
+  mounted () {
+    // console.log('this.player.src')
+    // console.log(this.player.src)
+    /* if (this.player.src === '') {
       // this.$store.commit('player/loading', true)
       await this.$store.dispatch('player/load')
-    }
+    } */
     const that = this
     this.player.onload = (event) => {
       that.$store.commit('player/loading', false)
@@ -175,10 +175,7 @@ export default {
     this.player.onpause = (event) => {
       this.$store.commit('player/playing', false)
       this.$store.dispatch('app/updateBookDetails', {
-        hash: that.hash,
-        book: {
-          seek: that.currentFile.start + that.current
-        }
+        seek: that.currentFile.start + that.current
       })
     }
     this.player.onended = (event) => {
@@ -212,13 +209,12 @@ export default {
     },
 
     async nextTrack () {
-      // const nextFile = this.nextFile()
-      // this.$store.commit('player/currentFile', nextFile)
+      if (this.currentFile.index + 1 >= this.details.files.length) {
+        await this.$store.dispatch('app/resetBook')
+        return null
+      }
       await this.$store.dispatch('app/updateBookDetails', {
-        hash: this.hash,
-        book: {
-          seek: this.currentFile.start + this.currentFile.duration
-        }
+        seek: this.currentFile.start + this.currentFile.duration
       })
 
       await this.$store.dispatch('player/load')
@@ -270,18 +266,58 @@ export default {
     },
     updatePlaybackSpeed (event) {
       this.$store.commit('app/playbackSpeed', event.target.value)
+      this.player.rate(event.target.value.toFixed(2))
     },
     increasePlaybackSpeed () {
       const newspeed = parseFloat(this.playbackSpeed) + parseFloat('0.05')
       this.$store.commit('app/playbackSpeed', newspeed.toFixed(2))
+      this.player.rate(newspeed.toFixed(2))
     },
     decreasePlaybackSpeed () {
       const newspeed = parseFloat(this.playbackSpeed) - parseFloat('0.05')
       this.$store.commit('app/playbackSpeed', newspeed.toFixed(2))
+      this.player.rate(newspeed.toFixed(2))
     },
     async seekForwards () {
+      this.player.pause()
+      let forwardTo = this.player.currentTime + parseInt(this.groupDetails.seekForwards)
+      const duration = this.currentFile.duration
+
+      if (forwardTo >= duration) {
+        if (this.currentFile.index < this.details.files.length) {
+          forwardTo = forwardTo - this.currentFile.duration
+          this.$store.commit('player/currentFile', this.nextFile())
+          await this.$store.dispatch('player/load', {
+            file: this.currentFile.path,
+            seek: 0
+          })
+        } else {
+          // do something here to finish the file
+        }
+      }
+      console.log('> skipping to ' + forwardTo + ' from ' + this.player.currentTime)
+      this.player.currentTime = forwardTo
+      this.player.play()
     },
     async seekBackwards () {
+      this.player.pause()
+      const currentSeek = this.player.currentTime
+      let backwardTo = currentSeek - parseInt(this.groupDetails.seekBackwards)
+      if (backwardTo <= 0) {
+        if (this.currentFile.index > 0) {
+          this.$store.commit('player/currentFile', this.prevFile())
+          backwardTo = this.currentFile.duration + backwardTo
+          await this.$store.dispatch('player/load', {
+            file: this.currentFile.path,
+            seek: this.currentFile.duration
+          })
+        } else {
+          backwardTo = 0
+        }
+      }
+      console.log('< skipping to ' + backwardTo + ' from ' + currentSeek)
+      this.player.currentTime = backwardTo
+      this.player.play()
     }
   }
 }

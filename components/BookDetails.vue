@@ -114,11 +114,11 @@ export default {
   },
 
   methods: {
-    listen () {
+    async listen () {
       if (this.playing) {
         this.$store.commit('app/player', true)
       } else {
-        // await this.$store.dispatch('player/load')
+        await this.$store.dispatch('player/load')
         this.$store.commit('app/player', true)
         this.player.play()
       }
