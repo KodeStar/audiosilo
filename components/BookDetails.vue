@@ -114,11 +114,12 @@ export default {
   },
 
   methods: {
-    async listen () {
+    listen () {
       if (this.playing) {
         this.$store.commit('app/player', true)
       } else {
-        await this.$store.dispatch('player/load')
+        // await this.$store.dispatch('player/load')
+        this.$store.commit('app/player', true)
         this.player.play()
       }
     },
@@ -141,7 +142,7 @@ export default {
       this.downloading = true
       const isPersisted = await navigator.storage.persist()
       console.log(`Persisted storage granted: ${isPersisted}`)
-      const cacheName = `audioserv-${this.hash}`
+      const cacheName = this.$store.state.app.cacheKey + this.hash
       await caches.delete(cacheName)
       const cacheStorage = await caches.open(cacheName)
 

@@ -206,8 +206,15 @@ export default {
     },
 
     async nextTrack () {
-      const nextFile = this.nextFile()
-      this.$store.commit('player/currentFile', nextFile)
+      // const nextFile = this.nextFile()
+      // this.$store.commit('player/currentFile', nextFile)
+      await this.$store.dispatch('app/updateBookDetails', {
+        hash: this.hash,
+        book: {
+          seek: this.currentFile.start + this.currentFile.duration
+        }
+      })
+
       await this.$store.dispatch('player/load')
       await this.player.play()
     },
@@ -252,6 +259,7 @@ export default {
       this.player.play()
     },
     pause () {
+      console.log('pause pressed')
       this.player.pause()
     },
     updatePlaybackSpeed (event) {

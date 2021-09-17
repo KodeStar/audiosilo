@@ -189,9 +189,12 @@ export async function getDescription (context, path) {
 export async function fileIsCached (context, details) {
   const cacheName = context.state.cacheKey + details.hash
   const exists = await caches.has(cacheName)
+  console.log('exists')
+  console.log(exists)
   if (exists) {
     const cacheStorage = await caches.open(cacheName)
     const cachedResponse = await cacheStorage.match(details.file)
+    console.log(cachedResponse)
     return (cachedResponse !== undefined)
   }
   return false

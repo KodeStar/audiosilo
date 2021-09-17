@@ -2,7 +2,7 @@ export function resetPlayer ({ commit }) {
   commit('resetPlayer')
 }
 
-export function load (context, data) {
+export async function load (context, data) {
   // context.commit('resetPlayer')
   context.commit('app/player', true, { root: true })
   context.commit('playing', false)
@@ -12,7 +12,18 @@ export function load (context, data) {
   if (!data) {
     data = loadCurrent(context)
   }
-  const path = context.rootGetters['app/getServerUrl'] + 'audio/' + data.file + '?trans=0'
+  let path = context.rootGetters['app/getServerUrl'] + 'audio/' + data.file + '?trans=0'
+  const filedetails = {
+    hash: context.rootState.app.book.hash,
+    file: path
+  }
+  const isCached = await context.dispatch('app/fileIsCached', filedetails, { root: true })
+  if (isCached) {
+    const cachedFile = await context.dispatch('app/getCachedFile', filedetails, { root: true })
+    path = cachedFile.src
+    // format = cachedFile.format
+  }
+
   const audio = {
     src: path,
     currentTime: data.seek.toFixed(2)
