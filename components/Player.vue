@@ -8,7 +8,7 @@
         </div>
       </div>
       <div class="w-full px-8 flex flex-col text-center items-center">
-        <div class=" font-semibold flex mb-2">{{ details.files[currentFile.index].name || '' }}</div>
+        <div class=" font-semibold flex mb-2">{{ chaptername }}</div>
         <!--<div class="text-sm text-gray-400 mb-2">{{ details.files[0].name }} - Artist name</div>-->
         <div class="flex py-1 items-center w-full relative mb-1">
           <div class="relative flex-grow mr-2">
@@ -148,6 +148,12 @@ export default {
     },
     loading () {
       return this.$store.state.player.loading
+    },
+    chaptername () {
+      if (this.details.files && this.currentFile) {
+        return this.details.files[this.currentFile.index].name
+      }
+      return 'Chapter 1'
     }
   },
 
