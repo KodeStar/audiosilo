@@ -34,7 +34,8 @@
         v-for="(file, index) in folder.files"
         :key="index"
         class="bg-gray-50 filter drop-shadow rounded-lg my-2 w-full flex text-gray-600 max-w-xl items-center cursor-pointer"
-        @click="selectFile(file)"
+        :class="{ 'opacity-50': (seek > 0 || currentFile.index > 0) && currentFile.index !== index }"
+        @click="selectFile(index)"
       >
         <div class="p-4 text-gray-50 bg-blue-400 rounded-l-lg">
         <svg
@@ -84,6 +85,9 @@ export default {
     currentFolder () {
       return this.$route.query.folder || ''
     },
+    currentFile () {
+      return this.$store.state.player.currentFile
+    },
     loginStatus () {
       return this.$store.state.app.loginStatus
     },
@@ -109,7 +113,13 @@ export default {
       return this.$store.state.app.loginsecret
     },
     player () {
-      return this.$store.state.app.player
+      return this.$store.state.player.player
+    },
+    seek () {
+      return this.$store.state.app.book.seek
+    },
+    playing () {
+      return this.$store.state.player.playing
     }
   },
 
@@ -158,6 +168,35 @@ export default {
   },
 
   methods: {
+    async selectFile (index) {
+      if (index === this.currentFile.index) {
+        if (this.playing) {
+          return this.$store.commit('app/player', true)
+        } else {
+          await this.$store.dispatch('player/load')
+          return this.player.play()
+        }
+      }
+      // console.log('not current index')
+      let start = 0
+      if (index > 0) {
+        const files = this.folder.files.slice(0, index)
+        start = this.$store.getters['player/getStart'](files)
+      }
+      const data = {
+        duration: this.folder.files[index].meta.duration,
+        index,
+        path: this.folder.files[index].path,
+        start
+      }
+      this.$store.commit('player/currentFile', data)
+      // this.$store.commit('player/loading', true)
+      await this.$store.dispatch('player/load', {
+        file: this.folder.files[index].path,
+        seek: 0
+      })
+      this.player.play()
+    },
     async fetchFolder (name = '') {
       // console.log(VueCookies.get('audioserve_token'))
       const folder = await fetch(this.$store.getters['app/getServerUrl'] + 'folder/' + name, {

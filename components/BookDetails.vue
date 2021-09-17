@@ -91,22 +91,36 @@ export default {
       const remaining = this.totalTime - this.seek
       const percent = (remaining / this.totalTime) * 100
       return 100 - percent.toFixed(0)
+    },
+    player () {
+      return this.$store.state.player.player
+    },
+    playing () {
+      return this.$store.state.player.playing
     }
-
   },
 
-  /* async */ mounted () {
+  async mounted () {
     this.$store.commit('app/rightbar', true)
     // const keys = await caches.keys()
     this.getImage()
     // const path = (this.details && this.details.description) ? this.details.description.path : null
     // const cover = (this.details && this.details.cover) ? this.server + 'cover/' + this.details.cover.path : null
-    this.$store.dispatch('app/getBookDetails', sha256(this.$route.fullPath))
+    await this.$store.dispatch('app/getBookDetails', sha256(this.$route.fullPath))
+    this.$store.dispatch('player/getCurrentFile', {
+      files: this.details.files,
+      seek: this.$store.state.app.book.seek
+    })
   },
 
   methods: {
-    listen () {
-      this.$store.commit('app/player', true)
+    async listen () {
+      if (this.playing) {
+        this.$store.commit('app/player', true)
+      } else {
+        await this.$store.dispatch('player/load')
+        this.player.play()
+      }
     },
     async getImage () {
       if (this.details && this.details.cover) {

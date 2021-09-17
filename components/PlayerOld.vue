@@ -8,7 +8,7 @@
         </div>
       </div>
       <div class="w-full px-8 flex flex-col text-center items-center">
-        <div class=" font-semibold flex mb-2">{{ details.files[currentFile.index].name || '' }}</div>
+        <div class=" font-semibold flex mb-2">Chapter 1</div>
         <!--<div class="text-sm text-gray-400 mb-2">{{ details.files[0].name }} - Artist name</div>-->
         <div class="flex py-1 items-center w-full relative mb-1">
           <div class="relative flex-grow mr-2">
@@ -27,8 +27,8 @@
 
         <div class="flex w-full justify-between pointer-events-none">
           <div class="text-xs">{{ $formatToPlayback(current) }}</div>
-          <div class="px-8 text-xs">{{ totalremaining }}</div>
-          <div class="text-xs">-{{ $formatToPlayback(remaining) }}</div>
+          <div class="px-8 text-xs">{{ remaining }}</div>
+          <div class="text-xs">-{{ $formatToPlayback(localremaining) }}</div>
         </div>
       </div>
     </div>
@@ -85,13 +85,26 @@
 
 <script>
 import { sha256 } from 'js-sha256'
+// import { Howl, Howler } from 'howler'
+import { Howl } from 'howler'
 
 export default {
   name: 'Player',
   props: ['details', 'server'],
   data () {
     return {
-      editPlaybackSpeed: false
+      editPlaybackSpeed: false,
+      player: null,
+      playing: false,
+      loading: false,
+      localremaining: 0,
+      current: 0,
+      currentFile: {
+        index: 0,
+        start: 0,
+        duration: 0,
+        path: ''
+      }
     }
   },
 
@@ -115,87 +128,70 @@ export default {
       return sha256(this.$route.fullPath)
     },
     totalTime () {
-      return 0
+      let total = 0
+      this.details.files.forEach((file) => {
+        total += file.meta.duration
+      })
+      return total
     },
     remaining () {
-      return this.currentFile.duration - this.current
-    },
-    totalremaining () {
-      const remaining = this.$store.getters['player/totalTime'] - this.currentFile.start - this.current
+      const remaining = this.totalTime - this.seek
       return this.$formatToTime(remaining, 2, false) + ' remaining'
     },
     percent () {
-      return 0
+      const remaining = this.totalTime - this.seek
+      const percent = (remaining / this.totalTime) * 100
+      return 100 - percent.toFixed(0)
     },
     localpercent () {
       if (this.player) {
-        const percent = (Math.ceil(this.remaining) / this.currentFile.duration) * 100
-        return 100 - percent.toFixed(2)
+        const remaining = this.currentFile.duration - this.current
+        const percent = (remaining / this.currentFile.duration) * 100
+        return 100 - percent.toFixed(0)
       }
       return 0
     },
-    currentFile () {
-      return this.$store.state.player.currentFile
+    localseek () {
+      const value = this.seek - this.currentFile.start
+      return value.toFixed(0)
     },
-    playing () {
-      return this.$store.state.player.playing
-    },
-    current () {
-      return this.$store.state.player.current
-    },
-    player () {
-      return this.$store.state.player.player
-    },
-    loading () {
-      return this.$store.state.player.loading
+    fileUrl () {
+      // return this.$store.getters['app/getServerUrl'] + 'download/' + this.currentFile.path
+      return this.$store.getters['app/getServerUrl'] + 'audio/' + this.currentFile.path + '?trans=0'
     }
   },
 
   async mounted () {
-    console.log('this.player.src')
-    console.log(this.player.src)
-    if (this.player.src === '') {
-      // this.$store.commit('player/loading', true)
-      await this.$store.dispatch('player/load')
-    }
-    const that = this
-    this.player.onload = (event) => {
-      that.$store.commit('player/loading', false)
-    }
-    this.player.onplay = (event) => {
-      that.$store.commit('player/playing', true)
-      that.updatePlayerDetails()
-    }
-    this.player.onpause = (event) => {
-      this.$store.commit('player/playing', false)
-      this.$store.dispatch('app/updateBookDetails', {
-        hash: that.hash,
-        book: {
-          seek: that.currentFile.start + that.current
-        }
-      })
-    }
-    this.player.onended = (event) => {
-      console.log('track ended')
-      that.nextTrack()
-    }
+    this.loading = true
+    this.currentFile = this.getCurrentFile()
+    this.player = await this.loadFile(this.fileUrl)
+
+    this.updatePlayerDetails()
+
+    // this.localremaining = this.getLocalRemaining()
+    this.current = this.localseek
   },
 
   beforeDestroy () {
     console.log('clean up')
+    if (this.player) {
+      this.player.unload()
+    }
     // Delete any temp caches
     caches.delete(this.$store.state.app.cacheKey + 'temp-' + this.hash)
   },
   methods: {
-    prevFile () {
-      return {
-        index: this.currentFile.index - 1,
-        start: this.currentFile.start - this.currentFile.duration,
-        duration: this.details.files[this.currentFile.index - 1].meta.duration,
-        path: this.details.files[this.currentFile.index - 1].path
+    updateSeek (event) {
+      console.log(event.target.value)
+      if (this.player.playing()) {
+        this.player.pause()
+        this.player.seek(event.target.value)
+        this.player.play()
+      } else {
+        this.player.seek(event.target.value)
+        this.current = event.target.value
       }
     },
-
     nextFile () {
       return {
         index: this.currentFile.index + 1,
@@ -205,38 +201,146 @@ export default {
       }
     },
 
-    async nextTrack () {
-      const nextFile = this.nextFile()
-      this.$store.commit('player/currentFile', nextFile)
-      await this.$store.dispatch('player/load')
-      await this.player.play()
+    prevFile () {
+      return {
+        index: this.currentFile.index - 1,
+        start: this.currentFile.start - this.currentFile.duration,
+        duration: this.details.files[this.currentFile.index - 1].meta.duration,
+        path: this.details.files[this.currentFile.index - 1].path
+      }
     },
 
-    async updateSeek (event) {
-      if (this.playing) {
-        await this.player.pause()
-        this.player.currentTime = event.target.value
-        this.$store.commit('player/current', event.target.value)
-        await this.player.play()
-      } else {
-        this.player.currentTime = event.target.value
-        this.$store.commit('player/current', event.target.value)
-      }
-    },
     async loadFile (file) {
-    },
-    updatePlayerDetails (current, last = 0) {
-      const that = this
-      const now = Date.now()
-      if (now > last + 1000) {
-        last = now
-        that.$store.commit('player/current', current || that.player.currentTime)
+      console.log('Loading file')
+      console.log(this.currentFile)
+
+      let format = null
+      let src = null
+
+      // const src = this.fileUrl
+      // const format = null
+
+      const filedetails = {
+        hash: this.hash,
+        // file: this.$store.getters['app/getServerUrl'] + 'download/' + this.details.files[this.currentFile.index].path
+        file
       }
+      const isCached = await this.$store.dispatch('app/fileIsCached', filedetails)
+      if (isCached) {
+        const cachedFile = await this.$store.dispatch('app/getCachedFile', filedetails)
+        src = cachedFile.src
+        format = cachedFile.format
+      } else {
+        const tempCache = await this.$store.dispatch('app/tempCache', {
+          hash: 'temp-' + this.hash,
+          file
+        })
+        src = tempCache.src
+        format = tempCache.format
+      }
+      const that = this
+      return new Howl({
+        src,
+        format,
+        html5: true,
+        onplay: () => {
+          that.loading = false
+          that.updatePlayerDetails()
+        },
+        onpause: () => {
+          console.log('pause file')
+          const current = that.player.seek()
+          that.$store.dispatch('app/updateBookDetails', {
+            hash: that.hash,
+            book: {
+              seek: that.fullseek(current)
+            }
+          })
+          that.playing = false
+          console.log(that.current)
+          console.log(that.player.seek())
+          console.log(current)
+          setTimeout(function () {
+            that.updatePlayerDetails(current)
+          }, 100) // for some reson the status keeps trying to show up as a few seconds behind
+        },
+        onload: () => {
+          that.loading = false
+        },
+        onloaderror: (id, err) => {
+          console.log('load error')
+          console.log(id)
+          console.log(err)
+        },
+        onend: async () => {
+          console.log('track ended')
+          that.player.unload()
+          that.player = null
+          await that.nextTrack()
+        }
+      })
+    },
+    async nextTrack () {
+      const nextFile = this.nextFile()
+      this.currentFile = nextFile
+
+      this.player = await this.loadFile(this.fileUrl)
+      this.player.play()
+    },
+    async playTrack (index) {
+
+    },
+    getCurrentFile () {
+      let start = 0
+      for (let i = 0, length = this.details.files.length; i < length; i++) {
+        console.log(start + this.details.files[i].meta.duration)
+        console.log('seek: ' + this.seek)
+        if (start + this.details.files[i].meta.duration > this.seek) {
+          return {
+            index: i,
+            start,
+            duration: this.details.files[i].meta.duration,
+            path: this.details.files[i].path
+          }
+        }
+        start += this.details.files[i].meta.duration
+      }
+      return {
+        index: 0,
+        start: 0,
+        duration: 0,
+        path: ''
+      }
+    },
+    updatePlayerDetails (current) {
+      this.localremaining = this.getLocalRemaining()
+      this.current = current || this.getLocalSeek()
       if (this.playing === true) {
+        const that = this
         window.requestAnimationFrame(function () {
-          that.updatePlayerDetails(current, last)
+          that.updatePlayerDetails()
         })
       }
+    },
+    getLocalRemaining () {
+      if (!this.playing) {
+        return this.currentFile.duration - this.localseek
+      }
+      const output = this.currentFile.duration - this.player.seek()
+      return output
+    },
+    getLocalSeek () {
+      if (!this.playing) {
+        return this.localseek
+      }
+      return this.player.seek()
+    },
+    fullseek (seek) {
+      return this.currentFile.start + seek
+    },
+    extension (name) {
+      const re = /(?:\.([^.]+))?$/
+      return re.exec(name)[1]
     },
     closePlayer () {
       this.$store.commit('app/player', false)
@@ -249,7 +353,12 @@ export default {
       }
     },
     play () {
-      this.player.play()
+      this.loading = true
+      if (this.current) {
+        this.player.seek(this.current)
+        this.player.play()
+      }
+      this.playing = true
     },
     pause () {
       this.player.pause()
@@ -260,14 +369,47 @@ export default {
     increasePlaybackSpeed () {
       const newspeed = parseFloat(this.playbackSpeed) + parseFloat('0.05')
       this.$store.commit('app/playbackSpeed', newspeed.toFixed(2))
+      this.player.rate(newspeed.toFixed(2))
     },
     decreasePlaybackSpeed () {
       const newspeed = parseFloat(this.playbackSpeed) - parseFloat('0.05')
       this.$store.commit('app/playbackSpeed', newspeed.toFixed(2))
+      this.player.rate(newspeed.toFixed(2))
     },
     async seekForwards () {
+      this.player.pause()
+      let forwardTo = this.player.seek() + parseInt(this.groupDetails.seekForwards)
+      const duration = this.player.duration()
+
+      if (forwardTo >= duration) {
+        if (this.currentFile.index < this.details.files.length) {
+          forwardTo = forwardTo - this.currentFile.duration
+          this.currentFile = this.nextFile()
+          this.player = await this.loadFile(this.fileUrl)
+        } else {
+          // do something here to finish the file
+        }
+      }
+      console.log('> skipping to ' + forwardTo + ' from ' + this.player.seek())
+      this.player.seek(forwardTo)
+      this.player.play()
     },
     async seekBackwards () {
+      const sound = this.player.pause()._sounds[0]
+      const currentSeek = sound._seek
+      let backwardTo = currentSeek - parseInt(this.groupDetails.seekBackwards)
+      if (backwardTo <= 0) {
+        if (this.currentFile.index > 0) {
+          this.currentFile = this.prevFile()
+          backwardTo = this.currentFile.duration + backwardTo
+          this.player = await this.loadFile(this.fileUrl)
+        } else {
+          backwardTo = 0
+        }
+      }
+      console.log('< skipping to ' + backwardTo + ' from ' + currentSeek)
+      this.player.seek(backwardTo)
+      this.player.play()
     }
   }
 }
