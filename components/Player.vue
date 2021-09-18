@@ -266,17 +266,17 @@ export default {
     },
     updatePlaybackSpeed (event) {
       this.$store.commit('app/playbackSpeed', event.target.value)
-      this.player.rate(event.target.value.toFixed(2))
+      this.player.playbackRate = event.target.value.toFixed(2)
     },
     increasePlaybackSpeed () {
       const newspeed = parseFloat(this.playbackSpeed) + parseFloat('0.05')
       this.$store.commit('app/playbackSpeed', newspeed.toFixed(2))
-      this.player.rate(newspeed.toFixed(2))
+      this.player.playbackRate = newspeed.toFixed(2)
     },
     decreasePlaybackSpeed () {
       const newspeed = parseFloat(this.playbackSpeed) - parseFloat('0.05')
       this.$store.commit('app/playbackSpeed', newspeed.toFixed(2))
-      this.player.rate(newspeed.toFixed(2))
+      this.player.playbackRate = newspeed.toFixed(2)
     },
     async seekForwards () {
       this.player.pause()

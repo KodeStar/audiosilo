@@ -1,43 +1,41 @@
 <template>
   <div class="p-3 px-6 lg:px-12 w-screen lg:w-full content-area overflow-auto lg:border-l border-gray-100">
-    <div v-if="folder && folder.subfolders">
+    <div v-if="folder && folder.subfolders && folder.subfolders.length > 0">
+      <BreadCrumbs />
       <div
-        v-if="folder.subfolders.length > 0"
         class="my-6 text-xl font-bold text-gray-600"
       >
         Folders
-        <BreadCrumbs v-on:selectFolder="selectFolder" />
       </div>
       <div
         v-for="(subfolder, index) in folder.subfolders"
         :key="index"
         class="bg-gray-50 filter drop-shadow rounded-lg my-2 w-full flex text-gray-600 max-w-xl items-center cursor-pointer"
-        @click="selectFolder(subfolder)"
+        @click="$store.dispatch('app/selectFolder', subfolder)"
       >
-        <div class="p-4 text-gray-50 bg-pink-600 rounded-l-lg">
+        <div class="p-4 flex self-stretch text-gray-50 bg-pink-600 rounded-l-lg">
           <i class="fa-light fa-fw fa-folder fa-lg" />
         </div>
-        <div class="px-5">
+        <div class="px-5 py-2">
           <span class="text-sm font-medium">{{ subfolder.name }}</span>
         </div>
       </div>
     </div>
-    <div v-if="folder && folder.files">
+    <div v-if="folder && folder.files && folder.files.length > 0">
+      <BreadCrumbs />
       <div
-        v-if="folder.files.length > 0"
         class="my-6 text-xl font-bold text-gray-600"
       >
         Files
-        <BreadCrumbs v-on:selectFolder="selectFolder" />
       </div>
       <div
         v-for="(file, index) in folder.files"
         :key="index"
-        class="bg-gray-50 filter drop-shadow rounded-lg my-2 w-full flex text-gray-600 max-w-xl items-center cursor-pointer"
+        class="bg-gray-50 min-h-[3.5rem] filter drop-shadow rounded-lg my-2 w-full flex text-gray-600 max-w-xl items-center cursor-pointer"
         :class="{ 'opacity-50': (seek > 0 || currentFile.index > 0) && currentFile.index !== index }"
         @click="selectFile(index)"
       >
-        <div class="p-4 text-gray-50 bg-blue-400 rounded-l-lg">
+        <div class="p-4 flex self-stretch items-center text-gray-50 bg-blue-400 rounded-l-lg">
         <svg
           aria-hidden="true"
           focusable="false"
@@ -49,7 +47,7 @@
           viewBox="0 0 448 512"><path fill="currentColor" d="M448 368v-320C448 21.49 426.5 0 400 0h-320C35.82 0 0 35.82 0 80V448c0 35.35 28.65 64 64 64h368c8.844 0 16-7.156 16-16S440.8 480 432 480H416v-66.95C434.6 406.4 448 388.8 448 368zM32 80C32 53.49 53.49 32 80 32H96v352H64c-11.71 0-22.55 3.389-32 8.9V80zM384 480H64c-17.64 0-32-14.36-32-32s14.36-32 32-32h320V480zM400 384H128V32h272C408.8 32 416 39.17 416 48v320C416 376.8 408.8 384 400 384zM352 128H192C183.2 128 176 135.2 176 144S183.2 160 192 160h160c8.844 0 16-7.156 16-16S360.8 128 352 128zM352 224H192C183.2 224 176 231.2 176 240S183.2 256 192 256h160c8.844 0 16-7.156 16-16S360.8 224 352 224z"></path></svg>
         </div>
         <div class="flex justify-between w-full items-center">
-          <div class="px-5 flex flex-col">
+          <div class="px-5 py-2 flex flex-col">
             <span class="text-sm font-medium">{{ file.name }}</span>
             <span class="text-xs text-gray-500"><span class="font-normal">Duration:</span> <span class="">{{ $formatToTime(file.meta.duration, 3, false) }}</span> <span class="ml-2 font-normal">Bitrate:</span> <span class="">{{ file.meta.bitrate }}</span>kbps</span>
           </div>
@@ -63,8 +61,6 @@
 </template>
 
 <script>
-import VueCookies from 'vue-cookies'
-
 export default {
   layout: 'page',
   name: 'App',
@@ -134,13 +130,13 @@ export default {
         }
 
         if (to.query.folder) {
-          this.fetchFolder(to.query.folder)
+          this.$store.dispatch('app/fetchFolder', to.query.folder)
         } else {
-          this.fetchFolder()
+          this.$store.dispatch('app/fetchFolder')
         }
       }
     },
-    loginStatus (to, from) {
+    async loginStatus (to, from) {
       console.log('login status updated')
       if (to !== from) {
         if (to !== false) {
@@ -149,13 +145,13 @@ export default {
           } else {
             this.$store.commit('app/currentCollection', 0)
           }
-          this.fetchFolder(this.currentFolder)
+          await this.$store.dispatch('app/fetchFolder', this.currentFolder)
         }
       }
     },
-    currentCollection (to, from) {
+    async currentCollection (to, from) {
       if (to !== from) {
-        this.selectFolder({ path: '/' })
+        await this.$store.dispatch('app/selectFolder', { path: '/' })
       }
     }
   },
@@ -163,8 +159,6 @@ export default {
   mounted () {
     this.$store.dispatch('app/initialiseApp')
     this.$store.commit('app/activepage', 'library')
-    this.fetchFolder()
-    // this.fetchFolder()
   },
 
   methods: {
@@ -197,37 +191,8 @@ export default {
       })
       this.player.play()
     },
-    async fetchFolder (name = '') {
-      // console.log(VueCookies.get('audioserve_token'))
-      const folder = await fetch(this.$store.getters['app/getServerUrl'] + 'folder/' + name, {
-        headers: {
-          Authorization: 'Bearer ' + VueCookies.get('audioserve_token')
-        }
-      })
-
-      if (folder.status === 401) {
-        this.$store.commit('app/loginStatus', false)
-        return false
-      }
-
-      const json = await folder.json()
-      if (json) {
-        this.$store.commit('app/folder', json)
-      }
-    },
     updateServer (input) {
       this.$store.commit('app/server', input)
-    },
-    selectFolder (subfolder) {
-      this.$store.commit('app/folderDescription', '')
-      this.$store.commit('app/player', false)
-      const route = { path: '/', query: { folder: subfolder.path } }
-      if (this.currentCollection > 0) {
-        route.query.collection = this.currentCollection
-      }
-      this.$router.push(route)
-      this.fetchFolder(encodeURIComponent(subfolder.path))
-      // this.$store.commit('app/rightbar', true)
     }
   }
 }

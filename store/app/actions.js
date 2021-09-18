@@ -99,6 +99,38 @@ export function login (context, data) {
   */
 }
 
+export async function selectFolder (context, subfolder) {
+  context.commit('folderDescription', '')
+  context.commit('player', false)
+  const route = { path: '/', query: { folder: subfolder.path } }
+  if (this.currentCollection > 0) {
+    route.query.collection = this.currentCollection
+  }
+  this.app.router.push(route)
+  await fetchFolder(context, encodeURIComponent(subfolder.path))
+}
+
+export async function fetchFolder (context, name = '') {
+  // console.log(VueCookies.get('audioserve_token'))
+  console.log('context.getters.getServerUrl')
+  console.log(context.getters.getServerUrl)
+  const folder = await fetch(context.getters.getServerUrl + 'folder/' + name, {
+    headers: {
+      Authorization: 'Bearer ' + VueCookies.get('audioserve_token')
+    }
+  })
+
+  if (folder.status === 401) {
+    context.commit('loginStatus', false)
+    return false
+  }
+
+  const json = await folder.json()
+  if (json) {
+    context.commit('folder', json)
+  }
+}
+
 export async function fetchCollections (context) {
   const collections = await fetch(context.state.server + 'collections', {
     headers: {
@@ -197,7 +229,6 @@ export async function getDescription (context, path) {
 }
 
 export async function fileIsCached (context, details) {
-  
   if (!('caches' in window)) {
     return false
   }

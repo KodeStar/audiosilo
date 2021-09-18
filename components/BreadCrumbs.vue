@@ -1,10 +1,11 @@
 <template>
-  <div v-if="breadcrumbs.length > 1" class="breadcrumbs flex-col lg:flex-row">
+  <div v-if="breadcrumbs.length > 1" class="breadcrumbs flex flex-wrap">
     <span
       v-for="(breadcrumb, index) in breadcrumbs"
       :key="index"
+      class="my-1"
       :class="{active: breadcrumb.active }"
-      @click="$emit('selectFolder', { path: breadcrumb.link })"
+      @click="$store.dispatch('app/selectFolder', { path: breadcrumb.link })"
     >
       {{ breadcrumb.name }}
     </span>

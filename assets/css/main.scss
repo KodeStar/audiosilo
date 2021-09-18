@@ -67,9 +67,46 @@ body {
 .breadcrumbs {
   @apply mb-6 mt-2;
   span {
-    @apply text-sm text-gray-500 font-normal mr-2 p-2 py-1 bg-gray-300 bg-opacity-40 hover:bg-opacity-60 rounded cursor-pointer;
+    @apply text-sm text-gray-500 relative font-normal pl-3 p-1 hover:bg-gray-50 cursor-pointer;
+    background-color: #edeff3;
+    border: 1px solid #dee1e4;
     &.active {
       @apply font-normal font-medium text-gray-300 no-underline text-pink-600;
+    }
+    &:after { 
+      content: " "; 
+      display: block; 
+      width: 0; 
+      height: 0;
+      border-top: 14px solid transparent; /* Go big on the size, and let overflow hide */
+      border-bottom: 14px solid transparent;
+      border-left: 5px solid #edeff3;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      left: 100%;
+      z-index: 2; 
+    }
+    &:before { 
+      content: " "; 
+      display: block; 
+      width: 0; 
+      height: 0;
+      border-top: 14px solid transparent;       
+      border-bottom: 14px solid transparent;
+      border-left: 5px solid #dee1e4;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      margin-left: 1px;
+      left: 100%;
+      z-index: 1;
+    }
+    &:hover {
+      background-color: #f1f3f5;
+      &:after { 
+        border-left: 5px solid #f1f3f5;
+      }
     }
   }
 }
