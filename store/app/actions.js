@@ -197,7 +197,8 @@ export async function getDescription (context, path) {
 }
 
 export async function fileIsCached (context, details) {
-  if (caches === undefined) {
+  
+  if (!('caches' in window)) {
     return false
   }
   const cacheName = context.state.cacheKey + details.hash
