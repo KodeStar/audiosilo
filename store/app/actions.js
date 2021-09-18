@@ -112,8 +112,6 @@ export async function selectFolder (context, subfolder) {
 
 export async function fetchFolder (context, name = '') {
   // console.log(VueCookies.get('audioserve_token'))
-  console.log('context.getters.getServerUrl')
-  console.log(context.getters.getServerUrl)
   const folder = await fetch(context.getters.getServerUrl + 'folder/' + name, {
     headers: {
       Authorization: 'Bearer ' + VueCookies.get('audioserve_token')

@@ -151,7 +151,7 @@ export default {
       const cacheStorage = await caches.open(cacheName)
 
       await Promise.all(this.details.files.map((file) => {
-        return cacheStorage.add(this.$store.getters['app/getServerUrl'] + 'audio/' + file.path + '?trans=0')
+        return cacheStorage.add(this.$store.getters['app/getFileUrl'](file.path))
       }))
       this.downloading = false
       this.cached = true

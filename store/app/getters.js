@@ -5,3 +5,9 @@ export function getServerUrl (state) {
   }
   return url
 }
+
+export function getFileUrl (state) {
+  return (file) => {
+    return getServerUrl(state) + 'audio/' + file + '?trans=0'
+  }
+}

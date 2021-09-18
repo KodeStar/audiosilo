@@ -12,7 +12,7 @@ export async function load (context, data) {
   if (!data) {
     data = loadCurrent(context)
   }
-  let path = context.rootGetters['app/getServerUrl'] + 'audio/' + data.file + '?trans=0'
+  let path = context.rootGetters['app/getFileUrl'](data.file)
   const filedetails = {
     hash: context.rootState.app.book.hash,
     file: path

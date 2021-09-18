@@ -156,8 +156,7 @@ export default {
       return value.toFixed(0)
     },
     fileUrl () {
-      // return this.$store.getters['app/getServerUrl'] + 'download/' + this.currentFile.path
-      return this.$store.getters['app/getServerUrl'] + 'audio/' + this.currentFile.path + '?trans=0'
+      return this.$store.getters['app/getFileUrl'](this.currentFile.path)
     }
   },
 
