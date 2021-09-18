@@ -8,7 +8,7 @@
       :placeholder="title"
     >
     <label
-      class="pointer-events-none font-normal select-none absolute block top-0 left-0 w-full px-5 py-3 leading-normal"
+      class="pointer-events-none select-none absolute block top-0 left-0 w-full px-5 py-3 leading-normal"
     >
       {{ title }}
     </label>
