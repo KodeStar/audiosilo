@@ -24,7 +24,7 @@
     <div class="px-8 text-xs">{{ remaining }}</div>
 
     <div class="px-8 pt-8">
-      <div class="cursor-pointer relative">
+      <div v-if="cacheavailable" class="cursor-pointer relative">
         <span @click="download" v-show="!cached && !downloading" class="fa-layers fa-fw fa-2x">
           <i class="fa-solid fa-circle text-gray-600"></i>
           <i class="fa-inverse fa-light fa-arrow-down-to-line" data-fa-transform="shrink-8"></i>
@@ -98,6 +98,9 @@ export default {
     },
     playing () {
       return this.$store.state.player.playing
+    },
+    cacheavailable () {
+      return 'caches' in window
     }
   },
 
