@@ -2,6 +2,8 @@
 
 ![Audioserve UI](https://i.imgur.com/9T3cALq.png)
 
+If anyone wants to help out, reach out to me (Kode) on the linuxserver.io discord at https://discord.gg/9guFVhmTcq
+
 ## Build Setup
 
 ```bash
