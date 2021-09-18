@@ -4,6 +4,13 @@
 
 If anyone wants to help out, reach out to me (Kode) on the linuxserver.io discord at https://discord.gg/9guFVhmTcq
 
+There is a github pages hosted version of the code at:
+
+- http://audioserve.coderior.com - Use this one if your audioserve instance **doesn't** use https
+- https://audioserve.coderior.com - Use this one if your audioserve instance **does** use https, using this one allows you to install it as a PWA and cache files for offline use
+
+You need to be running an instance of Audioserve - https://github.com/izderadicka/audioserve/ this is a front end for Audioserve.
+
 ## Build Setup
 
 ```bash
