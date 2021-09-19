@@ -4,7 +4,7 @@
     <div>
       <div class="text p-8 pb-5 pt-12 flex justify-center flex-shrink">
         <div class="w-80 h-80 bg-gray-300 justify-center flex items-center rounded-md shadow-inner p-4">
-          <img class="block rounded-md h-full" :src="image" />
+          <Cover :image="image" :path="$route.query.folder" />
         </div>
       </div>
       <div class="w-full px-8 flex flex-col text-center items-center">

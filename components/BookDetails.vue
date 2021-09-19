@@ -3,7 +3,7 @@
     <div class="text pt-3 lg:pt-8 p-8 pb-5 flex flex-col justify-center">
       <div class="lg:hidden"><BreadCrumbs /></div>
       <div class="w-80 h-80 bg-gray-300 justify-center flex items-center rounded-md shadow-inner p-4">
-        <img class="block rounded-md h-full" :src="image" />
+        <Cover :image="image" :path="$route.query.folder" />
       </div>
     </div>
     <div class="text-xl flex justify-center px-8 font-bold">{{ name }}</div>
