@@ -17,7 +17,9 @@ export default function () {
       seekForwards: 45,
       seekBackwards: 30,
       active_books: [],
-      finished_books: []
+      finished_books: [],
+      cached_books: [],
+      transcode: '0'
     },
     book: {
       hash: null,

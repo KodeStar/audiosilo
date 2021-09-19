@@ -23,6 +23,19 @@
         </div>
         <div class="w-full max-w-xs"><input v-model="playback_speed" class="w-full p-3 bg-gray-100 border border-gray-300 shadow-inner leading-normal rounded-xl" /></div>
       </div>
+      <div class="p-4 flex flex-col lg:flex-row justify-between items-center border-b">
+        <div class="flex flex-col mb-4 lg:mb-0">
+          <span class="font-semibold mb-1">Transcode</span>
+          <span class="">Enabling transcoding will transcode audio files to the opus format in order to save bandwidth while keeping an acceptable sound quality but may result in slower downloads.</span>
+        </div>
+        <div class="w-full max-w-xs">
+          <select v-model="transcode" class="w-full p-3 bg-gray-100 border border-gray-300 shadow-inner leading-normal rounded-xl">
+            <option v-for="(option, index) in options" :key="index" v-bind:value="option.value">
+              {{ option.text }}
+            </option>
+          </select>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -36,6 +49,12 @@ export default {
   },
   data () {
     return {
+      options: [
+        { text: 'Disabled', value: '0' },
+        { text: 'High (64kbps)', value: 'h' },
+        { text: 'Medium (48kbps)', value: 'm' },
+        { text: 'Low (24kbps)', value: 'l' }
+      ]
     }
   },
 
@@ -57,6 +76,7 @@ export default {
           seekForwards: value
         }
         this.$store.commit('app/groupDetails', newdetails)
+        this.$store.dispatch('app/setGroupDetails')
       }
     },
     seekBackwards: {
@@ -70,6 +90,7 @@ export default {
           seekBackwards: value
         }
         this.$store.commit('app/groupDetails', newdetails)
+        this.$store.dispatch('app/setGroupDetails')
       }
     },
     playback_speed: {
@@ -83,6 +104,21 @@ export default {
           playback_speed: value
         }
         this.$store.commit('app/groupDetails', newdetails)
+        this.$store.dispatch('app/setGroupDetails')
+      }
+    },
+    transcode: {
+      get () {
+        return this.$store.state.app.groupDetails.transcode
+      },
+      set (value) {
+        const current = this.$store.state.app.groupDetails
+        const newdetails = {
+          ...current,
+          transcode: value
+        }
+        this.$store.commit('app/groupDetails', newdetails)
+        this.$store.dispatch('app/setGroupDetails')
       }
     }
   },

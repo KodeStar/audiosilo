@@ -38,7 +38,7 @@
         <span  @click="seekBackwards" class="fa-layers fa-fw fa-3x relative">
           <i class="fa-thin fa-circle-notch fa-rotate-by" style="--fa-rotate-angle: -23deg;"></i>
           <i class="fa-solid fa-chevron-left" data-fa-transform="up-30" style="font-size: 12px;"></i>
-          <span class="text-sm absolute inset-0 flex justify-center items-center" style="">30</span>
+          <span class="text-sm absolute inset-0 flex justify-center items-center" style="">{{ groupDetails.seekBackwards }}</span>
         </span>
       </div>
       <div class="cursor-pointer relative">
@@ -59,7 +59,7 @@
         <span @click="seekForwards" class="fa-layers fa-fw fa-3x relative">
           <i class="fa-thin fa-circle-notch fa-rotate-by" style="--fa-rotate-angle: 23deg;"></i>
           <i class="fa-solid fa-chevron-right" data-fa-transform="up-30" style="font-size: 12px;"></i>
-          <span class="text-sm absolute inset-0 flex justify-center items-center" style="">45</span>
+          <span class="text-sm absolute inset-0 flex justify-center items-center" style="">{{ groupDetails.seekForwards }}</span>
         </span>
       </div>
     </div>
@@ -84,8 +84,6 @@
 </template>
 
 <script>
-import { sha256 } from 'js-sha256'
-
 export default {
   name: 'Player',
   props: ['details', 'server'],
@@ -112,7 +110,7 @@ export default {
       return this.$store.state.app.book.seek
     },
     hash () {
-      return sha256(this.$route.fullPath)
+      return this.$store.getters['app/hash'](this.$route.fullPath)
     },
     totalTime () {
       return 0

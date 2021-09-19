@@ -13,6 +13,19 @@ export function setDetails (context, data) {
   localForage.setItem('collections', data.collections)
   localForage.setItem('currentCollection', data.currentCollection)
 }
+export async function getGroupDetails (context) {
+  // This will need to come from the server at some point, where possible
+  const currentDetails = await localForage.getItem('group-' + context.state.group)
+  if (currentDetails) {
+    context.commit('groupDetails', currentDetails)
+  }
+}
+export function setGroupDetails (context) {
+  // set to server when available
+
+  // Set local copy for when offline
+  localForage.setItem('group-' + context.state.group, context.state.groupDetails)
+}
 
 export function login (context, data) {
   let loginStatus = false
@@ -161,7 +174,8 @@ export async function getBookDetails (context, hash) {
       author: 'Unknown',
       description,
       cover,
-      seek: 0
+      seek: 0,
+      path: this.app.router.app.$route.query.folder
     }
     await localForage.setItem(hash, book)
   }
@@ -234,6 +248,7 @@ export async function fileIsCached (context, details) {
   const exists = await caches.has(cacheName)
   console.log('exists')
   console.log(exists)
+  console.log(cacheName)
   if (exists) {
     const cacheStorage = await caches.open(cacheName)
     const cachedResponse = await cacheStorage.match(details.file)
@@ -241,6 +256,26 @@ export async function fileIsCached (context, details) {
     return (cachedResponse !== undefined)
   }
   return false
+}
+
+export async function cachedBooks (context) {
+  if (!('caches' in window)) {
+    return []
+  }
+  context.commit('clearCachedBooks')
+  const keys = await caches.keys()
+  if (keys) {
+    keys.forEach(async (key) => {
+      const name = key.replace(context.state.cacheKey, '')
+      const book = await localForage.getItem(name)
+      if (book) {
+        context.commit('addCachedBook', book)
+      }
+    })
+  }
+
+  console.log(keys)
+  return []
 }
 
 export function contentToExtension (mime) {

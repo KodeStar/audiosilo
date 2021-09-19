@@ -77,3 +77,13 @@ export function menu (state, data) {
 export function activepage (state, data) {
   state.activepage = data
 }
+
+export function clearCachedBooks (state) {
+  // mutate state
+  state.groupDetails.cached_books = []
+}
+
+export function addCachedBook (state, book) {
+  // mutate state
+  state.groupDetails.cached_books.push(book)
+}

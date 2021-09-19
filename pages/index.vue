@@ -31,8 +31,8 @@
       <div
         v-for="(file, index) in folder.files"
         :key="index"
-        class="bg-gray-50 min-h-[3.5rem] filter drop-shadow rounded-lg my-2 w-full flex text-gray-600 max-w-xl items-center cursor-pointer"
-        :class="{ 'opacity-50': (seek > 0 || currentFile.index > 0) && currentFile.index !== index }"
+        class="bg-gray-50 min-h-[3.5rem] filter drop-shadow rounded-lg hover:opacity-80 my-2 w-full flex text-gray-600 max-w-xl items-center cursor-pointer"
+        :class="{ 'opacity-50': (seek > 0 || current > 0 || currentFile.index > 0) && currentFile.index !== index }"
         @click="selectFile(index)"
       >
         <div class="p-4 flex self-stretch items-center text-gray-50 bg-blue-400 rounded-l-lg">
@@ -52,7 +52,7 @@
             <span class="text-xs text-gray-500"><span class="font-normal">Duration:</span> <span class="">{{ $formatToTime(file.meta.duration, 3, false) }}</span> <span class="ml-2 font-normal">Bitrate:</span> <span class="">{{ file.meta.bitrate }}</span>kbps</span>
           </div>
           <div class="px-4">
-            <div class="w-4 h-4 bg-gray-200 rounded-full"></div>
+            <div class="w-4 h-4 rounded-full" :class="[ file.path === true ? 'bg-green-400' : 'bg-gray-200']"></div>
           </div>
         </div>
       </div>
@@ -90,6 +90,9 @@ export default {
     server () {
       return this.$store.state.app.server
     },
+    current () {
+      return this.$store.state.player.current
+    },
     folder () {
       return this.$store.state.app.folder
     },
@@ -116,6 +119,9 @@ export default {
     },
     playing () {
       return this.$store.state.player.playing
+    },
+    hash () {
+      return this.$store.getters['app/hash'](this.$route.fullPath)
     }
   },
 
@@ -133,19 +139,6 @@ export default {
           this.$store.dispatch('app/fetchFolder', to.query.folder)
         } else {
           this.$store.dispatch('app/fetchFolder')
-        }
-      }
-    },
-    async loginStatus (to, from) {
-      console.log('login status updated')
-      if (to !== from) {
-        if (to !== false) {
-          if (this.$route.query.collection > 0) {
-            this.$store.commit('app/currentCollection', this.$route.query.collection)
-          } else {
-            this.$store.commit('app/currentCollection', 0)
-          }
-          await this.$store.dispatch('app/fetchFolder', this.currentFolder)
         }
       }
     },
@@ -194,6 +187,15 @@ export default {
     updateServer (input) {
       this.$store.commit('app/server', input)
     }
+    /* async isCached (file) {
+      const filedetails = {
+        hash: this.hash,
+        file: this.$store.getters['app/getFileUrl'](file.path)
+      }
+      const iscached = await this.$store.dispatch('app/fileIsCached', filedetails)
+      console.log('iscached: ' + typeof iscached)
+      return iscached
+    } */
   }
 }
 </script>

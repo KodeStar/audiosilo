@@ -48,7 +48,6 @@
 </template>
 
 <script>
-import { sha256 } from 'js-sha256'
 import VueCookies from 'vue-cookies'
 export default {
   name: 'BookDetails',
@@ -75,7 +74,7 @@ export default {
       return this.$store.state.app.book.seek
     },
     hash () {
-      return sha256(this.$route.fullPath)
+      return this.$store.getters['app/hash'](this.$route.fullPath)
     },
     totalTime () {
       let total = 0
@@ -110,7 +109,7 @@ export default {
     this.getImage()
     // const path = (this.details && this.details.description) ? this.details.description.path : null
     // const cover = (this.details && this.details.cover) ? this.server + 'cover/' + this.details.cover.path : null
-    await this.$store.dispatch('app/getBookDetails', sha256(this.$route.fullPath))
+    await this.$store.dispatch('app/getBookDetails', this.hash)
     this.$store.dispatch('player/getCurrentFile', {
       files: this.details.files,
       seek: this.$store.state.app.book.seek

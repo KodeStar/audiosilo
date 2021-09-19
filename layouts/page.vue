@@ -33,6 +33,24 @@ export default {
   },
   components: {
   },
+  watch: {
+    async loginStatus (to, from) {
+      console.log('login status updated')
+      if (to !== from) {
+        if (to !== false) {
+          if (this.$route.query.collection > 0) {
+            this.$store.commit('app/currentCollection', this.$route.query.collection)
+          } else {
+            this.$store.commit('app/currentCollection', 0)
+          }
+          await this.$store.dispatch('app/fetchFolder', this.currentFolder)
+          // Check if group details is set in storage
+          this.$store.dispatch('app/getGroupDetails')
+        }
+      }
+    }
+
+  },
   computed: {
     currentFolder () {
       return this.$route.query.folder || ''
@@ -52,7 +70,6 @@ export default {
     player () {
       return this.$store.state.app.player
     }
-
   }
 
 }

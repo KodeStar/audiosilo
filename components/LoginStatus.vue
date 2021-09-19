@@ -15,7 +15,7 @@
       </div>
       <floating-label-input class="my-2" v-model="server" title="Server" />
       <floating-label-input class="my-2" v-model="secret" title="Shared Secret" />
-      <floating-label-input class="my-2" v-model="group" title="Group" />
+      <floating-label-input class="my-2" v-model="group" title="User/Group" />
       <button class="bg-pink-600 text-white w-full mt-3 p-3 rounded-xl text-lg" @click="login">
         Login
       </button>
