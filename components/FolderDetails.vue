@@ -46,6 +46,8 @@ export default {
     if (this.image || this.description) {
       this.$store.commit('app/rightbar', true)
       this.getImage()
+    } else {
+      this.$store.commit('app/rightbar', false)
     }
   },
 

@@ -36,7 +36,6 @@ export default {
     books () {
       return this.$store.state.app.groupDetails.cached_books
     }
-
   },
 
   watch: {

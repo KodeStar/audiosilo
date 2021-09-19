@@ -103,17 +103,12 @@ export default {
     }
   },
 
-  async mounted () {
-    this.$store.commit('app/rightbar', true)
+  /* async */ mounted () {
     // const keys = await caches.keys()
     this.getImage()
     // const path = (this.details && this.details.description) ? this.details.description.path : null
     // const cover = (this.details && this.details.cover) ? this.server + 'cover/' + this.details.cover.path : null
-    await this.$store.dispatch('app/getBookDetails', this.hash)
-    this.$store.dispatch('player/getCurrentFile', {
-      files: this.details.files,
-      seek: this.$store.state.app.book.seek
-    })
+    /*  */
   },
 
   methods: {

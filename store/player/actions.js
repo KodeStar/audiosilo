@@ -7,7 +7,9 @@ export async function load (context, data) {
   context.commit('app/player', true, { root: true })
   context.commit('playing', false)
 
-  const folder = context.rootState.app.folder
+  const folder = {
+    ...context.rootState.app.folder
+  }
 
   if (!data) {
     data = loadCurrent(context)

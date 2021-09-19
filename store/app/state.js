@@ -6,7 +6,12 @@ export default function () {
     loginStatus: false,
     loginsecret: null,
     server: null,
-    folder: null,
+    folder: {
+      cover: null,
+      description: null,
+      files: [],
+      subfolders: []
+    },
     group: null,
     search: false,
     searchterm: '',

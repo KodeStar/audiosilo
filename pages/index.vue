@@ -52,7 +52,7 @@
             <span class="text-xs text-gray-500"><span class="font-normal">Duration:</span> <span class="">{{ $formatToTime(file.meta.duration, 3, false) }}</span> <span class="ml-2 font-normal">Bitrate:</span> <span class="">{{ file.meta.bitrate }}</span>kbps</span>
           </div>
           <div class="px-4">
-            <div class="w-4 h-4 rounded-full" :class="[ file.path === true ? 'bg-green-400' : 'bg-gray-200']"></div>
+            <div class="w-4 h-4 rounded-full" :class="[ file.isCached === true ? 'bg-green-400' : 'bg-gray-200']"></div>
           </div>
         </div>
       </div>
@@ -126,32 +126,48 @@ export default {
   },
 
   watch: {
-    '$route' (to, from) {
-      console.log('watch route triggered')
-      if (to !== from) {
-        if (to.query.collection > 0) {
-          this.$store.commit('app/currentCollection', to.query.collection)
-        } else {
-          this.$store.commit('app/currentCollection', 0)
+    $route: {
+      handler (to, from) {
+        console.log('watch route triggered')
+        if (to !== from) {
+          if (to.query.collection > 0) {
+            this.$store.commit('app/currentCollection', to.query.collection)
+          } else {
+            this.$store.commit('app/currentCollection', 0)
+          }
+          if (to.query.folder) {
+            this.$store.dispatch('app/fetchFolder', to.query.folder)
+          } else {
+            this.$store.dispatch('app/fetchFolder')
+          }
         }
-
-        if (to.query.folder) {
-          this.$store.dispatch('app/fetchFolder', to.query.folder)
-        } else {
-          this.$store.dispatch('app/fetchFolder')
-        }
-      }
+      },
+      immediate: true
     },
     async currentCollection (to, from) {
       if (to !== from) {
         await this.$store.dispatch('app/selectFolder', { path: '/' })
       }
+    },
+    folder: {
+      async handler (val, oldVal) {
+        if (val.files.length > 0) {
+          this.$store.commit('app/rightbar', true)
+          await this.$store.dispatch('app/getBookDetails', this.hash)
+          this.$store.dispatch('player/getCurrentFile', {
+            files: this.folder.files,
+            seek: this.$store.state.app.book.seek
+          })
+        }
+      },
+      immediate: true
     }
   },
 
   mounted () {
     this.$store.dispatch('app/initialiseApp')
     this.$store.commit('app/activepage', 'library')
+    // this.$store.dispatch('app/fetchFolder')
   },
 
   methods: {

@@ -23,7 +23,9 @@ export function book (state, data) {
 }
 
 export function folder (state, data) {
-  state.folder = data
+  state.folder = {
+    ...data
+  }
 }
 
 export function description (state, data) {

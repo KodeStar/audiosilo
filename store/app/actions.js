@@ -112,7 +112,7 @@ export function login (context, data) {
   */
 }
 
-export async function selectFolder (context, subfolder) {
+export /* async */ function selectFolder (context, subfolder) {
   context.commit('folderDescription', '')
   context.commit('player', false)
   const route = { path: '/', query: { folder: subfolder.path } }
@@ -120,7 +120,6 @@ export async function selectFolder (context, subfolder) {
     route.query.collection = this.currentCollection
   }
   this.app.router.push(route)
-  await fetchFolder(context, encodeURIComponent(subfolder.path))
 }
 
 export async function fetchFolder (context, name = '') {
@@ -138,8 +137,26 @@ export async function fetchFolder (context, name = '') {
 
   const json = await folder.json()
   if (json) {
+    if (json.files.length > 0) {
+      console.log('check if files are cached')
+      json.files = await fileList(context, json.files)
+
+      console.log(json)
+    }
     context.commit('folder', json)
   }
+}
+
+export async function fileList (context, files) {
+  files.forEach(async (file) => {
+    const path = context.rootGetters['app/getFileUrl'](file.path)
+    const filedetails = {
+      hash: context.rootState.app.book.hash,
+      file: path
+    }
+    file.isCached = await fileIsCached(context, filedetails)
+  })
+  return await files
 }
 
 export async function fetchCollections (context) {
@@ -246,13 +263,13 @@ export async function fileIsCached (context, details) {
   }
   const cacheName = context.state.cacheKey + details.hash
   const exists = await caches.has(cacheName)
-  console.log('exists')
-  console.log(exists)
-  console.log(cacheName)
+  // console.log('exists')
+  // console.log(exists)
+  // console.log(cacheName)
   if (exists) {
     const cacheStorage = await caches.open(cacheName)
     const cachedResponse = await cacheStorage.match(details.file)
-    console.log(cachedResponse)
+    // console.log(cachedResponse)
     return (cachedResponse !== undefined)
   }
   return false
