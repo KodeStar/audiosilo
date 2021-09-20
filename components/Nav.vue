@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ '-translate-x-full': !menu, 'translate-x-0': menu }" class="transition-all z-40 bg-gray-200 dark:bg-gray-800 flex-shrink-0 flex-grow-0 w-screen transform lg:translate-x-0 lg:w-80 h-(screen-80) lg:h-(screen-96) border-r border-gray-300 dark:border-gray-900 absolute inset-0 lg:relative leftbar">
+  <div :class="{ 'hidden': !menu, 'block': menu }" class="transition-all z-40 bg-gray-200 dark:bg-gray-800 flex-shrink-0 flex-grow-0 w-screen transform lg:block lg:w-80 h-(screen-80) lg:h-(screen-96) border-r border-gray-300 dark:border-gray-900 absolute inset-0 lg:relative leftbar">
     <div v-if="collections.length > 1" class="relative border-t border-gray-100 dark:border-gray-750 appearance-none flex-grow collection-container">
       <select :value="currentCollection" @change="changeCollection" class="w-full py-1 px-6 bg-gray-200 dark:bg-gray-800 text-sm leading-normal w-full">
         <option v-for="(option,index) in collections" :key="index" v-bind:value="index">
@@ -39,8 +39,13 @@ export default {
     collections () {
       return this.$store.state.app.collections
     },
-    menu () {
-      return this.$store.state.app.menu
+    menu: {
+      get () {
+        return this.$store.state.app.menu
+      },
+      set (value) {
+        this.$store.commit('app/menu', value)
+      }
     },
     activepage () {
       return this.$store.state.app.activepage

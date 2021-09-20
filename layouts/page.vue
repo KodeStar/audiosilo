@@ -57,6 +57,14 @@ export default {
         }
       },
       immediate: true
+    },
+    $route: {
+      handler (to, from) {
+        if (to !== from) {
+          this.$store.commit('app/menu', false)
+        }
+      },
+      immediate: true
     }
   },
   mounted () {
