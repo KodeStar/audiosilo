@@ -8,7 +8,7 @@
           </svg>
           <div class="flex flex-col">
             <div class="font-semibold text-lg uppercase text-pink-600 leading-none">
-              Audio<span class="font-bold">Serve</span>
+              Audio<span class="font-bold text-gray-600 dark:text-gray-400">Serve</span>
             </div>
             <div class="leading-none text-xs font-normal text-gray-500">
               {{ group }}
