@@ -1,7 +1,7 @@
 {
   "name": "Audioserve",
   "short_name": "audioserve-ui",
-  "description": "![Audioserve UI](https://i.imgur.com/9T3cALq.png)",
+  "description": "![Audioserve UI - Light mode](https://i.imgur.com/DPP7qAl.png) ![Audioserve UI - Dark mode](https://i.imgur.com/eB0XRtG.png)",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",
