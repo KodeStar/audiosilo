@@ -1,9 +1,9 @@
 <template>
-  <div class="flex flex-col justify-between relative bg-gray-100 h-screen overflow-auto">
+  <div class="flex flex-col justify-between relative bg-gray-100 dark:bg-gray-840 h-screen overflow-auto">
     <div @click="closePlayer" class="absolute top-0 right-0 w-8 h-8 rounded-bl flex cursor-pointer justify-center items-center"><i class="fa-thin fa-chevron-down"></i></div>
     <div>
       <div class="text p-8 pb-5 pt-12 flex justify-center flex-shrink">
-        <div class="w-80 h-80 bg-gray-300 justify-center flex items-center rounded-md shadow-inner p-4">
+        <div class="w-full cover-container bg-gray-300 dark:bg-gray-800 justify-center flex items-center rounded-md shadow-inner p-4">
           <Cover :image="image" :path="$route.query.folder" />
         </div>
       </div>
@@ -43,15 +43,15 @@
       </div>
       <div class="cursor-pointer relative">
         <span v-show="!playing" @click="togglePlay" class="fa-layers fa-fw fa-6x">
-          <i class="fa-solid fa-circle text-gray-600"></i>
+          <i class="fa-solid text-pink-600 fa-circle"></i>
           <i class="fa-inverse fa-solid fa-play" data-fa-transform="shrink-10"></i>
         </span>
         <span v-show="playing" @click="togglePlay" class="fa-layers fa-fw fa-6x">
-          <i class="fa-solid fa-circle text-gray-600"></i>
+          <i class="fa-solid text-pink-600 fa-circle"></i>
           <i class="fa-inverse fa-solid fa-pause" data-fa-transform="shrink-10"></i>
         </span>
         <span v-show="loading" class="fa-layers fa-fw fa-6x absolute inset-0 opacity-70">
-          <i class="fa-solid fa-circle text-gray-600"></i>
+          <i class="fa-solid fa-circle"></i>
           <i class="fa-inverse fa-light fa-spinner-third fa-spin" data-fa-transform="shrink-2"></i>
         </span>
       </div>
@@ -64,17 +64,17 @@
       </div>
     </div>
     <div class="p-2 w-full">
-      <div class="bg-gray-200 rounded p-3 px-6 w-full relative flex justify-between">
+      <div class="bg-gray-200 dark:bg-gray-800 rounded p-3 px-6 w-full relative flex justify-between">
         <button @click="editPlaybackSpeed = true" class="cursor-pointer">{{ playbackSpeed }}x</button>
         <button class="cursor-pointer"><i class="fa-light fa-alarm-snooze"></i></button>
         <button class="cursor-pointer"><i class="fa-light fa-airplay"></i></button>
         <button class="cursor-pointer"><i class="fa-light fa-sliders-up"></i></button>
-        <div v-if="editPlaybackSpeed" class="absolute inset-0 flex bg-gray-200 rounded justify-between p-3 px-6">
+        <div v-if="editPlaybackSpeed" class="absolute inset-0 flex bg-gray-200 dark:bg-gray-800 rounded justify-between p-3 px-6">
           <span>{{ playbackSpeed }}x</span>
           <div class="flex items-center">
-          <div @click="decreasePlaybackSpeed" class="mx-3 cursor-pointer"><i class="fa-solid fa-circle-minus text-gray-600 fa-lg"></i></div>
+          <div @click="decreasePlaybackSpeed" class="mx-3 cursor-pointer"><i class="fa-solid fa-circle-minus fa-lg"></i></div>
           <div><input :value="playbackSpeed" @input="updatePlaybackSpeed" class="w-12 p-2 text-center" /></div>
-          <div @click="increasePlaybackSpeed" class="mx-3 cursor-pointer"><i class="fa-solid fa-circle-plus text-gray-600 fa-lg"></i></div>
+          <div @click="increasePlaybackSpeed" class="mx-3 cursor-pointer"><i class="fa-solid fa-circle-plus fa-lg"></i></div>
           </div>
           <div @click="editPlaybackSpeed = false" class="cursor-pointer">Close</div>
         </div>

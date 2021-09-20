@@ -1,16 +1,16 @@
 <template>
-  <div class="p-3 px-6 lg:px-12 w-screen lg:w-full content-area overflow-auto lg:border-l border-gray-100">
+  <div class="p-3 px-6 lg:px-12 w-screen lg:w-full content-area overflow-auto">
     <div v-if="folder && folder.subfolders && folder.subfolders.length > 0">
       <BreadCrumbs />
       <div
-        class="my-6 text-xl font-bold text-gray-600"
+        class="my-6 text-xl font-bold"
       >
         Folders
       </div>
       <div
         v-for="(subfolder, index) in folder.subfolders"
         :key="index"
-        class="bg-gray-50 filter drop-shadow rounded-lg my-2 w-full flex text-gray-600 max-w-xl items-center cursor-pointer"
+        class="bg-gray-50 dark:bg-gray-840 filter drop-shadow dark:drop-shadow-none dark:border-gray-860 dark:border rounded-lg my-2 w-full flex max-w-xl items-center cursor-pointer"
         @click="$store.dispatch('app/selectFolder', subfolder)"
       >
         <div class="p-4 flex self-stretch text-gray-50 bg-pink-600 rounded-l-lg">
@@ -24,18 +24,18 @@
     <div v-if="folder && folder.files && folder.files.length > 0">
       <BreadCrumbs />
       <div
-        class="my-6 text-xl font-bold text-gray-600"
+        class="my-6 text-xl font-bold"
       >
         Files
       </div>
       <div
         v-for="(file, index) in folder.files"
         :key="index"
-        class="bg-gray-50 min-h-[3.5rem] filter drop-shadow rounded-lg hover:opacity-80 my-2 w-full flex text-gray-600 max-w-xl items-center cursor-pointer"
+        class="bg-gray-50 dark:bg-gray-840 min-h-[3.5rem] filter drop-shadow dark:drop-shadow-none dark:border-gray-860 dark:border rounded-lg hover:opacity-80 my-2 w-full flex max-w-xl items-center cursor-pointer"
         :class="{ 'opacity-50': (seek > 0 || current > 0 || currentFile.index > 0) && currentFile.index !== index }"
         @click="selectFile(index)"
       >
-        <div class="p-4 flex self-stretch items-center text-gray-50 bg-blue-400 rounded-l-lg">
+        <div class="p-4 flex self-stretch items-center text-gray-50 bg-blue-500 rounded-l-lg">
         <svg
           aria-hidden="true"
           focusable="false"
@@ -52,7 +52,7 @@
             <span class="text-xs text-gray-500"><span class="font-normal">Duration:</span> <span class="">{{ $formatToTime(file.meta.duration, 3, false) }}</span> <span class="ml-2 font-normal">Bitrate:</span> <span class="">{{ file.meta.bitrate }}</span>kbps</span>
           </div>
           <div class="px-4">
-            <div class="w-4 h-4 rounded-full" :class="[ file.isCached === true ? 'bg-green-400' : 'bg-gray-200']"></div>
+            <div class="w-4 h-4 rounded-full" :class="[ file.isCached === true ? 'bg-green-400' : 'bg-gray-200 dark:bg-gray-800']"></div>
           </div>
         </div>
       </div>

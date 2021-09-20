@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col justify-between relative bg-gray-100 h-screen overflow-auto">
+  <div class="flex flex-col justify-between relative bg-gray-100 dark:bg-gray-600 h-screen overflow-auto">
     <div @click="closePlayer" class="absolute top-0 right-0 w-8 h-8 rounded-bl flex cursor-pointer justify-center items-center"><i class="fa-thin fa-chevron-down"></i></div>
     <div>
       <div class="text p-8 pb-5 pt-12 flex justify-center flex-shrink">
@@ -64,12 +64,12 @@
       </div>
     </div>
     <div class="p-2 w-full">
-      <div class="bg-gray-200 rounded p-3 px-6 w-full relative flex justify-between">
+      <div class="bg-gray-200 dark:bg-gray-800 rounded p-3 px-6 w-full relative flex justify-between">
         <button @click="editPlaybackSpeed = true" class="cursor-pointer">{{ playbackSpeed }}x</button>
         <button class="cursor-pointer"><i class="fa-light fa-alarm-snooze"></i></button>
         <button class="cursor-pointer"><i class="fa-light fa-airplay"></i></button>
         <button class="cursor-pointer"><i class="fa-light fa-sliders-up"></i></button>
-        <div v-if="editPlaybackSpeed" class="absolute inset-0 flex bg-gray-200 rounded justify-between p-3 px-6">
+        <div v-if="editPlaybackSpeed" class="absolute inset-0 flex bg-gray-200 dark:bg-gray-800 rounded justify-between p-3 px-6">
           <span>{{ playbackSpeed }}x</span>
           <div class="flex items-center">
           <div @click="decreasePlaybackSpeed" class="mx-3 cursor-pointer"><i class="fa-solid fa-circle-minus text-gray-600 fa-lg"></i></div>

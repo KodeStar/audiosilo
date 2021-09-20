@@ -5,9 +5,16 @@ module.exports = {
     './components/**/*.vue',
     './pages/**/*.vue'
   ],
-  darkMode: false, // or 'media' or 'class'
+  darkMode: 'class', // or 'media' or 'class'
   theme: {
     extend: {
+      colors: {
+        gray: {
+          750: '#2c3340',
+          840: '#1a2331',
+          860: '#161f2c',
+        }
+      },
       width: {
         18: '4.5rem'
       }

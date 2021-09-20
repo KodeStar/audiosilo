@@ -1,6 +1,6 @@
 <template>
-  <div class="p-3 px-6 lg:px-12 w-screen lg:w-full content-area overflow-auto lg:border-l border-gray-100">
-    <h2 class="my-6 text-xl font-bold text-gray-600">Cached Books</h2>
+  <div class="p-3 px-6 lg:px-12 w-screen lg:w-full content-area overflow-auto">
+    <h2 class="my-6 text-xl font-bold">Cached Books</h2>
     <div v-if="books.length > 0">
       <div class="flex flex-wrap">
         <div v-for="book in books" :key="book.hash" @click="$store.dispatch('app/selectFolder', book)" class="flex m-3 flex-col cursor-pointer">

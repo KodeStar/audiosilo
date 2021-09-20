@@ -50,6 +50,7 @@ export default {
     '@nuxtjs/tailwindcss',
     '@nuxtjs/google-fonts',
     '@nuxtjs/localforage',
+    '@nuxtjs/color-mode',
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -78,6 +79,10 @@ export default {
       theme_color: '#f1f1f1',
       background_color: '#f1f1f1'
     }
+  },
+
+  colorMode: {
+    classSuffix: '',
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

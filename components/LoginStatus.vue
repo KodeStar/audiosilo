@@ -1,6 +1,6 @@
 <template>
   <div v-if="loginStatus===false" class="fixed inset-0 bg-gray-900 bg-opacity-75 z-50 flex justify-center items-center">
-    <div class="rounded-lg flex bg-gray-100 flex-col p-8 w-full max-w-md m-4">
+    <div class="rounded-lg flex bg-gray-100 dark:bg-gray-600 flex-col p-8 w-full max-w-md m-4">
       <div class="flex justify-center mb-5">
         <NuxtLink class="flex items-center" to="/">
           <svg class="w-20 mr-3 transform rotate-180" xmlns="http://www.w3.org/2000/svg" viewBox="299.2254999999999 397.8038000000001 401.5409999999997 315.357">
@@ -8,7 +8,7 @@
           </svg>
           <div class="flex flex-col">
             <div class="font-semibold uppercase text-pink-600 text-2xl leading-none">
-              Audio<span class="font-bold text-gray-600">Serve</span>
+              Audio<span class="font-bold">Serve</span>
             </div>
           </div>
         </NuxtLink>

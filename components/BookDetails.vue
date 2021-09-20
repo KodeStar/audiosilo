@@ -2,7 +2,7 @@
   <div class="flex flex-col overflow-auto pb-8">
     <div class="text pt-3 lg:pt-8 p-8 pb-5 flex flex-col justify-center">
       <div class="lg:hidden"><BreadCrumbs /></div>
-      <div class="w-80 h-80 bg-gray-300 justify-center flex items-center rounded-md shadow-inner p-4">
+      <div class="w-full cover-container bg-gray-300 dark:bg-gray-800 justify-center flex items-center rounded-md shadow-inner p-4">
         <Cover :image="image" :path="$route.query.folder" />
       </div>
     </div>
@@ -26,19 +26,19 @@
     <div class="px-8 pt-8">
       <div v-if="cacheavailable" class="cursor-pointer relative">
         <span @click="download" v-show="!cached && !downloading" class="fa-layers fa-fw fa-2x">
-          <i class="fa-solid fa-circle text-gray-600"></i>
+          <i class="fa-solid fa-circle"></i>
           <i class="fa-inverse fa-light fa-arrow-down-to-line" data-fa-transform="shrink-8"></i>
         </span>
         <span v-show="downloading" class="fa-layers fa-fw fa-2x">
-          <i class="fa-solid fa-circle text-gray-600"></i>
+          <i class="fa-solid fa-circle"></i>
           <i class="fa-inverse fa-thin fa-down-to-line fa-beat" data-fa-transform="shrink-8"></i>
         </span>
         <span v-show="cached" class="fa-layers fa-fw fa-2x">
-          <i class="fa-solid fa-circle text-gray-600"></i>
+          <i class="fa-solid fa-circle"></i>
           <i class="fa-inverse fa-thin fa-trash-can" data-fa-transform="shrink-8"></i>
         </span>
         <span v-show="downloading" class="fa-layers fa-fw fa-2x absolute inset-0 opacity-70">
-          <i class="fa-solid fa-circle text-gray-600"></i>
+          <i class="fa-solid fa-circle"></i>
           <i class="fa-inverse fa-light fa-spinner-third fa-spin" data-fa-transform="shrink-2"></i>
         </span>
       </div>

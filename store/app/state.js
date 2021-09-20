@@ -24,7 +24,8 @@ export default function () {
       active_books: [],
       finished_books: [],
       cached_books: [],
-      transcode: '0'
+      transcode: '0',
+      darkMode: false
     },
     book: {
       hash: null,
