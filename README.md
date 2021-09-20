@@ -1,6 +1,10 @@
 # audioserve-ui
 
-![Audioserve UI](https://i.imgur.com/9T3cALq.png)
+![Audioserve UI - Light mode](https://i.imgur.com/DPP7qAl.png)
+![Audioserve UI - Dark mode](https://i.imgur.com/eB0XRtG.png)
+
+![Audioserve UI - Mobile - Light mode](https://i.imgur.com/s9csTE5.png)
+![Audioserve UI - Mobile - Dark mode](https://i.imgur.com/E8QbuMv.png)
 
 If anyone wants to help out, reach out to me (Kode) on the linuxserver.io discord at https://discord.gg/9guFVhmTcq
 
