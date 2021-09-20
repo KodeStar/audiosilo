@@ -8,7 +8,7 @@
           </svg>
           <div class="flex flex-col">
             <div class="font-semibold uppercase text-pink-600 text-2xl leading-none">
-              Audio<span class="font-bold">Serve</span>
+              Audio<span class="font-bold text-gray-600 dark:text-gray-400">Serve</span>
             </div>
           </div>
         </NuxtLink>
