@@ -2,7 +2,7 @@
   <div class="flex flex-col overflow-auto pb-8">
     <div class="text pt-3 lg:pt-8 p-8 pb-5 flex flex-col justify-center">
       <div class="lg:hidden"><BreadCrumbs /></div>
-      <div class="w-full cover-container bg-gray-300 dark:bg-gray-800 justify-center flex items-center rounded-md shadow-inner p-4">
+      <div class="w-full relative cover-container bg-gray-300 dark:bg-gray-800 justify-center flex items-center rounded-md shadow-inner">
         <Cover :image="image" :path="$route.query.folder" />
       </div>
     </div>
