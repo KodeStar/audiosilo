@@ -417,6 +417,20 @@ export function savePauseEvent (context, seek) {
     history
   })
 }
+export function selectHistoryItem (context, seek) {
+  const history = JSON.parse(JSON.stringify(context.state.book.history))
+  const last = history[history.length - 1].endSeek
+
+  history.push({
+    start: Date.now(),
+    startSeek: last,
+    finish: Date.now(),
+    endSeek: seek
+  })
+  updateBookDetails(context, {
+    history
+  })
+}
 
 export function autoRewind (context) {
   const history = context.state.book.history
