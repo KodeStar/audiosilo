@@ -66,9 +66,9 @@
     <div class="p-2 w-full">
       <div class="bg-gray-200 dark:bg-gray-800 rounded p-3 px-6 w-full relative flex justify-between">
         <button @click="editPlaybackSpeed = true" class="cursor-pointer">{{ playbackSpeed }}x</button>
-        <button class="cursor-pointer"><i class="fa-light fa-alarm-snooze"></i></button>
-        <button class="cursor-pointer"><i class="fa-light fa-airplay"></i></button>
-        <button class="cursor-pointer"><i class="fa-light fa-sliders-up"></i></button>
+        <button class="cursor-pointer"><i class="fa-thin fa-alarm-snooze"></i></button>
+        <button class="cursor-pointer"><i class="fa-thin fa-airplay"></i></button>
+        <button @click="playerdetails = true" class="cursor-pointer"><i class="fa-thin fa-sliders-up"></i></button>
         <div v-if="editPlaybackSpeed" class="absolute inset-0 flex bg-gray-200 dark:bg-gray-800 rounded justify-between p-3 px-6">
           <span>{{ playbackSpeed }}x</span>
           <div class="flex items-center">
@@ -80,6 +80,17 @@
         </div>
       </div>
     </div>
+    <div v-if="playerdetails" class="absolute inset-0 bg-gray-860 z-20">
+      <div @click="playerdetails = false" class="">Close</div>
+      <div @click="swapTab('bookmarks')" class="">Bookmarks</div><div @click="swapTab('history')" class="">History</div>
+      <div v-if="bookmarkstab">Bookmarks</div>
+      <div v-if="historytab">
+        <div
+          v-for="(item, index) in history"
+          :key="index"
+          class="">{{ formatDate(item.start) }} - {{ formatTime(item.start) }}</div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -89,7 +100,10 @@ export default {
   props: ['details', 'server'],
   data () {
     return {
-      editPlaybackSpeed: false
+      editPlaybackSpeed: false,
+      playerdetails: false,
+      bookmarkstab: true,
+      historytab: false
     }
   },
 
@@ -146,6 +160,9 @@ export default {
     },
     loading () {
       return this.$store.state.player.loading
+    },
+    history () {
+      return this.$store.state.app.book.history
     },
     chaptername () {
       if (this.details.files && this.currentFile) {
@@ -317,6 +334,27 @@ export default {
       console.log('< skipping to ' + backwardTo + ' from ' + currentSeek)
       this.player.currentTime = backwardTo
       this.player.play()
+    },
+    swapTab (tab) {
+      this.bookmarkstab = (tab === 'bookmarks')
+      this.historytab = (tab === 'history')
+    },
+    formatDate (time) {
+      const date = new Intl.DateTimeFormat('default', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+      })
+      const data = date.formatToParts(time)
+      return data[1].value + ' ' + data[0].value + ', ' + data[2].value
+    },
+    formatTime (time) {
+      const date = new Intl.DateTimeFormat('default', {
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric'
+      }).format(time)
+      return date
     }
   }
 }
