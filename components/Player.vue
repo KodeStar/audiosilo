@@ -66,9 +66,9 @@
     <div class="p-2 w-full">
       <div class="bg-gray-200 dark:bg-gray-800 rounded p-3 px-6 w-full relative flex justify-between">
         <button @click="editPlaybackSpeed = true" class="cursor-pointer">{{ playbackSpeed }}x</button>
-        <button class="cursor-pointer"><i class="fa-thin fa-alarm-snooze"></i></button>
-        <button class="cursor-pointer"><i class="fa-thin fa-airplay"></i></button>
-        <button @click="playerdetails = true" class="cursor-pointer"><i class="fa-thin fa-sliders-up"></i></button>
+        <button class="cursor-pointer"><i class="fa-light fa-alarm-snooze"></i></button>
+        <button class="cursor-pointer"><i class="fa-light fa-airplay"></i></button>
+        <button @click="playerdetails = true" class="cursor-pointer"><i class="fa-light fa-sliders-up"></i></button>
         <div v-if="editPlaybackSpeed" class="absolute inset-0 flex bg-gray-200 dark:bg-gray-800 rounded justify-between p-3 px-6">
           <span>{{ playbackSpeed }}x</span>
           <div class="flex items-center">
@@ -80,15 +80,39 @@
         </div>
       </div>
     </div>
-    <div v-if="playerdetails" class="absolute inset-0 bg-gray-860 z-20">
-      <div @click="playerdetails = false" class="">Close</div>
-      <div @click="swapTab('bookmarks')" class="">Bookmarks</div><div @click="swapTab('history')" class="">History</div>
-      <div v-if="bookmarkstab">Bookmarks</div>
-      <div v-if="historytab">
+    <div v-if="playerdetails" class="absolute inset-0 bg-gray-100 dark:bg-gray-860 z-40">
+      <div class="flex px-4 pt-4 w-full">
+        <div @click="swapTab('history')" :class="{ 'dark:text-white text-gray-600 bg-gray-300': historytab }" class="p-4 py-3 mx-1 flex-1 bg-gray-200 dark:bg-gray-800 cursor-pointer text-sm text-center">History</div>
+        <div @click="swapTab('bookmarks')" :class="{ 'dark:text-white text-gray-600 bg-gray-300': bookmarkstab }" class="p-4 py-3 mx-1 flex-1 bg-gray-200 dark:bg-gray-800 cursor-pointer text-sm text-center">Bookmarks</div>
+        <div @click="swapTab('chapters')" :class="{ 'dark:text-white text-gray-600 bg-gray-300': chapterstab }" class="p-4 py-3 mx-1 flex-1 bg-gray-200 dark:bg-gray-800 cursor-pointer text-sm text-center">Chapters</div>
+        <div @click="playerdetails = false" class="p-4 py-3 mx-1 bg-pink-600 text-white cursor-pointer text-center"><i class="fa-light fa-fw fa-times" /></div>
+      </div>
+      <div v-if="bookmarkstab" class="p-4">Bookmarks</div>
+      <div v-if="historytab" class="p-4">
         <div
-          v-for="(item, index) in history"
+          v-for="(item, index) in history.slice().reverse()"
           :key="index"
-          class="">{{ formatDate(item.start) }} - {{ formatTime(item.start) }}</div>
+          @click="setTime(item.startSeek)"
+          class="p-4 bg-gray-200 dark:bg-gray-840 m-1 rounded flex items-center cursor-pointer">
+            <div class="mr-4">
+              <i class="fa-light fa-fw fa-clock fa-xl" />
+            </div>
+            <div class="flex-1">
+              <div class="text-sm">{{ formatDate(item.start) }} - {{ formatTime(item.start) }}</div>
+              <div class="text-xs text-gray-500 flex items-center justify-between">
+                <div class="flex flex-col">
+                  <span class="text-pink-600"><i class="fa-solid fa-fw fa-circle-play mr-1" />{{ $formatToTime(item.startSeek, 3, false) }}</span>
+                  <span><i class="fa-solid fa-fw fa-circle-pause mr-1" />{{ $formatToTime(item.endSeek, 3, false) }}</span>
+                </div>
+                <div class="flex flex-col">
+                <span>Duration: {{ $formatToTime((item.finish - item.start)/1000, 3, false) }}</span>
+                <span>({{ speedUsed((Math.floor(item.endSeek) - Math.floor(item.startSeek)) / Math.floor((item.finish - item.start)/1000)) }}x)</span>
+                </div>
+                <div>
+                </div>
+              </div>
+            </div>
+          </div>
       </div>
     </div>
   </div>
@@ -102,8 +126,9 @@ export default {
     return {
       editPlaybackSpeed: false,
       playerdetails: false,
-      bookmarkstab: true,
-      historytab: false
+      bookmarkstab: false,
+      historytab: true,
+      chapterstab: false
     }
   },
 
@@ -186,11 +211,9 @@ export default {
     this.player.onplay = (event) => {
       that.$store.commit('player/playing', true)
       that.updatePlayerDetails()
-      that.$store.dispatch('app/savePlayEvent', that.currentFile.start + that.current)
     }
     this.player.onpause = (event) => {
       this.$store.commit('player/playing', false)
-      that.$store.dispatch('app/savePauseEvent', that.currentFile.start + that.current)
     }
     this.player.onended = (event) => {
       console.log('track ended')
@@ -204,6 +227,15 @@ export default {
     caches.delete(this.$store.state.app.cacheKey + 'temp-' + this.hash)
   },
   methods: {
+    async setTime (time) {
+      await this.$store.dispatch('player/getCurrentFile', {
+        files: this.details.files,
+        seek: time
+      })
+      const goToTime = time - this.currentFile.start
+      this.player.currentTime = goToTime
+      this.$store.commit('player/current', goToTime)
+    },
     prevFile () {
       return {
         index: this.currentFile.index - 1,
@@ -274,10 +306,12 @@ export default {
     async play () {
       const autorewind = await this.$store.dispatch('app/autoRewind')
       this.player.currentTime = this.current - autorewind
+      this.$store.dispatch('app/savePlayEvent', this.currentFile.start + this.player.currentTime)
       this.player.play()
     },
     pause () {
       console.log('pause pressed')
+      this.$store.dispatch('app/savePauseEvent', this.currentFile.start + this.current)
       this.player.pause()
     },
     updatePlaybackSpeed (event) {
@@ -338,6 +372,7 @@ export default {
     swapTab (tab) {
       this.bookmarkstab = (tab === 'bookmarks')
       this.historytab = (tab === 'history')
+      this.chapterstab = (tab === 'chapters')
     },
     formatDate (time) {
       const date = new Intl.DateTimeFormat('default', {
@@ -346,7 +381,7 @@ export default {
         year: 'numeric'
       })
       const data = date.formatToParts(time)
-      console.log(data)
+      // console.log(data)
       return data[2].value + ' ' + data[0].value + ', ' + data[4].value
     },
     formatTime (time) {
@@ -356,6 +391,9 @@ export default {
         second: 'numeric'
       }).format(time)
       return date
+    },
+    speedUsed (time) {
+      return time.toFixed(2)
     }
   }
 }

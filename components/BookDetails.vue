@@ -42,6 +42,7 @@
           <i class="fa-inverse fa-light fa-spinner-third fa-spin" data-fa-transform="shrink-2"></i>
         </span>
       </div>
+      <div @click="loadPlayer" class="">Show player</div>
     </div>
 
   </div>
@@ -95,6 +96,9 @@ export default {
     player () {
       return this.$store.state.player.player
     },
+    currentFile () {
+      return this.$store.state.player.currentFile
+    },
     current () {
       return this.$store.state.player.current
     },
@@ -119,12 +123,16 @@ export default {
       if (this.playing) {
         this.$store.commit('app/player', true)
       } else {
-        await this.$store.dispatch('player/load')
-        this.$store.commit('app/player', true)
+        await this.loadPlayer()
         const autorewind = await this.$store.dispatch('app/autoRewind')
         this.player.currentTime = this.current - autorewind
+        this.$store.dispatch('app/savePlayEvent', this.currentFile.start + this.player.currentTime)
         this.player.play()
       }
+    },
+    async loadPlayer () {
+      await this.$store.dispatch('player/load')
+      this.$store.commit('app/player', true)
     },
     async getImage () {
       if (this.details && this.details.cover) {
