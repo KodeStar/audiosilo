@@ -151,7 +151,7 @@ export async function fileList (context, files) {
   files.forEach(async (file) => {
     const path = context.rootGetters['app/getFileUrl'](file.path)
     const filedetails = {
-      hash: context.book.hash,
+      hash: context.state.book.hash,
       file: path
     }
     file.isCached = await fileIsCached(context, filedetails)
@@ -410,8 +410,8 @@ export function savePlayEvent (context, seek) {
 
 export function savePauseEvent (context, seek) {
   const history = JSON.parse(JSON.stringify(context.state.book.history))
-  history.at(-1).finish = Date.now()
-  history.at(-1).endSeek = seek
+  history[history.length - 1].finish = Date.now()
+  history[history.length - 1].endSeek = seek
   updateBookDetails(context, {
     seek,
     history
@@ -420,7 +420,10 @@ export function savePauseEvent (context, seek) {
 
 export function autoRewind (context) {
   const history = context.state.book.history
-  const last = history.at(-1)
+  if (history.length === 0) {
+    return 0
+  }
+  const last = history[history.length - 1]
   let amount = (Date.now() - last.finish) / 1000 // get it in seconds
   amount = Math.floor(Math.log(amount * (amount / 2) * (amount / 3)))
   console.log(amount)

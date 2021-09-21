@@ -346,7 +346,8 @@ export default {
         year: 'numeric'
       })
       const data = date.formatToParts(time)
-      return data[1].value + ' ' + data[0].value + ', ' + data[2].value
+      console.log(data)
+      return data[2].value + ' ' + data[0].value + ', ' + data[4].value
     },
     formatTime (time) {
       const date = new Intl.DateTimeFormat('default', {
