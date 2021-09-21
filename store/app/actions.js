@@ -423,7 +423,6 @@ export function autoRewind (context) {
   const last = history.at(-1)
   let amount = (Date.now() - last.finish) / 1000 // get it in seconds
   amount = Math.floor(Math.log(amount * (amount / 2) * (amount / 3)))
-  amount = Math.min(2, amount)
   console.log(amount)
   if (amount < 2) {
     amount = 2
