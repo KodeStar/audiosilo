@@ -169,12 +169,11 @@ export default {
     this.player.onplay = (event) => {
       that.$store.commit('player/playing', true)
       that.updatePlayerDetails()
+      that.$store.dispatch('app/savePlayEvent', that.currentFile.start + that.current)
     }
     this.player.onpause = (event) => {
       this.$store.commit('player/playing', false)
-      this.$store.dispatch('app/updateBookDetails', {
-        seek: that.currentFile.start + that.current
-      })
+      that.$store.dispatch('app/savePauseEvent', that.currentFile.start + that.current)
     }
     this.player.onended = (event) => {
       console.log('track ended')
@@ -255,7 +254,9 @@ export default {
         this.play()
       }
     },
-    play () {
+    async play () {
+      const autorewind = await this.$store.dispatch('app/autoRewind')
+      this.player.currentTime = this.current - autorewind
       this.player.play()
     },
     pause () {

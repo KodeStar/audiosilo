@@ -33,7 +33,9 @@ export default function () {
       author: null,
       description: null,
       cover: null,
-      seek: 0
+      seek: 0,
+      path: null,
+      history: []
     },
     folderDescription: '',
     secret: null,

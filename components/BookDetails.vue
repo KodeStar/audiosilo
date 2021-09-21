@@ -95,6 +95,9 @@ export default {
     player () {
       return this.$store.state.player.player
     },
+    current () {
+      return this.$store.state.player.current
+    },
     playing () {
       return this.$store.state.player.playing
     },
@@ -118,6 +121,8 @@ export default {
       } else {
         await this.$store.dispatch('player/load')
         this.$store.commit('app/player', true)
+        const autorewind = await this.$store.dispatch('app/autoRewind')
+        this.player.currentTime = this.current - autorewind
         this.player.play()
       }
     },

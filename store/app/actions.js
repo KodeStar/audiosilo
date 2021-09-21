@@ -151,7 +151,7 @@ export async function fileList (context, files) {
   files.forEach(async (file) => {
     const path = context.rootGetters['app/getFileUrl'](file.path)
     const filedetails = {
-      hash: context.rootState.app.book.hash,
+      hash: context.book.hash,
       file: path
     }
     file.isCached = await fileIsCached(context, filedetails)
@@ -174,7 +174,8 @@ export async function getFolderDescription (context, path) {
 }
 
 export async function getBookDetails (context, hash) {
-  let book = await localForage.getItem(hash)
+  const bookKey = 'book-' + context.state.group + '-' + hash
+  let book = await localForage.getItem(bookKey)
   if (!book) {
     let description = null
     if (context.state.folder.description && context.state.folder.description.path) {
@@ -192,9 +193,10 @@ export async function getBookDetails (context, hash) {
       description,
       cover,
       seek: 0,
-      path: this.app.router.app.$route.query.folder
+      path: this.app.router.app.$route.query.folder,
+      history: []
     }
-    await localForage.setItem(hash, book)
+    await localForage.setItem(bookKey, book)
   }
 
   context.commit('book', book)
@@ -212,17 +214,19 @@ export async function resetBook (context) {
   context.commit('player/current', null, { root: true })
 }
 export async function updateBookDetails (context, updates) {
+  const bookKey = 'book-' + context.state.group + '-' + context.state.book.hash
   const currentbook = context.state.book
   const book = {
     ...currentbook,
     ...updates
   }
-  await localForage.setItem(context.state.book.hash, book)
+  await localForage.setItem(bookKey, book)
   context.commit('book', book)
 }
 
 export async function setBookDetails (context, book) {
-  await localForage.setItem(book.hash, book)
+  const bookKey = 'book-' + context.state.group + '-' + book.hash
+  await localForage.setItem(bookKey, book)
   context.commit('book', book)
 }
 
@@ -389,4 +393,43 @@ export async function initialiseApp (context) {
   if (currentCollection) {
     context.commit('currentCollection', currentCollection)
   }
+}
+
+export function savePlayEvent (context, seek) {
+  const history = JSON.parse(JSON.stringify(context.state.book.history))
+  history.push({
+    start: Date.now(),
+    startSeek: seek,
+    finish: null,
+    endSeek: null
+  })
+  updateBookDetails(context, {
+    history
+  })
+}
+
+export function savePauseEvent (context, seek) {
+  const history = JSON.parse(JSON.stringify(context.state.book.history))
+  history.at(-1).finish = Date.now()
+  history.at(-1).endSeek = seek
+  updateBookDetails(context, {
+    seek,
+    history
+  })
+}
+
+export function autoRewind (context) {
+  const history = context.state.book.history
+  const last = history.at(-1)
+  let amount = (Date.now() - last.finish) / 1000 // get it in seconds
+  amount = Math.floor(Math.log(amount * (amount / 2) * (amount / 3)))
+  amount = Math.min(2, amount)
+  console.log(amount)
+  if (amount < 2) {
+    amount = 2
+  }
+  if (amount > context.rootState.player.current) {
+    amount = context.rootState.player.current
+  }
+  return amount
 }
