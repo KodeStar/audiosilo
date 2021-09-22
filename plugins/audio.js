@@ -39,4 +39,22 @@ export default ({ app }, inject) => {
 
     return output + String(time.m).padStart(2, '0') + ':' + String(time.s).padStart(2, '0')
   })
+  inject('formatDate', (time) => {
+    const date = new Intl.DateTimeFormat('default', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric'
+    })
+    const data = date.formatToParts(time)
+    // console.log(data)
+    return data[2].value + ' ' + data[0].value + ', ' + data[4].value
+  })
+  inject('formatTime', (time) => {
+    const date = new Intl.DateTimeFormat('default', {
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric'
+    }).format(time)
+    return date
+  })
 }

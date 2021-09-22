@@ -82,37 +82,37 @@
     </div>
     <div v-if="playerdetails" class="absolute inset-0 bg-gray-100 dark:bg-gray-860 z-40">
       <div class="flex px-4 pt-4 w-full">
-        <div @click="swapTab('history')" :class="{ 'dark:text-white text-gray-600 bg-gray-300': historytab }" class="p-4 py-3 mx-1 flex-1 bg-gray-200 dark:bg-gray-800 cursor-pointer text-sm text-center">History</div>
-        <div @click="swapTab('bookmarks')" :class="{ 'dark:text-white text-gray-600 bg-gray-300': bookmarkstab }" class="p-4 py-3 mx-1 flex-1 bg-gray-200 dark:bg-gray-800 cursor-pointer text-sm text-center">Bookmarks</div>
-        <div @click="swapTab('chapters')" :class="{ 'dark:text-white text-gray-600 bg-gray-300': chapterstab }" class="p-4 py-3 mx-1 flex-1 bg-gray-200 dark:bg-gray-800 cursor-pointer text-sm text-center">Chapters</div>
-        <div @click="playerdetails = false" class="p-4 py-3 mx-1 bg-pink-600 text-white cursor-pointer text-center"><i class="fa-light fa-fw fa-times" /></div>
+        <div @click="swapTab('history')" :class="{ 'dark:text-white text-gray-600 bg-gray-300': historytab }" class="p-4 py-3 mx-1 flex-1 bg-gray-200 dark:bg-gray-800 cursor-pointer text-sm text-center rounded">History</div>
+        <div @click="swapTab('bookmarks')" :class="{ 'dark:text-white text-gray-600 bg-gray-300': bookmarkstab }" class="p-4 py-3 mx-1 flex-1 bg-gray-200 dark:bg-gray-800 cursor-pointer text-sm text-center rounded">Bookmarks</div>
+        <div @click="swapTab('chapters')" :class="{ 'dark:text-white text-gray-600 bg-gray-300': chapterstab }" class="p-4 py-3 mx-1 flex-1 bg-gray-200 dark:bg-gray-800 cursor-pointer text-sm text-center rounded">Chapters</div>
+        <div @click="playerdetails = false" class="p-4 py-3 mx-1 bg-pink-600 text-white cursor-pointer text-center rounded"><i class="fa-light fa-fw fa-times" /></div>
       </div>
-      <div v-if="bookmarkstab" class="p-4">Bookmarks</div>
-      <div v-if="historytab" class="p-4">
+      <div v-show="bookmarkstab" class="p-4">
         <div
+          class="p-4 bg-gray-200 dark:bg-gray-800 m-1 rounded flex flex-col items-center cursor-pointer"
+        >
+          <input type="text" contenteditable="true" placeholder="Bookmark title..." v-model="newbookmark" class="w-full bg-gray-300 dark:bg-gray-860 p-4 py-2 mb-4" />
+          <div class="flex text-sm w-full">
+            <div class="flex-1 p-4 py-2 flex items-center justify-center bg-gray-300 dark:bg-gray-840">{{ $formatToTime(book.seek, 3, false) }}</div>
+            <button class="flex-1 p-4 py-2 bg-pink-600 text-gray-50" @click="addBookmark">Add Bookmark</button>
+          </div>
+        </div>
+
+        <Bookmark
+          v-on:setTime="setTime"
+          v-for="(bookmark, index) in bookmarks.slice().reverse()"
+          :key="index"
+          :index="index"
+          :bookmark="bookmark"
+        />
+      </div>
+      <div v-show="historytab" class="p-4">
+        <HistoryItem
+          v-on:setTime="setTime"
           v-for="(item, index) in history.slice().reverse()"
           :key="index"
-          @click="setTime(item.startSeek)"
-          class="p-4 bg-gray-200 dark:bg-gray-840 m-1 rounded flex items-center cursor-pointer">
-            <div class="mr-4">
-              <i class="fa-light fa-fw fa-clock fa-xl" />
-            </div>
-            <div class="flex-1">
-              <div class="text-sm">{{ formatDate(item.start) }} - {{ formatTime(item.start) }}</div>
-              <div class="text-xs text-gray-500 flex items-center justify-between">
-                <div class="flex flex-col">
-                  <span class="text-pink-600"><i class="fa-solid fa-fw fa-circle-play mr-1" />{{ $formatToTime(item.startSeek, 3, false) }}</span>
-                  <span><i class="fa-solid fa-fw fa-circle-pause mr-1" />{{ $formatToTime(item.endSeek, 3, false) }}</span>
-                </div>
-                <div class="flex flex-col">
-                <span>Duration: {{ $formatToTime((item.finish - item.start)/1000, 3, false) }}</span>
-                <span>({{ speedUsed((Math.floor(item.endSeek) - Math.floor(item.startSeek)) / Math.floor((item.finish - item.start)/1000)) }}x)</span>
-                </div>
-                <div>
-                </div>
-              </div>
-            </div>
-          </div>
+          :item="item"
+        />
       </div>
     </div>
   </div>
@@ -128,7 +128,8 @@ export default {
       playerdetails: false,
       bookmarkstab: false,
       historytab: true,
-      chapterstab: false
+      chapterstab: false,
+      newbookmark: ''
     }
   },
 
@@ -189,6 +190,12 @@ export default {
     history () {
       return this.$store.state.app.book.history
     },
+    bookmarks () {
+      return this.$store.state.app.book.bookmarks
+    },
+    book () {
+      return this.$store.state.app.book
+    },
     chaptername () {
       if (this.details.files && this.currentFile) {
         return this.details.files[this.currentFile.index].name
@@ -235,6 +242,7 @@ export default {
       const goToTime = time - this.currentFile.start
       this.player.currentTime = goToTime
       this.$store.commit('player/current', goToTime)
+      // this.playerdetails = false
     },
     prevFile () {
       return {
@@ -315,17 +323,38 @@ export default {
       this.player.pause()
     },
     updatePlaybackSpeed (event) {
-      this.$store.commit('app/playbackSpeed', event.target.value)
+      const current = this.$store.state.app.groupDetails
+      const newdetails = {
+        ...current,
+        playback_speed: event.target.value
+      }
+      this.$store.commit('app/groupDetails', newdetails)
+      this.$store.dispatch('app/setGroupDetails')
+
       this.player.playbackRate = event.target.value.toFixed(2)
     },
     increasePlaybackSpeed () {
       const newspeed = parseFloat(this.playbackSpeed) + parseFloat('0.05')
-      this.$store.commit('app/playbackSpeed', newspeed.toFixed(2))
+      const current = this.$store.state.app.groupDetails
+      const newdetails = {
+        ...current,
+        playback_speed: newspeed
+      }
+      this.$store.commit('app/groupDetails', newdetails)
+      this.$store.dispatch('app/setGroupDetails')
+
       this.player.playbackRate = newspeed.toFixed(2)
     },
     decreasePlaybackSpeed () {
       const newspeed = parseFloat(this.playbackSpeed) - parseFloat('0.05')
-      this.$store.commit('app/playbackSpeed', newspeed.toFixed(2))
+      const current = this.$store.state.app.groupDetails
+      const newdetails = {
+        ...current,
+        playback_speed: newspeed
+      }
+      this.$store.commit('app/groupDetails', newdetails)
+      this.$store.dispatch('app/setGroupDetails')
+
       this.player.playbackRate = newspeed.toFixed(2)
     },
     async seekForwards () {
@@ -374,26 +403,15 @@ export default {
       this.historytab = (tab === 'history')
       this.chapterstab = (tab === 'chapters')
     },
-    formatDate (time) {
-      const date = new Intl.DateTimeFormat('default', {
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric'
-      })
-      const data = date.formatToParts(time)
-      // console.log(data)
-      return data[2].value + ' ' + data[0].value + ', ' + data[4].value
-    },
-    formatTime (time) {
-      const date = new Intl.DateTimeFormat('default', {
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric'
-      }).format(time)
-      return date
-    },
     speedUsed (time) {
       return time.toFixed(2)
+    },
+    addBookmark () {
+      this.$store.dispatch('app/addBookmark', {
+        seek: this.book.seek,
+        name: this.newbookmark
+      })
+      this.newbookmark = ''
     }
   }
 }

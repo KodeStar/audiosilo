@@ -194,7 +194,8 @@ export async function getBookDetails (context, hash) {
       cover,
       seek: 0,
       path: this.app.router.app.$route.query.folder,
-      history: []
+      history: [],
+      bookmarks: []
     }
     await localForage.setItem(bookKey, book)
   }
@@ -448,4 +449,26 @@ export function autoRewind (context) {
     amount = context.rootState.player.current
   }
   return amount
+}
+
+export function addBookmark (context, data) {
+  const bookmarks = JSON.parse(JSON.stringify(context.state.book.bookmarks))
+  const name = data.name || 'Anonymous bookmark'
+  bookmarks.push({
+    added: Date.now(),
+    seek: data.seek,
+    name
+  })
+  updateBookDetails(context, {
+    bookmarks
+  })
+}
+
+export function deleteBookmark (context, index) {
+  const bookmarks = JSON.parse(JSON.stringify(context.state.book.bookmarks)).reverse()
+  bookmarks.splice(index, 1)
+  bookmarks.reverse()
+  updateBookDetails(context, {
+    bookmarks
+  })
 }

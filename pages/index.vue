@@ -1,5 +1,5 @@
 <template>
-  <div class="p-3 px-6 lg:px-12 w-screen lg:w-full content-area overflow-auto">
+  <div class="p-3 px-6 lg:px-12 w-screen lg:w-full content-area overflow-auto mr-4">
     <div v-if="folder && folder.subfolders && folder.subfolders.length > 0">
       <BreadCrumbs />
       <div

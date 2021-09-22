@@ -1,5 +1,5 @@
 <template>
-  <div class="p-3 px-6 lg:px-12 w-screen lg:w-full content-area overflow-auto">
+  <div class="p-3 px-6 lg:px-12 w-screen lg:w-full content-area overflow-auto mr-4">
     <h2 class="my-6 text-xl font-semibold">Player Settings</h2>
     <div class="bg-gray-50 dark:bg-gray-840 rounded-lg border border-gray-300 dark:border-gray-860 text-sm">
       <div class="p-4 flex flex-col lg:flex-row justify-between items-center border-b border-gray-200 dark:border-gray-800">
