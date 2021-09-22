@@ -217,6 +217,7 @@ export default {
     }
     this.player.onplay = (event) => {
       that.$store.commit('player/playing', true)
+      that.player.playbackRate = that.groupDetails.playback_speed
       that.updatePlayerDetails()
     }
     this.player.onpause = (event) => {
@@ -404,7 +405,7 @@ export default {
       this.chapterstab = (tab === 'chapters')
     },
     speedUsed (time) {
-      return time.toFixed(2)
+      return (Math.ceil(time * 20 - 0.5) / 20).toFixed(2)
     },
     addBookmark () {
       this.$store.dispatch('app/addBookmark', {

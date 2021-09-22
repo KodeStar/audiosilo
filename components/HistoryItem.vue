@@ -58,7 +58,7 @@ export default {
   },
   methods: {
     speedUsed (time) {
-      return time.toFixed(2)
+      return (Math.ceil(time * 20 - 0.5) / 20).toFixed(2)
     },
     setTime (time) {
       this.selecttime = false
