@@ -3,7 +3,7 @@ import { sha256 } from 'js-sha256'
 export function getServerUrl (state) {
   let url = state.server
   if (state.currentCollection > 0) {
-    url = state.server + state.currentCollection + '/'
+    url = new URL(state.currentCollection + '/', state.server).href
   }
   return url
 }
