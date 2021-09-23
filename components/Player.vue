@@ -97,7 +97,7 @@
             <button class="flex-1 p-4 py-2 bg-pink-600 text-gray-50" @click="addBookmark">Add Bookmark</button>
           </div>
         </div>
-
+        <template v-if="bookmarks">
         <Bookmark
           v-on:setTime="setTime"
           v-for="(bookmark, index) in bookmarks.slice().reverse()"
@@ -105,14 +105,17 @@
           :index="index"
           :bookmark="bookmark"
         />
+        </template>
       </div>
       <div v-show="historytab" class="p-4">
+        <template v-if="history">
         <HistoryItem
           v-on:setTime="setTime"
           v-for="(item, index) in history.slice().reverse()"
           :key="index"
           :item="item"
         />
+        </template>
       </div>
     </div>
   </div>

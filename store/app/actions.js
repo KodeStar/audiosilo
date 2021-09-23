@@ -289,7 +289,8 @@ export async function cachedBooks (context) {
   if (keys) {
     keys.forEach(async (key) => {
       const name = key.replace(context.state.cacheKey, '')
-      const book = await localForage.getItem(name)
+      key = 'book-' + context.state.group + '-' + name
+      const book = await localForage.getItem(key)
       if (book) {
         context.commit('addCachedBook', book)
       }
@@ -397,7 +398,7 @@ export async function initialiseApp (context) {
 }
 
 export function savePlayEvent (context, seek) {
-  const history = JSON.parse(JSON.stringify(context.state.book.history))
+  const history = context.state.book.history.length > 0 ? JSON.parse(JSON.stringify(context.state.book.history)) : []
   history.push({
     start: Date.now(),
     startSeek: seek,
@@ -410,7 +411,7 @@ export function savePlayEvent (context, seek) {
 }
 
 export function savePauseEvent (context, seek) {
-  const history = JSON.parse(JSON.stringify(context.state.book.history))
+  const history = context.state.book.history.length > 0 ? JSON.parse(JSON.stringify(context.state.book.history)) : []
   history[history.length - 1].finish = Date.now()
   history[history.length - 1].endSeek = seek
   updateBookDetails(context, {
@@ -452,7 +453,7 @@ export function autoRewind (context) {
 }
 
 export function addBookmark (context, data) {
-  const bookmarks = JSON.parse(JSON.stringify(context.state.book.bookmarks))
+  const bookmarks = context.state.book.bookmarks.length > 0 ? JSON.parse(JSON.stringify(context.state.book.bookmarks)) : []
   const name = data.name || 'Anonymous bookmark'
   bookmarks.push({
     added: Date.now(),
