@@ -4,9 +4,13 @@
     <div v-if="books.length > 0">
       <div class="flex flex-wrap">
         <div v-for="book in books" :key="book.hash" @click="$store.dispatch('app/selectFolder', book)" class="flex m-3 flex-col cursor-pointer">
-          <div class="w-60 h-60 bg-gray-300 justify-center flex items-center rounded-md shadow-inner p-4">
-            <Cover :image="book.cover" :path="book.path" />
+
+          <div class="text w-60 h-60 flex justify-center flex-shrink">
+            <div class="w-full relative cover-container bg-gray-300 dark:bg-gray-800 justify-center flex items-center rounded-md shadow-inner">
+              <Cover :image="book.cover" :path="book.path" />
+            </div>
           </div>
+
         </div>
       </div>
     </div>
