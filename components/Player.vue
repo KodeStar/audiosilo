@@ -82,10 +82,10 @@
     </div>
     <div v-if="playerdetails" class="absolute inset-0 bg-gray-100 dark:bg-gray-860 z-40">
       <div class="flex px-4 pt-4 w-full">
-        <div @click="swapTab('history')" :class="{ 'dark:text-white text-gray-600 bg-gray-300': historytab }" class="p-4 py-3 mx-1 flex-1 bg-gray-200 dark:bg-gray-800 cursor-pointer text-sm text-center rounded">History</div>
-        <div @click="swapTab('bookmarks')" :class="{ 'dark:text-white text-gray-600 bg-gray-300': bookmarkstab }" class="p-4 py-3 mx-1 flex-1 bg-gray-200 dark:bg-gray-800 cursor-pointer text-sm text-center rounded">Bookmarks</div>
-        <div @click="swapTab('chapters')" :class="{ 'dark:text-white text-gray-600 bg-gray-300': chapterstab }" class="p-4 py-3 mx-1 flex-1 bg-gray-200 dark:bg-gray-800 cursor-pointer text-sm text-center rounded">Chapters</div>
-        <div @click="playerdetails = false" class="p-4 py-3 mx-1 bg-pink-600 text-white cursor-pointer text-center rounded"><i class="fa-light fa-fw fa-times" /></div>
+        <div @click="swapTab('history')" :class="{ 'dark:text-white text-gray-600 bg-gray-300': historytab }" class="p-4 py-3 mx-1 flex-1 flex items-center bg-gray-200 dark:bg-gray-800 cursor-pointer text-sm text-center rounded">History</div>
+        <div @click="swapTab('bookmarks')" :class="{ 'dark:text-white text-gray-600 bg-gray-300': bookmarkstab }" class="p-4 py-3 mx-1 flex-1 flex items-center bg-gray-200 dark:bg-gray-800 cursor-pointer text-sm text-center rounded">Bookmarks</div>
+        <div @click="swapTab('chapters')" :class="{ 'dark:text-white text-gray-600 bg-gray-300': chapterstab }" class="p-4 py-3 mx-1 flex-1 flex items-center bg-gray-200 dark:bg-gray-800 cursor-pointer text-sm text-center rounded">Chapters</div>
+        <div @click="playerdetails = false" class="p-4 py-3 mx-1 bg-pink-600 flex items-center text-white cursor-pointer text-center rounded"><i class="fa-light fa-fw fa-times" /></div>
       </div>
       <div v-show="bookmarkstab" class="p-4">
         <div

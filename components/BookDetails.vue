@@ -23,7 +23,7 @@
     </div>
     <div class="px-8 text-xs">{{ remaining }}</div>
 
-    <div class="px-8 pt-8">
+    <div class="px-8 pt-8 flex items-center justify-between">
       <div v-if="cacheavailable" class="cursor-pointer relative">
         <span @click="download" v-show="!cached && !downloading" class="fa-layers fa-fw fa-2x">
           <i class="fa-solid fa-circle"></i>
@@ -42,7 +42,7 @@
           <i class="fa-inverse fa-light fa-spinner-third fa-spin" data-fa-transform="shrink-2"></i>
         </span>
       </div>
-      <div @click="loadPlayer" class="">Show player</div>
+      <div @click="loadPlayer" class="cursor-pointer">Show player</div>
     </div>
 
   </div>
