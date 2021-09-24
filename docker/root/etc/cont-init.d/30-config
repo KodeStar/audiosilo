@@ -1,0 +1,7 @@
+#!/usr/bin/with-contenv bash
+
+# permissions
+chown -R abc:abc \
+		/app
+find /config -type d \( -path /config/compose \) -prune -o \
+    -exec chown abc:abc {} \;
