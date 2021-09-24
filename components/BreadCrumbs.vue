@@ -1,5 +1,5 @@
 <template>
-  <div v-if="breadcrumbs.length > 1" class="breadcrumbs flex flex-wrap">
+  <div v-if="breadcrumbs.length > 1" class="breadcrumbs flex overflow-x-scroll whitespace-nowrap">
     <span
       v-for="(breadcrumb, index) in breadcrumbs"
       :key="index"

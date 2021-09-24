@@ -2,7 +2,7 @@
   <div :class="{ dark: darkMode }" class="relative flex items-top min-h-screen bg-gray-200 dark:bg-gray-800 w-full overflow-hidden">
     <div class="flex flex-col items-top h-screen w-full">
       <Header />
-      <div class="flex w-full relative h-screen border-t border-gray-100 dark:border-gray-750 lg:border-t-0">
+      <div class="flex w-full h-screen relative">
         <Nav />
           <Nuxt />
         </div>
@@ -16,8 +16,8 @@
         :details="folder"
         :name="foldername" />
     </div>
-    <div :class="{'translate-y-full': player === false}" class="transition-all transform absolute right-0 border-l h-screen border-gray-300 dark:border-gray-900 w-full max-w-sm items-top z-30 flex flex-col">
-      <player v-if="folder !== null && player !== false" :server="server" :details="folder" />
+    <div :class="{'translate-y-full': showplayer === false}" class="transition-all transform absolute right-0 border-l h-screen border-gray-300 dark:border-gray-900 w-full max-w-sm items-top z-50 flex flex-col">
+      <player v-if="folder !== null && showplayer !== false" :server="server" :details="folder" />
     </div>
   </div>
 </template>
@@ -67,7 +67,26 @@ export default {
       immediate: true
     }
   },
-  mounted () {
+  async mounted () {
+    await this.$store.dispatch('app/initialiseApp')
+
+    const that = this
+    this.player.onload = (event) => {
+      that.$store.commit('player/loading', false)
+    }
+    this.player.onplay = (event) => {
+      that.$store.commit('player/playing', true)
+      that.player.playbackRate = that.groupDetails.playback_speed
+      that.updatePlayerDetails()
+      this.$store.dispatch('app/addActiveBook')
+    }
+    this.player.onpause = (event) => {
+      this.$store.commit('player/playing', false)
+    }
+    this.player.onended = (event) => {
+      console.log('track ended')
+      that.nextTrack()
+    }
   },
   computed: {
     currentFolder () {
@@ -82,14 +101,42 @@ export default {
     folder () {
       return this.$store.state.app.folder
     },
+    location () {
+      return this.$store.state.app.location
+    },
     rightbar () {
       return this.$store.state.app.rightbar
     },
-    player () {
+    showplayer () {
       return this.$store.state.app.player
+    },
+    player () {
+      return this.$store.state.player.player
+    },
+    playing () {
+      return this.$store.state.player.playing
     },
     darkMode () {
       return this.$store.state.app.groupDetails.darkMode
+    },
+    groupDetails () {
+      return this.$store.state.app.groupDetails
+    }
+  },
+  methods: {
+    updatePlayerDetails (current, last = 0) {
+      const that = this
+      const now = Date.now()
+      if (now > last + 1000) {
+        last = now
+        that.$store.commit('player/current', current || that.player.currentTime)
+        console.log('update')
+      }
+      if (this.playing === true) {
+        window.requestAnimationFrame(function () {
+          that.updatePlayerDetails(current, last)
+        })
+      }
     }
   }
 

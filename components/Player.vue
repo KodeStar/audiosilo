@@ -200,8 +200,8 @@ export default {
       return this.$store.state.app.book
     },
     chaptername () {
-      if (this.details.files && this.currentFile) {
-        return this.details.files[this.currentFile.index].name
+      if (this.details.files.length > 0 && this.currentFile) {
+        return this.details.files[this.currentFile.index].name || ''
       }
       return 'Chapter 1'
     }
@@ -214,22 +214,6 @@ export default {
       // this.$store.commit('player/loading', true)
       await this.$store.dispatch('player/load')
     } */
-    const that = this
-    this.player.onload = (event) => {
-      that.$store.commit('player/loading', false)
-    }
-    this.player.onplay = (event) => {
-      that.$store.commit('player/playing', true)
-      that.player.playbackRate = that.groupDetails.playback_speed
-      that.updatePlayerDetails()
-    }
-    this.player.onpause = (event) => {
-      this.$store.commit('player/playing', false)
-    }
-    this.player.onended = (event) => {
-      console.log('track ended')
-      that.nextTrack()
-    }
   },
 
   beforeDestroy () {
@@ -291,19 +275,6 @@ export default {
       }
     },
     async loadFile (file) {
-    },
-    updatePlayerDetails (current, last = 0) {
-      const that = this
-      const now = Date.now()
-      if (now > last + 1000) {
-        last = now
-        that.$store.commit('player/current', current || that.player.currentTime)
-      }
-      if (this.playing === true) {
-        window.requestAnimationFrame(function () {
-          that.updatePlayerDetails(current, last)
-        })
-      }
     },
     closePlayer () {
       this.$store.commit('app/player', false)

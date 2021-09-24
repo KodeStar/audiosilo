@@ -1,5 +1,5 @@
 <template>
-  <div class="p-3 px-6 lg:px-12 w-screen lg:w-full content-area overflow-auto mr-4">
+  <div class="p-3 px-6 lg:px-12 w-screen lg:w-full content-area overflow-auto lg:mr-4">
     <h2 class="my-6 text-xl font-bold">Cached Books</h2>
     <div v-if="books.length > 0">
       <div class="flex flex-wrap">
@@ -47,7 +47,6 @@ export default {
 
   mounted () {
     this.$store.commit('app/rightbar', false)
-    this.$store.dispatch('app/initialiseApp')
     this.$store.commit('app/activepage', 'cached')
     this.$store.dispatch('app/cachedBooks')
   },

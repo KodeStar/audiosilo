@@ -1,61 +1,55 @@
 <template>
-  <div class="p-3 px-6 lg:px-12 w-screen lg:w-full content-area overflow-auto mr-4">
-    <div v-if="folder && folder.subfolders && folder.subfolders.length > 0">
-      <BreadCrumbs />
-      <div
-        class="my-6 text-xl font-bold"
-      >
-        Folders
-      </div>
-      <div
-        v-for="(subfolder, index) in folder.subfolders"
-        :key="index"
-        class="bg-gray-50 dark:bg-gray-840 filter drop-shadow dark:drop-shadow-none dark:border-gray-860 dark:border rounded-lg my-2 w-full flex max-w-xl items-center cursor-pointer"
-        @click="$store.dispatch('app/selectFolder', subfolder)"
-      >
-        <div class="p-4 flex self-stretch text-gray-50 bg-pink-600 rounded-l-lg">
-          <i class="fa-light fa-fw fa-folder fa-lg" />
-        </div>
-        <div class="px-5 py-2">
-          <span class="text-sm font-medium">{{ subfolder.name }}</span>
+  <div class="my-16 lg:my-0 p-3 px-6 lg:px-12 w-screen lg:w-full content-area overflow-auto lg:mr-4">
+    <h2 class="my-6 text-lg font-semibold">Continue reading</h2>
+    <div v-if="active.length > 0">
+      <div class="flex lg:flex-wrap overflow-x-scroll">
+        <div v-for="book in active" :key="book.hash" @click="$store.dispatch('app/selectFolder', book)" class="flex m-1 flex-col cursor-pointer">
+
+          <div class="text w-24 h-24 lg:w-60 lg:h-60 flex justify-center flex-shrink">
+            <div class="w-full relative cover-container bg-gray-300 dark:bg-gray-800 justify-center flex items-center rounded-md shadow-inner">
+              <Cover :mini="true" :image="book.cover" :path="book.path" />
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
-    <div v-if="folder && folder.files && folder.files.length > 0">
-      <BreadCrumbs />
-      <div
-        class="my-6 text-xl font-bold"
-      >
-        Files
-      </div>
-      <div
-        v-for="(file, index) in folder.files"
-        :key="index"
-        class="bg-gray-50 dark:bg-gray-840 min-h-[3.5rem] filter drop-shadow dark:drop-shadow-none dark:border-gray-860 dark:border rounded-lg hover:opacity-80 my-2 w-full flex max-w-xl items-center cursor-pointer"
-        :class="{ 'opacity-50': (seek > 0 || current > 0 || currentFile.index > 0) && currentFile.index !== index }"
-        @click="selectFile(index)"
-      >
-        <div class="p-4 flex self-stretch items-center text-gray-50 bg-blue-500 rounded-l-lg">
-        <svg
-          aria-hidden="true"
-          focusable="false"
-          data-prefix="fal"
-          data-icon="book"
-          class="svg-inline--fa fa-fw fa-book fa-lg"
-          role="img"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 448 512"><path fill="currentColor" d="M448 368v-320C448 21.49 426.5 0 400 0h-320C35.82 0 0 35.82 0 80V448c0 35.35 28.65 64 64 64h368c8.844 0 16-7.156 16-16S440.8 480 432 480H416v-66.95C434.6 406.4 448 388.8 448 368zM32 80C32 53.49 53.49 32 80 32H96v352H64c-11.71 0-22.55 3.389-32 8.9V80zM384 480H64c-17.64 0-32-14.36-32-32s14.36-32 32-32h320V480zM400 384H128V32h272C408.8 32 416 39.17 416 48v320C416 376.8 408.8 384 400 384zM352 128H192C183.2 128 176 135.2 176 144S183.2 160 192 160h160c8.844 0 16-7.156 16-16S360.8 128 352 128zM352 224H192C183.2 224 176 231.2 176 240S183.2 256 192 256h160c8.844 0 16-7.156 16-16S360.8 224 352 224z"></path></svg>
-        </div>
-        <div class="flex justify-between w-full items-center">
-          <div class="px-5 py-2 flex flex-col">
-            <span class="text-sm font-medium">{{ file.name }}</span>
-            <span class="text-xs text-gray-500"><span class="font-normal">Duration:</span> <span class="">{{ $formatToTime(file.meta.duration, 3, false) }}</span> <span class="ml-2 font-normal">Bitrate:</span> <span class="">{{ file.meta.bitrate }}</span>kbps</span>
+    <div v-else>
+      You aren't currently listening to any books
+    </div>
+    <h2 class="my-6 text-lg font-semibold">Recently finished</h2>
+    <div v-if="finished.length > 0">
+      <div class="flex flex-wrap">
+        <div v-for="book in finished" :key="book.hash" @click="$store.dispatch('app/selectFolder', book)" class="flex m-3 flex-col cursor-pointer">
+
+          <div class="text w-60 h-60 flex justify-center flex-shrink">
+            <div class="w-full relative cover-container bg-gray-300 dark:bg-gray-800 justify-center flex items-center rounded-md shadow-inner">
+              <Cover :image="book.cover" :path="book.path" />
+            </div>
           </div>
-          <div class="px-4">
-            <div class="w-4 h-4 rounded-full" :class="[ file.isCached === true ? 'bg-green-400' : 'bg-gray-200 dark:bg-gray-800']"></div>
-          </div>
+
         </div>
       </div>
+    </div>
+    <div v-else>
+      There are no books recently finished
+    </div>
+    <h2 class="my-6 text-lg font-semibold">Downloaded Books</h2>
+    <div v-if="cached.length > 0">
+      <div class="flex flex-wrap">
+        <div v-for="book in cached" :key="book.hash" @click="$store.dispatch('app/selectFolder', book)" class="flex m-3 flex-col cursor-pointer">
+
+          <div class="text w-60 h-60 flex justify-center flex-shrink">
+            <div class="w-full relative cover-container bg-gray-300 dark:bg-gray-800 justify-center flex items-center rounded-md shadow-inner">
+              <Cover :image="book.cover" :path="book.path" />
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div v-else>
+      There are no books currently cached
     </div>
   </div>
 </template>
@@ -73,145 +67,48 @@ export default {
     return {
       foldername: '',
       corsproxy: '',
-      secret: ''
+      secret: '',
+      active: []
     }
   },
 
   computed: {
-    currentFolder () {
-      return this.$route.query.folder || ''
+    finished () {
+      return this.$store.state.app.groupDetails.finished_books
     },
-    currentFile () {
-      return this.$store.state.player.currentFile
+    cached () {
+      return this.$store.state.app.groupDetails.cached_books
     },
-    loginStatus () {
-      return this.$store.state.app.loginStatus
-    },
-    server () {
-      return this.$store.state.app.server
-    },
-    current () {
-      return this.$store.state.player.current
-    },
-    folder () {
-      return this.$store.state.app.folder
-    },
-    group () {
-      return this.$store.state.app.group
-    },
-    rightbar () {
-      return this.$store.state.app.rightbar
-    },
-    collections () {
-      return this.$store.state.app.collections
-    },
-    currentCollection () {
-      return this.$store.state.app.currentCollection
-    },
-    loginsecret () {
-      return this.$store.state.app.loginsecret
-    },
-    player () {
-      return this.$store.state.player.player
-    },
-    seek () {
-      return this.$store.state.app.book.seek
-    },
-    playing () {
-      return this.$store.state.player.playing
-    },
-    hash () {
-      return this.$store.getters['app/hash'](this.$route.fullPath)
+    groupDetails () {
+      return this.$store.state.app.groupDetails
     }
   },
 
   watch: {
-    $route: {
+    groupDetails: {
       handler (to, from) {
-        console.log('watch route triggered')
         if (to !== from) {
-          if (to.query.collection > 0) {
-            this.$store.commit('app/currentCollection', to.query.collection)
-          } else {
-            this.$store.commit('app/currentCollection', 0)
-          }
-          if (to.query.folder) {
-            this.$store.dispatch('app/fetchFolder', to.query.folder)
-          } else {
-            this.$store.dispatch('app/fetchFolder')
-          }
-        }
-      },
-      immediate: true
-    },
-    async currentCollection (to, from) {
-      if (to !== from) {
-        await this.$store.dispatch('app/selectFolder', { path: '/' })
-      }
-    },
-    folder: {
-      async handler (val, oldVal) {
-        if (val.files.length > 0) {
-          this.$store.commit('app/rightbar', true)
-          await this.$store.dispatch('app/getBookDetails', this.hash)
-          this.$store.dispatch('player/getCurrentFile', {
-            files: this.folder.files,
-            seek: this.$store.state.app.book.seek
-          })
+          this.getActiveBooks()
         }
       },
       immediate: true
     }
   },
-
   mounted () {
-    this.$store.dispatch('app/initialiseApp')
-    this.$store.commit('app/activepage', 'library')
+    this.$store.commit('app/rightbar', false)
+    this.$store.commit('app/activepage', 'home')
+    this.$store.dispatch('app/cachedBooks')
     // this.$store.dispatch('app/fetchFolder')
+  },
+  created () {
   },
 
   methods: {
-    async selectFile (index) {
-      if (index === this.currentFile.index) {
-        if (this.playing) {
-          return this.$store.commit('app/player', true)
-        } else {
-          await this.$store.dispatch('player/load')
-          return this.player.play()
-        }
-      }
-      // console.log('not current index')
-      let start = 0
-      if (index > 0) {
-        const files = this.folder.files.slice(0, index)
-        start = this.$store.getters['player/getStart'](files)
-      }
-      const data = {
-        duration: this.folder.files[index].meta.duration,
-        index,
-        path: this.folder.files[index].path,
-        start
-      }
-      this.$store.commit('player/currentFile', data)
-      // this.$store.commit('player/loading', true)
-      await this.$store.dispatch('player/load', {
-        file: this.folder.files[index].path,
-        seek: 0
-      })
-      this.player.play()
-    },
-    updateServer (input) {
-      this.$store.commit('app/server', input)
+    async getActiveBooks () {
+      this.active = await this.$store.dispatch('app/activeBooks')
+      console.log('active')
+      console.log(this.active)
     }
-    /* async isCached (file) {
-      const filedetails = {
-        hash: this.hash,
-        file: this.$store.getters['app/getFileUrl'](file.path)
-      }
-      const iscached = await this.$store.dispatch('app/fileIsCached', filedetails)
-      console.log('iscached: ' + typeof iscached)
-      return iscached
-    } */
   }
 }
 </script>

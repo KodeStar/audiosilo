@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-full flex justify-center items-center absolute inset-0 p-4">
+  <div :class="[mini ? 'p-2' : 'p-4']" class="w-full h-full flex justify-center items-center absolute inset-0 ">
     <img v-if="image" class="block rounded-md max-h-full" :src="image" />
     <div v-else class="bg-gray-200 dark:bg-gray-800 w-full h-full p-4 relative rounded flex justify-center items-center text-center">
       <svg class="absolute fill-current text-gray-300 dark:text-gray-860 inset-2 transform top-1/2 rotate-180 opacity-60 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" viewBox="299.2254999999999 397.8038000000001 401.5409999999997 315.357">
@@ -14,7 +14,7 @@
 <script>
 export default {
   name: 'Cover',
-  props: ['image', 'path'],
+  props: ['mini', 'image', 'path'],
   data () {
     return {
     }

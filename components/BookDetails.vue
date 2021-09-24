@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col overflow-auto pb-8">
+  <div class="flex flex-col overflow-auto py-16 lg:py-0">
     <div class="text pt-3 lg:pt-8 p-8 pb-5 flex flex-col justify-center">
       <div class="lg:hidden"><BreadCrumbs /></div>
       <div class="w-full relative cover-container bg-gray-300 dark:bg-gray-800 justify-center flex items-center rounded-md shadow-inner">

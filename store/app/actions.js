@@ -115,7 +115,7 @@ export function login (context, data) {
 export /* async */ function selectFolder (context, subfolder) {
   context.commit('folderDescription', '')
   context.commit('player', false)
-  const route = { path: '/', query: { folder: subfolder.path } }
+  const route = { path: '/library', query: { folder: subfolder.path } }
   if (this.currentCollection > 0) {
     route.query.collection = this.currentCollection
   }
@@ -472,4 +472,32 @@ export function deleteBookmark (context, index) {
   updateBookDetails(context, {
     bookmarks
   })
+}
+
+export function addActiveBook (context) {
+  const activeBooks = context.state.groupDetails.active_books.length > 0 ? JSON.parse(JSON.stringify(context.state.groupDetails.active_books)) : []
+  const hash = context.state.book.hash
+  console.log('activeBooks')
+  console.log(activeBooks.includes(hash))
+  if (activeBooks.includes(hash) === false) {
+    activeBooks.push(hash)
+    context.commit('groupDetails', {
+      ...context.state.groupDetails,
+      active_books: activeBooks
+    })
+    setGroupDetails(context)
+  }
+}
+
+export function activeBooks (context) {
+  console.log(context.state)
+  console.log(context.state.groupDetails.active_books)
+  const books = []
+  context.state.groupDetails.active_books.forEach(async (hash) => {
+    const bookKey = 'book-' + context.state.group + '-' + hash
+    console.log(bookKey)
+    const book = await localForage.getItem(bookKey)
+    books.push(book)
+  })
+  return books
 }
