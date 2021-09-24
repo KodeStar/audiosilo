@@ -82,10 +82,10 @@
     </div>
     <div v-if="playerdetails" class="absolute inset-0 bg-gray-100 dark:bg-gray-860 z-40">
       <div class="flex px-4 pt-4 w-full">
-        <div @click="swapTab('history')" :class="{ 'dark:text-white text-gray-600 bg-gray-300': historytab }" class="p-4 py-3 mx-1 flex-1 bg-gray-200 dark:bg-gray-800 cursor-pointer text-sm text-center rounded">History</div>
-        <div @click="swapTab('bookmarks')" :class="{ 'dark:text-white text-gray-600 bg-gray-300': bookmarkstab }" class="p-4 py-3 mx-1 flex-1 bg-gray-200 dark:bg-gray-800 cursor-pointer text-sm text-center rounded">Bookmarks</div>
-        <div @click="swapTab('chapters')" :class="{ 'dark:text-white text-gray-600 bg-gray-300': chapterstab }" class="p-4 py-3 mx-1 flex-1 bg-gray-200 dark:bg-gray-800 cursor-pointer text-sm text-center rounded">Chapters</div>
-        <div @click="playerdetails = false" class="p-4 py-3 mx-1 bg-pink-600 text-white cursor-pointer text-center rounded"><i class="fa-light fa-fw fa-times" /></div>
+        <div @click="swapTab('history')" :class="{ 'dark:text-white text-gray-600 bg-gray-300': historytab }" class="p-4 py-3 mx-1 flex-1 flex items-center bg-gray-200 dark:bg-gray-800 cursor-pointer text-sm text-center rounded">History</div>
+        <div @click="swapTab('bookmarks')" :class="{ 'dark:text-white text-gray-600 bg-gray-300': bookmarkstab }" class="p-4 py-3 mx-1 flex-1 flex items-center bg-gray-200 dark:bg-gray-800 cursor-pointer text-sm text-center rounded">Bookmarks</div>
+        <div @click="swapTab('chapters')" :class="{ 'dark:text-white text-gray-600 bg-gray-300': chapterstab }" class="p-4 py-3 mx-1 flex-1 flex items-center bg-gray-200 dark:bg-gray-800 cursor-pointer text-sm text-center rounded">Chapters</div>
+        <div @click="playerdetails = false" class="p-4 py-3 mx-1 bg-pink-600 flex items-center text-white cursor-pointer text-center rounded"><i class="fa-light fa-fw fa-times" /></div>
       </div>
       <div v-show="bookmarkstab" class="p-4">
         <div
@@ -200,8 +200,8 @@ export default {
       return this.$store.state.app.book
     },
     chaptername () {
-      if (this.details.files && this.currentFile) {
-        return this.details.files[this.currentFile.index].name
+      if (this.details.files.length > 0 && this.currentFile) {
+        return this.details.files[this.currentFile.index].name || ''
       }
       return 'Chapter 1'
     }
@@ -214,22 +214,6 @@ export default {
       // this.$store.commit('player/loading', true)
       await this.$store.dispatch('player/load')
     } */
-    const that = this
-    this.player.onload = (event) => {
-      that.$store.commit('player/loading', false)
-    }
-    this.player.onplay = (event) => {
-      that.$store.commit('player/playing', true)
-      that.player.playbackRate = that.groupDetails.playback_speed
-      that.updatePlayerDetails()
-    }
-    this.player.onpause = (event) => {
-      this.$store.commit('player/playing', false)
-    }
-    this.player.onended = (event) => {
-      console.log('track ended')
-      that.nextTrack()
-    }
   },
 
   beforeDestroy () {
@@ -291,19 +275,6 @@ export default {
       }
     },
     async loadFile (file) {
-    },
-    updatePlayerDetails (current, last = 0) {
-      const that = this
-      const now = Date.now()
-      if (now > last + 1000) {
-        last = now
-        that.$store.commit('player/current', current || that.player.currentTime)
-      }
-      if (this.playing === true) {
-        window.requestAnimationFrame(function () {
-          that.updatePlayerDetails(current, last)
-        })
-      }
     },
     closePlayer () {
       this.$store.commit('app/player', false)

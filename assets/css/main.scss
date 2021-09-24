@@ -1,5 +1,6 @@
 ::-webkit-scrollbar {
   width: 10px;
+  height:0px;
 }
 
 /* Track */
@@ -24,7 +25,14 @@ body {
   @apply text-gray-600 dark:text-gray-400;
 }
 .content-area {
-  height: calc(100vh - 6rem);
+  height: 100vh;
+}
+.header {
+  &:after {
+    @apply border-b border-gray-100 dark:border-gray-750 lg:border-b-0 absolute w-full;
+    content: "";
+    bottom: -2px;
+  }
 }
 .mobilesearch {
   position: absolute;
@@ -98,7 +106,6 @@ body {
   }
 }
 .leftbar {
-  @apply relative;
   &:after {
     @apply absolute lg:border-r border-gray-100 dark:border-gray-750 top-0 bottom-0;
     content: "";
@@ -117,7 +124,7 @@ body {
   &.active {
     @apply relative filter drop-shadow bg-gray-50 dark:bg-gray-840 dark:drop-shadow-none dark:border-gray-860 dark:border;
     &:after {
-      @apply absolute left-0 top-0 bottom-0 border-pink-600 rounded-l-lg;
+      @apply absolute hidden lg:block -left-1 top-0 bottom-0 border-pink-600 rounded-l-lg;
       border-left-width: 6px;
       content: "";
     }

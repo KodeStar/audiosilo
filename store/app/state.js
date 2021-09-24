@@ -12,6 +12,11 @@ export default function () {
       files: [],
       subfolders: []
     },
+    location: {
+      name: 'Home',
+      backname: null,
+      backpath: null
+    },
     group: null,
     search: false,
     searchterm: '',

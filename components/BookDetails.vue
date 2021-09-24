@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col overflow-auto pb-8">
+  <div class="flex flex-col overflow-auto py-16 lg:py-0">
     <div class="text pt-3 lg:pt-8 p-8 pb-5 flex flex-col justify-center">
       <div class="lg:hidden"><BreadCrumbs /></div>
       <div class="w-full relative cover-container bg-gray-300 dark:bg-gray-800 justify-center flex items-center rounded-md shadow-inner">
@@ -23,7 +23,7 @@
     </div>
     <div class="px-8 text-xs">{{ remaining }}</div>
 
-    <div class="px-8 pt-8">
+    <div class="px-8 pt-8 flex items-center justify-between">
       <div v-if="cacheavailable" class="cursor-pointer relative">
         <span @click="download" v-show="!cached && !downloading" class="fa-layers fa-fw fa-2x">
           <i class="fa-solid fa-circle"></i>
@@ -42,7 +42,7 @@
           <i class="fa-inverse fa-light fa-spinner-third fa-spin" data-fa-transform="shrink-2"></i>
         </span>
       </div>
-      <div @click="loadPlayer" class="">Show player</div>
+      <div @click="loadPlayer" class="cursor-pointer">Show player</div>
     </div>
 
   </div>
