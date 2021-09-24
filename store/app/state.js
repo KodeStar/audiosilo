@@ -30,7 +30,7 @@ export default function () {
       finished_books: [],
       cached_books: [],
       transcode: '0',
-      darkMode: false
+      darkMode: true
     },
     book: {
       hash: null,
