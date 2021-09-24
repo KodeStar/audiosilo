@@ -1,6 +1,6 @@
 <template>
   <div class="sticky top-0 flex flex-col items-top z-30 lg:h-screen w-full">
-    <div class="header bg-gray-200 dark:bg-gray-800 bg-opacity-70 dark:bg-opacity-70 backdrop-filter backdrop-blur-md flex items-center w-full justify-between h-14 lg:h-24 border-b border-gray-300 dark:border-gray-900 lg:border-b-0 fixed top-0 lg:relative">
+    <div class="bg-gray-200 dark:bg-gray-800 bg-opacity-70 dark:bg-opacity-70 backdrop-filter backdrop-blur-md flex items-center w-full justify-between h-14 lg:h-24 fixed top-0 lg:relative">
       <div class="lg:w-80 flex flex-shrink-0 flex-grow-0 lg:border-r lg:border-b border-gray-300 dark:border-gray-900 p-1 px-6 lg:px-8 h-14 lg:h-24 items-center">
         <NuxtLink class="flex items-center" to="/">
           <svg class="w-12 lg:w-18 mr-2 lg:mr-4 transform rotate-180" xmlns="http://www.w3.org/2000/svg" viewBox="299.2254999999999 397.8038000000001 401.5409999999997 315.357">
