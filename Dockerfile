@@ -34,12 +34,12 @@ RUN \
   /root/.cache \
   /tmp/*
 
+# Configuration
 COPY docker/root /
 
 # Vue
 COPY --from=build-stage /app/dist /app
 COPY docker/nginx.conf /etc/nginx/
-# Configuration
 
 # Expose
 VOLUME /config
