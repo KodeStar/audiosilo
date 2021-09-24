@@ -13,9 +13,9 @@ export default {
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: '' },
       { name: 'format-detection', content: 'telephone=no' },
-      { name: 'msapplication-TileColor', content: '#f1f1f1' },
-      { name: 'theme-color', content: '#f1f1f1' },
-      { name: 'apple-mobile-web-app-status-bar-style', content: 'black' }
+      { name: 'msapplication-TileColor', content: '#1f2937' },
+      { name: 'theme-color', content: '#1f2937' },
+      { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
@@ -77,8 +77,8 @@ export default {
           type: 'image/png'
         }
       ],
-      theme_color: '#f1f1f1',
-      background_color: '#f1f1f1'
+      theme_color: '#1f2937',
+      background_color: '#1f2937'
     }
   },
 
