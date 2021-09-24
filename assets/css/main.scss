@@ -1,3 +1,7 @@
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
 ::-webkit-scrollbar {
   width: 10px;
   height:0px;

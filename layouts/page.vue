@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ dark: darkMode }" class="relative flex items-top min-h-screen bg-gray-200 dark:bg-gray-800 w-full overflow-hidden">
+  <div :class="{ dark: darkMode }" class="relative flex items-top min-h-screen bg-gray-200 dark:bg-gray-800 w-full overflow-hidden pb-safe">
     <div class="flex flex-col items-top h-screen w-full">
       <Header />
       <div class="flex w-full h-screen relative">
