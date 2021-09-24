@@ -14,7 +14,8 @@ export default {
       { hid: 'description', name: 'description', content: '' },
       { name: 'format-detection', content: 'telephone=no' },
       { name: 'msapplication-TileColor', content: '#f1f1f1' },
-      { name: 'theme-color', content: '#f1f1f1' }
+      { name: 'theme-color', content: '#f1f1f1' },
+      { name: 'apple-mobile-web-app-status-bar-style', content: 'black' }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
