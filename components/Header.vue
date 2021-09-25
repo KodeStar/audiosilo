@@ -1,6 +1,6 @@
 <template>
   <div class="sticky top-0 flex flex-col items-top z-30 lg:h-screen w-full">
-    <div class="bg-gray-200 dark:bg-gray-800 bg-opacity-70 dark:bg-opacity-70 backdrop-filter backdrop-blur-md flex items-center w-full justify-between h-16 lg:h-24 fixed top-0 lg:relative">
+    <div class="bg-gray-200 dark:bg-gray-800 bg-opacity-70 dark:bg-opacity-70 backdrop-filter backdrop-blur-md flex items-center w-full justify-between lg:h-24 fixed top-0 lg:relative pt-safe">
       <div class="lg:w-80 flex flex-shrink-0 flex-grow-0 lg:border-r lg:border-b border-gray-300 dark:border-gray-900 p-1 px-6 lg:px-8 h-16 lg:h-24 items-center">
         <NuxtLink class="flex items-center" to="/">
           <svg class="w-12 lg:w-18 mr-2 lg:mr-4 transform rotate-180" xmlns="http://www.w3.org/2000/svg" viewBox="299.2254999999999 397.8038000000001 401.5409999999997 315.357">
@@ -16,7 +16,7 @@
           </div>
         </NuxtLink>
       </div>
-      <div :class="{ mobilesearch: search, flex: search }" class="px-0 lg:px-12 lg:w-full items-center flex items-center lg:border-l border-gray-100 dark:border-gray-750 h-16 lg:h-24">
+      <div :class="{ mobilesearch: search, flex: search }" class="px-0 lg:px-12 lg:w-full items-center flex items-center lg:border-l border-gray-100 dark:border-gray-750 pt-safe-15 lg:h-24">
         <floating-label-input :class="{ block: search, hidden: !search }" v-model="searchterm" title="Search..." />
         <div class="ml-3">
           <div @click="search = false" :class="{ flex: search, hidden: !search }" class="rounded-full bg-gray-300 dark:bg-gray-860 w-8 h-8 justify-center items-center"><i class="fa-thin fa-times fa-fw" /></div>

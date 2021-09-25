@@ -1,6 +1,12 @@
 .pb-safe {
   padding-bottom: env(safe-area-inset-bottom);
 }
+.pt-safe {
+  padding-top: env(safe-area-inset-top);
+}
+.pt-safe-15 {
+  padding-top: calc(env(safe-area-inset-top) + 15px)!important;
+}
 
 ::-webkit-scrollbar {
   width: 10px;
