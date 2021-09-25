@@ -16,7 +16,7 @@
           </div>
         </NuxtLink>
       </div>
-      <div :class="{ mobilesearch: search, flex: search }" class="px-0 lg:px-12 lg:w-full items-center flex items-center lg:border-l border-gray-100 dark:border-gray-750 pt-safe-15 lg:h-24">
+      <div :class="{ mobilesearch: search, flex: search, 'pt-safe-15': search }" class="px-0 lg:px-12 lg:w-full items-center flex items-center lg:border-l border-gray-100 dark:border-gray-750 lg:h-24">
         <floating-label-input :class="{ block: search, hidden: !search }" v-model="searchterm" title="Search..." />
         <div class="ml-3">
           <div @click="search = false" :class="{ flex: search, hidden: !search }" class="rounded-full bg-gray-300 dark:bg-gray-860 w-8 h-8 justify-center items-center"><i class="fa-thin fa-times fa-fw" /></div>
