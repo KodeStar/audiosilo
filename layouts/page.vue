@@ -1,14 +1,14 @@
 <template>
-  <div :class="{ dark: darkMode }" class="relative flex items-top min-h-screen bg-gray-200 dark:bg-gray-800 w-full overflow-hidden pb-safe pt-safe">
+  <div :class="{ dark: darkMode }" class="relative flex items-top min-h-screen bg-gray-200 dark:bg-gray-800 w-full overflow-hidden">
     <div class="flex flex-col items-top h-screen w-full">
       <Header />
-      <div class="flex w-full h-screen relative">
+      <div class="flex w-full h-screen relative pt-safe pb-safe">
         <Nav />
           <Nuxt />
         </div>
       <LoginStatus />
     </div>
-    <div :class="{'-mr-96': rightbar === false, 'translate-x-full': rightbar === false}" class="transform transition-all border-l h-screen border-gray-300 dark:border-gray-900 w-full max-w-sm z-20 items-top absolute lg:relative inset-0 flex bg-gray-100 dark:bg-gray-840 flex-col">
+    <div :class="{'-mr-96': rightbar === false, 'translate-x-full': rightbar === false}" class="transform transition-all border-l h-screen border-gray-300 dark:border-gray-900 w-full max-w-sm z-20 items-top absolute lg:relative inset-0 flex bg-gray-100 dark:bg-gray-840 flex-col pt-safe pb-safe">
       <folder-details v-if="folder !== null && folder.files && folder.files.length === 0" :server="server" :details="folder" :name="foldername" />
       <book-details
         v-if="folder !== null && folder.files && folder.files.length > 0"

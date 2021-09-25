@@ -1,7 +1,7 @@
 <template>
-  <div class="flex flex-col justify-between relative bg-gray-100 dark:bg-gray-840 h-screen overflow-auto">
-    <div @click="closePlayer" class="absolute top-0 right-0 w-8 h-8 rounded-bl flex cursor-pointer justify-center items-center"><i class="fa-thin fa-chevron-down"></i></div>
-    <div>
+  <div class="flex flex-col justify-between relative bg-gray-100 dark:bg-gray-840 h-screen overflow-auto pt-safe pb-safe">
+    <div class="relative">
+      <div @click="closePlayer" class="absolute top-0 right-0 w-8 h-8 rounded-bl flex cursor-pointer justify-center items-center"><i class="fa-thin fa-chevron-down"></i></div>
       <div class="text p-8 pb-5 pt-12 flex justify-center flex-shrink">
         <div class="w-full relative cover-container bg-gray-300 dark:bg-gray-800 justify-center flex items-center rounded-md shadow-inner">
           <Cover :image="image" :path="$route.query.folder" />

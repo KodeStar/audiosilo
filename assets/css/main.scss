@@ -27,6 +27,9 @@
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-gray-400 bg-opacity-100 dark:bg-[#00000044];
 }
+html {
+  height: -webkit-fill-available;
+}
 body, * {
   font-family: 'Roboto', sans-serif;
   font-weight: 400;
