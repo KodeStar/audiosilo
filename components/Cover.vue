@@ -24,8 +24,9 @@ export default {
       let output = ''
       if (this.path) {
         const parts = this.path.split('/')
+        const text = (this.mini) ? 'text-xs' : 'text-lg'
         parts.forEach((part) => {
-          output += '<p class="text-lg my-2">' + part + '</p>'
+          output += '<p class="' + text + ' my-2">' + part + '</p>'
         })
       }
       return output
