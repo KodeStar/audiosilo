@@ -6,7 +6,7 @@
         <div v-for="book in active" :key="book.hash" @click="$store.dispatch('app/selectFolder', book)" class="flex m-1 flex-col cursor-pointer">
 
           <div class="text w-28 h-28 lg:w-48 lg:h-48 flex justify-center flex-shrink">
-            <div class="w-full relative cover-container bg-gray-300 dark:bg-gray-800 justify-center flex items-center rounded-md shadow-inner">
+            <div class="w-full relative cover-container bg-gray-300 dark:bg-gray-860 justify-center flex items-center rounded-md shadow-inner">
               <Cover :mini="true" :image="book.cover" :path="book.path" />
             </div>
           </div>
@@ -17,6 +17,25 @@
     <div v-else>
       You aren't currently listening to any books
     </div>
+    <template v-if="cached.length > 0">
+      <h2 class="my-6 text-lg font-semibold">Downloaded Books</h2>
+      <div v-if="cached.length > 0">
+        <div class="flex flex-wrap">
+          <div v-for="book in cached" :key="book.hash" @click="$store.dispatch('app/selectFolder', book)" class="flex m-3 flex-col cursor-pointer">
+
+            <div class="text w-28 h-28 lg:w-60 lg:h-60 flex justify-center flex-shrink">
+              <div class="w-full relative cover-container bg-gray-300 dark:bg-gray-800 justify-center flex items-center rounded-md shadow-inner">
+                <Cover :image="book.cover" :path="book.path" />
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div v-else>
+        There are no books currently cached
+      </div>
+    </template>
     <h2 class="my-6 text-lg font-semibold">Recently finished</h2>
     <div v-if="finished.length > 0">
       <div class="flex flex-wrap">
@@ -33,23 +52,6 @@
     </div>
     <div v-else>
       There are no books recently finished
-    </div>
-    <h2 class="my-6 text-lg font-semibold">Downloaded Books</h2>
-    <div v-if="cached.length > 0">
-      <div class="flex flex-wrap">
-        <div v-for="book in cached" :key="book.hash" @click="$store.dispatch('app/selectFolder', book)" class="flex m-3 flex-col cursor-pointer">
-
-          <div class="text w-28 h-28 lg:w-60 lg:h-60 flex justify-center flex-shrink">
-            <div class="w-full relative cover-container bg-gray-300 dark:bg-gray-800 justify-center flex items-center rounded-md shadow-inner">
-              <Cover :image="book.cover" :path="book.path" />
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-    <div v-else>
-      There are no books currently cached
     </div>
   </div>
 </template>
