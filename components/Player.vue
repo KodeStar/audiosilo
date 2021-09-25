@@ -87,7 +87,7 @@
         <div @click="swapTab('chapters')" :class="{ 'dark:text-white text-gray-600 bg-gray-300': chapterstab }" class="p-4 py-3 mx-1 flex-1 flex items-center bg-gray-200 dark:bg-gray-800 cursor-pointer text-sm text-center rounded">Chapters</div>
         <div @click="playerdetails = false" class="p-4 py-3 mx-1 bg-pink-600 flex items-center text-white cursor-pointer text-center rounded"><i class="fa-light fa-fw fa-times" /></div>
       </div>
-      <div v-show="bookmarkstab" class="p-4">
+      <div v-show="bookmarkstab" class="p-4 pt-safe pb-safe">
         <div
           class="p-4 bg-gray-200 dark:bg-gray-800 m-1 rounded flex flex-col items-center cursor-pointer"
         >
@@ -107,7 +107,7 @@
         />
         </template>
       </div>
-      <div v-show="historytab" class="p-4">
+      <div v-show="historytab" class="p-4 pt-safe pb-safe">
         <template v-if="history">
         <HistoryItem
           v-on:setTime="setTime"
