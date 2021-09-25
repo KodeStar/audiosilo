@@ -50,6 +50,7 @@
 
 <script>
 import VueCookies from 'vue-cookies'
+import { mapState } from 'vuex'
 export default {
   name: 'BookDetails',
   props: ['details', 'name', 'server'],
@@ -62,14 +63,12 @@ export default {
     }
   },
   computed: {
+    ...mapState('player', ['current', 'currentFile', 'player', 'playing']),
     moretext () {
       return (this.readmore) ? 'Less..' : 'More..'
     },
     description () {
       return this.$store.state.app.book.description
-    },
-    transcode () {
-      return this.$store.state.app.transcode
     },
     seek () {
       return this.$store.state.app.book.seek
@@ -92,18 +91,6 @@ export default {
       const remaining = this.totalTime - this.seek
       const percent = (remaining / this.totalTime) * 100
       return 100 - percent.toFixed(0)
-    },
-    player () {
-      return this.$store.state.player.player
-    },
-    currentFile () {
-      return this.$store.state.player.currentFile
-    },
-    current () {
-      return this.$store.state.player.current
-    },
-    playing () {
-      return this.$store.state.player.playing
     },
     cacheavailable () {
       return 'caches' in window

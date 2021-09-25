@@ -122,6 +122,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: 'Player',
   props: ['details', 'server'],
@@ -137,26 +138,25 @@ export default {
   },
 
   computed: {
+    ...mapState('app', ['book', 'groupDetails']),
+    ...mapState('player', ['current', 'currentFile', 'loading', 'player', 'playing']),
+    history () {
+      return this.$store.state.app.book.history
+    },
+    bookmarks () {
+      return this.$store.state.app.book.bookmarks
+    },
     image () {
       return this.$store.state.app.book.cover
     },
-    groupDetails () {
-      return this.$store.state.app.groupDetails
-    },
     playbackSpeed () {
       return Number.parseFloat(this.groupDetails.playback_speed).toFixed(2)
-    },
-    transcode () {
-      return this.$store.state.app.transcode
     },
     seek () {
       return this.$store.state.app.book.seek
     },
     hash () {
       return this.$store.getters['app/hash'](this.$route.fullPath)
-    },
-    totalTime () {
-      return 0
     },
     remaining () {
       return this.currentFile.duration - this.current
@@ -165,39 +165,12 @@ export default {
       const remaining = this.$store.getters['player/totalTime'] - this.currentFile.start - this.current
       return this.$formatToTime(remaining, 2, false) + ' remaining'
     },
-    percent () {
-      return 0
-    },
     localpercent () {
       if (this.player) {
         const percent = (Math.ceil(this.remaining) / this.currentFile.duration) * 100
         return 100 - percent.toFixed(2)
       }
       return 0
-    },
-    currentFile () {
-      return this.$store.state.player.currentFile
-    },
-    playing () {
-      return this.$store.state.player.playing
-    },
-    current () {
-      return this.$store.state.player.current
-    },
-    player () {
-      return this.$store.state.player.player
-    },
-    loading () {
-      return this.$store.state.player.loading
-    },
-    history () {
-      return this.$store.state.app.book.history
-    },
-    bookmarks () {
-      return this.$store.state.app.book.bookmarks
-    },
-    book () {
-      return this.$store.state.app.book
     },
     chaptername () {
       if (this.details.files.length > 0 && this.currentFile) {
