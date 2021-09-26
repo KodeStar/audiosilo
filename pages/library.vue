@@ -13,7 +13,7 @@
         class="bg-gray-50 dark:bg-gray-840 filter drop-shadow dark:drop-shadow-none dark:border-gray-860 dark:border rounded-lg my-2 w-full flex max-w-xl items-center cursor-pointer"
         @click="$store.dispatch('app/selectFolder', subfolder)"
       >
-        <div class="p-4 flex self-stretch text-gray-50 bg-pink-600 rounded-l-lg">
+        <div class="p-4 flex self-stretch text-gray-50 bg-pink-600 rounded-l-lg items-center">
           <i class="fa-light fa-fw fa-folder fa-lg" />
         </div>
         <div class="px-5 py-2">

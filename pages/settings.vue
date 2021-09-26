@@ -49,6 +49,11 @@
         </div>
       </div>
     </div>
+    <div class="lg:flex cursor-pointer border border-gray-300 dark:border-gray-900 items-center p-5 px-10 " @click="logout">
+      <i class="fa-light fa-fw fa-right-from-bracket mr-2 fa-lg"></i>
+      Logout
+    </div>
+
   </div>
 </template>
 
@@ -157,6 +162,9 @@ export default {
   },
 
   methods: {
+    logout () {
+      this.$store.commit('app/loginStatus', false)
+    }
   }
 }
 </script>
