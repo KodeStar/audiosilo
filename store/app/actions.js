@@ -124,11 +124,7 @@ export /* async */ function selectFolder (context, subfolder) {
 
 export async function fetchFolder (context, name = '') {
   // console.log(VueCookies.get('audioserve_token'))
-  const folder = await fetch(context.getters.getServerUrl + 'folder/' + name, {
-    headers: {
-      Authorization: 'Bearer ' + VueCookies.get('audioserve_token')
-    }
-  })
+  const folder = await fetch(context.getters.getServerUrl + 'folder/' + name, fetchOptions(context))
 
   if (folder.status === 401) {
     context.commit('loginStatus', false)
@@ -160,11 +156,7 @@ export async function fileList (context, files) {
 }
 
 export async function fetchCollections (context) {
-  const collections = await fetch(context.state.server + 'collections', {
-    headers: {
-      Authorization: 'Bearer ' + VueCookies.get('audioserve_token')
-    }
-  })
+  const collections = await fetch(context.state.server + 'collections', fetchOptions(context))
   return collections.json()
 }
 
@@ -233,11 +225,7 @@ export async function setBookDetails (context, book) {
 
 export async function getDescription (context, path) {
   const description = context.state.server + 'desc/' + path
-  const response = await fetch(description, {
-    headers: {
-      Authorization: 'Bearer ' + VueCookies.get('audioserve_token')
-    }
-  })
+  const response = await fetch(description, fetchOptions(context))
   // console.log(response)
   // console.log(response.headers.get('Content-Type'))
 
@@ -317,6 +305,19 @@ export function contentToExtension (mime) {
   return extension
 }
 
+export function fetchOptions (context) {
+  const audioserveToken = VueCookies.get('audioserve_token')
+
+  if (audioserveToken !== null) {
+    return {
+      headers: {
+        Authorization: 'Bearer ' + audioserveToken
+      }
+    }
+  }
+  return {}
+}
+
 export async function getCachedFile (context, details) {
   const cacheName = context.state.cacheKey + details.hash
   const cacheStorage = await caches.open(cacheName)
@@ -340,11 +341,7 @@ export async function cacheFile (context, details) {
   const cacheName = context.state.cacheKey + details.hash
   const cacheStorage = await caches.open(cacheName)
   // await cacheStorage.add(details.file)
-  const response = await fetch(details.file, {
-    headers: {
-      Authorization: 'Bearer ' + VueCookies.get('audioserve_token')
-    }
-  })
+  const response = await fetch(details.file, fetchOptions(context))
   console.log(response)
   const response2 = response.clone()
   cacheStorage.put(details.file, response)

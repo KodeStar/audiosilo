@@ -38,7 +38,7 @@ body {
   @apply text-gray-600 dark:text-gray-400 bg-gray-200 dark:bg-gray-800;
 }
 .content-area {
-  height: 100vh;
+  height: calc(100vh - 100px);
 }
 .header {
   &:after {

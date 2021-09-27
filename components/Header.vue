@@ -1,5 +1,5 @@
 <template>
-  <div class="sticky top-0 flex flex-col items-top z-30 lg:h-screen w-full">
+  <div class="sticky top-0 flex flex-col items-top z-30 w-full">
     <div class="bg-gray-200 dark:bg-gray-800 bg-opacity-70 dark:bg-opacity-70 backdrop-filter backdrop-blur-md flex items-center w-full justify-between lg:h-24 fixed top-0 lg:relative pt-safe">
       <div class="lg:w-80 flex flex-shrink-0 flex-grow-0 lg:border-r lg:border-b border-gray-300 dark:border-gray-900 p-1 px-6 lg:px-8 h-16 lg:h-24 items-center">
         <NuxtLink class="flex items-center" to="/">
