@@ -308,17 +308,9 @@ export function contentToExtension (mime) {
 }
 
 export function fetchOptions (context) {
-  const audioserveToken = VueCookies.get('audioserve_token')
-
-  if (audioserveToken !== null) {
-    return {
-      credentials: 'include',
-      headers: {
-        Authorization: 'Bearer ' + audioserveToken
-      }
-    }
+  return {
+    credentials: 'include'
   }
-  return {}
 }
 
 export async function getCachedFile (context, details) {

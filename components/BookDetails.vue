@@ -123,7 +123,10 @@ export default {
     async getImage () {
       if (this.details && this.details.cover) {
         const src = this.$store.getters['app/getServerUrl'] + 'cover/' + this.details.cover.path
-        const getcover = await fetch(src, this.$store.dispatch('app/fetchOptions'))
+        const options = await this.$store.dispatch('app/fetchOptions')
+        console.log('fetchOptions')
+        console.log(options)
+        const getcover = await fetch(src, options)
         const cover = await getcover.blob()
         const coverUrl = URL.createObjectURL(cover)
 
