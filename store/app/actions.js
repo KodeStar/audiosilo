@@ -117,7 +117,7 @@ export function login (context, data) {
 export /* async */ function selectFolder (context, subfolder) {
   context.commit('folderDescription', '')
   context.commit('player', false)
-  const route = { path: '/library', query: { folder: subfolder.path } }
+  const route = { path: '/library', query: { folder: subfolder.path || '/' } }
   if (context.state.currentCollection > 0) {
     route.query.collection = context.state.currentCollection
   }
