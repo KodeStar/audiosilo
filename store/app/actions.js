@@ -51,6 +51,8 @@ export function login (context, data) {
         const bodyFormData = 'secret=' + encodeURIComponent(thesecret)
         fetch(data.server + 'authenticate', {
           method: 'POST',
+          mode: 'cors',
+          credentials: 'include', // this one is essential - use it on all fetch requests
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
           },

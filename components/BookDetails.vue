@@ -140,7 +140,11 @@ export default {
       const cacheStorage = await caches.open(cacheName)
 
       await Promise.all(this.details.files.map((file) => {
-        return cacheStorage.add(this.$store.getters['app/getFileUrl'](file.path))
+        const req = new Request(this.$store.getters['app/getFileUrl'](file.path),
+          {
+            credentials: 'include'
+          })
+        return cacheStorage.add(req)
       }))
       this.downloading = false
       this.cached = true
