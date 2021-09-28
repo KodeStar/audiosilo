@@ -8,6 +8,7 @@ export function resetPlayer (state) {
 export function player (state, data) {
   state.player.src = data.src
   state.player.currentTime = data.currentTime
+  state.player.crossOrigin = 'use-credentials'
 }
 
 export function files (state, data) {

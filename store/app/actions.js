@@ -310,6 +310,7 @@ export function fetchOptions (context) {
 
   if (audioserveToken !== null) {
     return {
+      credentials: 'include',
       headers: {
         Authorization: 'Bearer ' + audioserveToken
       }
