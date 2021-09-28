@@ -1,3 +1,4 @@
+import pkg from './package.json'
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
@@ -93,5 +94,8 @@ export default {
     families: {
       Roboto: [100,300,400,500,600,700],
     }
+  },
+  publicRuntimeConfig: {
+    clientVersion: pkg.version
   }
 }
