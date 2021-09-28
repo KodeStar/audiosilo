@@ -146,7 +146,8 @@ export default {
     },
     async currentCollection (to, from) {
       if (to !== from) {
-        await this.$store.dispatch('app/selectFolder', { path: '/library' })
+        console.log('collection changed')
+        await this.$store.dispatch('app/selectFolder', {})
       }
     },
     folder: {
