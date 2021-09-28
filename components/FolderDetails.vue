@@ -56,6 +56,7 @@ export default {
       if (this.details && this.details.cover) {
         const src = this.$store.getters['app/getServerUrl'] + 'cover/' + this.details.cover.path
         const getcover = await fetch(src, {
+          credentials: 'include',
           headers: {
             Authorization: 'Bearer ' + VueCookies.get('audioserve_token')
           }
