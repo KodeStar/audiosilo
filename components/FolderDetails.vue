@@ -9,7 +9,6 @@
 </template>
 
 <script>
-import VueCookies from 'vue-cookies'
 export default {
   name: 'FolderDetails',
   props: ['details', 'name', 'server'],
@@ -55,12 +54,7 @@ export default {
     async getImage () {
       if (this.details && this.details.cover) {
         const src = this.$store.getters['app/getServerUrl'] + 'cover/' + this.details.cover.path
-        const getcover = await fetch(src, {
-          credentials: 'include',
-          headers: {
-            Authorization: 'Bearer ' + VueCookies.get('audioserve_token')
-          }
-        })
+        const getcover = await fetch(src, this.$store.dispatch('app/fetchOptions'))
         const cover = await getcover.blob()
         const coverUrl = URL.createObjectURL(cover)
 
