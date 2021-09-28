@@ -223,19 +223,6 @@ export default {
       }
     },
 
-    async nextTrack () {
-      if (this.currentFile.index + 1 >= this.details.files.length) {
-        await this.$store.dispatch('app/resetBook')
-        return null
-      }
-      await this.$store.dispatch('app/updateBookDetails', {
-        seek: this.currentFile.start + this.currentFile.duration
-      })
-
-      await this.$store.dispatch('player/load')
-      await this.player.play()
-    },
-
     async updateSeek (event) {
       if (this.playing) {
         await this.player.pause()

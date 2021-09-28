@@ -113,6 +113,9 @@ export default {
     player () {
       return this.$store.state.player.player
     },
+    currentFile () {
+      return this.$store.state.player.currentFile
+    },
     playing () {
       return this.$store.state.player.playing
     },
@@ -137,6 +140,18 @@ export default {
           that.updatePlayerDetails(current, last)
         })
       }
+    },
+    async nextTrack () {
+      if (this.currentFile.index + 1 >= this.folder.files.length) {
+        await this.$store.dispatch('app/resetBook')
+        return null
+      }
+      await this.$store.dispatch('app/updateBookDetails', {
+        seek: this.currentFile.start + this.currentFile.duration
+      })
+
+      await this.$store.dispatch('player/load')
+      await this.player.play()
     }
   }
 
