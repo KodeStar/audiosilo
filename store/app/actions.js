@@ -4,6 +4,12 @@ import base64js from 'base64-js'
 import VueCookies from 'vue-cookies'
 import localForage from 'localforage'
 
+// make any changes to this in plugins/audio.js as well as it's not injecting into actions for some reason
+const fetchOptions = {
+  mode: 'cors',
+  credentials: 'include'
+}
+
 export function setDetails (context, data) {
   localForage.setItem('server', data.server)
   localForage.setItem('group', data.group)
@@ -111,7 +117,7 @@ export /* async */ function selectFolder (context, subfolder) {
 }
 
 export async function fetchFolder (context, name = '') {
-  const folder = await fetch(context.getters.getServerUrl + 'folder/' + name, this.$fetchOptions())
+  const folder = await fetch(context.getters.getServerUrl + 'folder/' + name, fetchOptions)
 
   if (folder.status === 401) {
     context.commit('loginStatus', false)
@@ -140,7 +146,9 @@ export async function fileList (context, files) {
 }
 
 export async function fetchCollections (context) {
-  const collections = await fetch(context.state.server + 'collections', this.$fetchOptions())
+  console.log('fetchOptions')
+  console.log(fetchOptions)
+  const collections = await fetch(context.state.server + 'collections', fetchOptions)
   return collections.json()
 }
 
@@ -209,7 +217,7 @@ export async function setBookDetails (context, book) {
 
 export async function getDescription (context, path) {
   const description = context.state.server + 'desc/' + path
-  const response = await fetch(description, this.$fetchOptions())
+  const response = await fetch(description, fetchOptions)
 
   const mime = response.headers.get('Content-Type')
   const data = await response.text()
@@ -304,7 +312,7 @@ export async function cacheFile (context, details) {
   const cacheName = context.state.cacheKey + details.hash
   const cacheStorage = await caches.open(cacheName)
   // await cacheStorage.add(details.file)
-  const response = await fetch(details.file, this.$fetchOptions())
+  const response = await fetch(details.file, fetchOptions)
   const response2 = response.clone()
   cacheStorage.put(details.file, response)
   return response2

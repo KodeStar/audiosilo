@@ -57,6 +57,7 @@ export default ({ app }, inject) => {
     return date
   })
   inject('fetchOptions', () => {
+    // this needs to be set in app/actions as well because it's not injecting for some reason
     return {
       mode: 'cors',
       credentials: 'include'
