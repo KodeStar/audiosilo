@@ -108,8 +108,6 @@ export default {
   methods: {
     async getActiveBooks () {
       this.active = await this.$store.dispatch('app/activeBooks')
-      console.log('active')
-      console.log(this.active)
     }
   }
 }

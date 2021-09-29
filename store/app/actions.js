@@ -5,8 +5,6 @@ import VueCookies from 'vue-cookies'
 import localForage from 'localforage'
 
 export function setDetails (context, data) {
-  console.log('set details')
-  // console.log(localForage)
   localForage.setItem('server', data.server)
   localForage.setItem('group', data.group)
   localForage.setItem('loginStatus', data.loginStatus)
@@ -31,7 +29,6 @@ export function login (context, data) {
   let loginStatus = false
   let loginsecret = null
   if (data.secret) {
-    // console.log('secret is ' + data.secret)
     const secretBytes = new (TextEncoder)('utf-8').encode(data.secret)
     const randomBytes = new Uint8Array(32)
     window.crypto.getRandomValues(randomBytes)
@@ -47,7 +44,6 @@ export function login (context, data) {
     digestPromise
       .then((s) => {
         const thesecret = base64js.fromByteArray(randomBytes) + '|' + base64js.fromByteArray(new Uint8Array(s))
-        // console.log(thesecret)
         const bodyFormData = 'secret=' + encodeURIComponent(thesecret)
         fetch(data.server + 'authenticate', {
           method: 'POST',
@@ -58,7 +54,6 @@ export function login (context, data) {
           },
           body: bodyFormData
         }).then(async (response) => {
-          // console.log(response)
           // get collections
           loginsecret = await response.text()
           VueCookies.set('audioserve_token', loginsecret)
@@ -94,24 +89,6 @@ export function login (context, data) {
     ...data,
     loginStatus
   })
-
-  /*
-  // console.log(data)
-  const response = await firelogin(context, data)
-  switch (response.data.status) {
-    case 'ok':
-      context.commit('setLoginStatus', 'logged_in')
-      if (this.$router.currentRoute.query && this.$router.currentRoute.query.forward) {
-        window.location.replace(this.$router.currentRoute.query.forward)
-      }
-      break
-    case 'multifactor':
-      context.commit('setLoginStatus', 'multifactor')
-      break
-  }
-  // ping(context)
-  return response
-  */
 }
 
 export /* async */ function selectFolder (context, subfolder) {
@@ -125,7 +102,6 @@ export /* async */ function selectFolder (context, subfolder) {
 }
 
 export async function fetchFolder (context, name = '') {
-  // console.log(VueCookies.get('audioserve_token'))
   const folder = await fetch(context.getters.getServerUrl + 'folder/' + name, fetchOptions(context))
 
   if (folder.status === 401) {
@@ -136,10 +112,7 @@ export async function fetchFolder (context, name = '') {
   const json = await folder.json()
   if (json) {
     if (json.files.length > 0) {
-      console.log('check if files are cached')
       json.files = await fileList(context, json.files)
-
-      console.log(json)
     }
     context.commit('folder', json)
   }
@@ -228,12 +201,9 @@ export async function setBookDetails (context, book) {
 export async function getDescription (context, path) {
   const description = context.state.server + 'desc/' + path
   const response = await fetch(description, fetchOptions(context))
-  // console.log(response)
-  // console.log(response.headers.get('Content-Type'))
 
   const mime = response.headers.get('Content-Type')
   const data = await response.text()
-  // console.log(data)
   let output = ''
   let para = ''
   if (mime === 'text/html') {
@@ -258,13 +228,9 @@ export async function fileIsCached (context, details) {
   }
   const cacheName = context.state.cacheKey + details.hash
   const exists = await caches.has(cacheName)
-  // console.log('exists')
-  // console.log(exists)
-  // console.log(cacheName)
   if (exists) {
     const cacheStorage = await caches.open(cacheName)
     const cachedResponse = await cacheStorage.match(details.file)
-    // console.log(cachedResponse)
     return (cachedResponse !== undefined)
   }
   return false
@@ -287,7 +253,6 @@ export async function cachedBooks (context) {
     })
   }
 
-  console.log(keys)
   return []
 }
 
@@ -337,7 +302,6 @@ export async function cacheFile (context, details) {
   const cacheStorage = await caches.open(cacheName)
   // await cacheStorage.add(details.file)
   const response = await fetch(details.file, fetchOptions(context))
-  console.log(response)
   const response2 = response.clone()
   cacheStorage.put(details.file, response)
   return response2
@@ -434,7 +398,6 @@ export function autoRewind (context) {
   const last = history[history.length - 1]
   let amount = (Date.now() - last.finish) / 1000 // get it in seconds
   amount = Math.floor(Math.log(amount * (amount / 2) * (amount / 3)))
-  console.log(amount)
   if (amount < 2) {
     amount = 2
   }
@@ -469,8 +432,6 @@ export function deleteBookmark (context, index) {
 export function addActiveBook (context) {
   const activeBooks = context.state.groupDetails.active_books.length > 0 ? JSON.parse(JSON.stringify(context.state.groupDetails.active_books)) : []
   const hash = context.state.book.hash
-  console.log('activeBooks')
-  console.log(activeBooks.includes(hash))
   if (activeBooks.includes(hash) === false) {
     activeBooks.push(hash)
     context.commit('groupDetails', {
@@ -482,12 +443,9 @@ export function addActiveBook (context) {
 }
 
 export function activeBooks (context) {
-  console.log(context.state)
-  console.log(context.state.groupDetails.active_books)
   const books = []
   context.state.groupDetails.active_books.forEach(async (hash) => {
     const bookKey = 'book-' + context.state.group + '-' + hash
-    console.log(bookKey)
     const book = await localForage.getItem(bookKey)
     books.push(book)
   })

@@ -133,7 +133,6 @@ export default {
       if (now > last + 1000) {
         last = now
         that.$store.commit('player/current', current || that.player.currentTime)
-        console.log('update')
       }
       if (this.playing === true) {
         window.requestAnimationFrame(function () {

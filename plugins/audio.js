@@ -46,7 +46,6 @@ export default ({ app }, inject) => {
       year: 'numeric'
     })
     const data = date.formatToParts(time)
-    // console.log(data)
     return data[2].value + ' ' + data[0].value + ', ' + data[4].value
   })
   inject('formatTime', (time) => {

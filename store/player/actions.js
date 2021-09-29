@@ -45,7 +45,6 @@ export function loadCurrent (context) {
   })
   // const currentFile = context.rootState.player.currentFile
   const currentFile = context.state.currentFile
-  console.log(currentFile)
   data.file = currentFile.path
   data.seek = globalSeekToLocalSeek(context, {
     global: book.seek,
@@ -55,12 +54,8 @@ export function loadCurrent (context) {
 }
 
 export function getCurrentFile (context, data) {
-  console.log('getCurrentFile')
-  console.log(data)
   let start = 0
   for (let i = 0, length = data.files.length; i < length; i++) {
-    console.log(start + data.files[i].meta.duration)
-    console.log('seek: ' + data.seek)
     if (start + data.files[i].meta.duration > data.seek) {
       return context.commit('currentFile', {
         index: i,

@@ -128,7 +128,6 @@ export default {
   watch: {
     $route: {
       handler (to, from) {
-        console.log('watch route triggered')
         if (to !== from) {
           if (to.query.collection > 0) {
             this.$store.commit('app/currentCollection', to.query.collection)
@@ -146,7 +145,6 @@ export default {
     },
     async currentCollection (to, from) {
       if (to !== from) {
-        console.log('collection changed')
         await this.$store.dispatch('app/selectFolder', {})
       }
     },
@@ -180,7 +178,6 @@ export default {
           return this.player.play()
         }
       }
-      // console.log('not current index')
       let start = 0
       if (index > 0) {
         const files = this.folder.files.slice(0, index)
@@ -203,15 +200,6 @@ export default {
     updateServer (input) {
       this.$store.commit('app/server', input)
     }
-    /* async isCached (file) {
-      const filedetails = {
-        hash: this.hash,
-        file: this.$store.getters['app/getFileUrl'](file.path)
-      }
-      const iscached = await this.$store.dispatch('app/fileIsCached', filedetails)
-      console.log('iscached: ' + typeof iscached)
-      return iscached
-    } */
   }
 }
 </script>

@@ -181,8 +181,6 @@ export default {
   },
 
   mounted () {
-    // console.log('this.player.src')
-    // console.log(this.player.src)
     /* if (this.player.src === '') {
       // this.$store.commit('player/loading', true)
       await this.$store.dispatch('player/load')
@@ -190,7 +188,6 @@ export default {
   },
 
   beforeDestroy () {
-    console.log('clean up')
     // Delete any temp caches
     caches.delete(this.$store.state.app.cacheKey + 'temp-' + this.hash)
   },

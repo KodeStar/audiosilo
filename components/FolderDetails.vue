@@ -24,10 +24,7 @@ export default {
   },
   watch: {
     details (to, from) {
-      // console.log(to)
-      // console.log(from)
       if (to !== from && to.description) {
-        console.log('update description')
         this.$store.dispatch('app/getFolderDescription', this.details.description.path)
       }
       if (to.image || to.description) {

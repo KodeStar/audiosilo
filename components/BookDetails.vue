@@ -124,8 +124,6 @@ export default {
       if (this.details && this.details.cover) {
         const src = this.$store.getters['app/getServerUrl'] + 'cover/' + this.details.cover.path
         const options = await this.$store.dispatch('app/fetchOptions')
-        console.log('fetchOptions')
-        console.log(options)
         const getcover = await fetch(src, options)
         const cover = await getcover.blob()
         const coverUrl = URL.createObjectURL(cover)
@@ -134,7 +132,6 @@ export default {
       }
     },
     async download () {
-      console.log('download')
       this.downloading = true
       const isPersisted = await navigator.storage.persist()
       console.log(`Persisted storage granted: ${isPersisted}`)
@@ -151,8 +148,6 @@ export default {
       }))
       this.downloading = false
       this.cached = true
-
-      console.log('files cached ' + cacheName)
     }
   }
 
