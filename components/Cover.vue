@@ -49,7 +49,8 @@ export default {
   },
   methods: {
     async getImage () {
-      console.log('image: ' + this.image)
+      console.log('cover: this.$fetchOptions()')
+      console.log(this.$fetchOptions())
       if (this.image) {
         const src = this.$store.getters['app/getServerUrl'] + 'cover/' + this.image
         const getcover = await fetch(src, this.$fetchOptions())
