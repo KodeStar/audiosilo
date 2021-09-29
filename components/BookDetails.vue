@@ -3,7 +3,7 @@
     <div class="text pt-3 lg:pt-8 p-8 pb-5 flex flex-col justify-center">
       <div class="lg:hidden"><BreadCrumbs /></div>
       <div class="w-full relative cover-container bg-gray-300 dark:bg-gray-800 justify-center flex items-center rounded-md shadow-inner">
-        <Cover :image="details.cover.path" :path="$route.query.folder" />
+        <Cover :book="book" :path="$route.query.folder" />
       </div>
     </div>
     <div class="text-xl flex justify-center px-8 font-bold">{{ name }}</div>
@@ -71,6 +71,9 @@ export default {
     },
     seek () {
       return this.$store.state.app.book.seek
+    },
+    book () {
+      return this.$store.state.app.book
     },
     hash () {
       return this.$store.getters['app/hash'](this.$route.query.folder)

@@ -113,6 +113,9 @@ export /* async */ function selectFolder (context, subfolder) {
   if (context.state.currentCollection > 0) {
     route.query.collection = context.state.currentCollection
   }
+  if (subfolder.collection && subfolder.collection > 0) {
+    route.query.collection = subfolder.collection
+  }
   this.app.router.push(route)
 }
 
@@ -172,6 +175,7 @@ export async function getBookDetails (context, hash) {
 
     book = {
       hash,
+      collection: context.state.currentCollection,
       name: 'Unknown',
       author: 'Unknown',
       description,

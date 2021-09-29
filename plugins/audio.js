@@ -63,4 +63,12 @@ export default ({ app }, inject) => {
       credentials: 'include'
     }
   })
+  inject('bookUrl', (book, state) => {
+    // this needs to be set in app/actions as well because it's not injecting for some reason
+    let url = state.server
+    if (book.collection > 0) {
+      url = new URL(book.collection + '/', state.server).href
+    }
+    return url
+  })
 }

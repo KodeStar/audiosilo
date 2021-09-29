@@ -7,7 +7,7 @@
 
           <div v-if="book" class="text w-28 h-28 lg:w-48 lg:h-48 flex justify-center flex-shrink">
             <div class="w-full relative cover-container bg-gray-300 dark:bg-gray-860 justify-center flex items-center rounded-md shadow-inner">
-              <Cover :mini="true" :image="book.cover" :path="book.path" />
+              <Cover :mini="true" :book="book" :path="book.path" />
             </div>
           </div>
 
@@ -25,7 +25,7 @@
 
             <div v-if="book" class="text w-28 h-28 lg:w-48 lg:h-48 flex justify-center flex-shrink">
               <div class="w-full relative cover-container bg-gray-300 dark:bg-gray-860 justify-center flex items-center rounded-md shadow-inner">
-                <Cover :image="book.cover" :path="book.path" />
+                <Cover :book="book" :path="book.path" />
               </div>
             </div>
 
@@ -43,7 +43,7 @@
 
           <div v-if="book" class="text w-28 h-28 lg:w-48 lg:h-48 flex justify-center flex-shrink">
             <div class="w-full relative cover-container bg-gray-300 dark:bg-gray-860 justify-center flex items-center rounded-md shadow-inner">
-              <Cover :image="book.cover" :path="book.path" />
+              <Cover :book="book" :path="book.path" />
             </div>
           </div>
 
