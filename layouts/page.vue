@@ -8,10 +8,11 @@
         </div>
       <LoginStatus />
     </div>
-    <div :class="{'-mr-96': rightbar === false, 'translate-x-full': rightbar === false}" class="transform transition-all border-l h-screen border-gray-300 dark:border-gray-900 w-full max-w-sm z-20 items-top absolute lg:relative inset-0 flex bg-gray-100 dark:bg-gray-840 flex-col pt-safe pb-safe">
-      <folder-details v-if="folder !== null && folder.files && folder.files.length === 0" :server="server" :details="folder" :name="foldername" />
+    <div v-if="folder !== null && folder.files && folder.files.length === 0" :class="{'-mr-96': rightbar === false, 'translate-x-full': rightbar === false}" class="transform transition-all border-l h-screen border-gray-300 dark:border-gray-900 w-full max-w-sm z-20 items-top absolute lg:relative inset-0 hidden lg:flex bg-gray-100 dark:bg-gray-840 flex-col pt-safe pb-safe">
+      <folder-details :server="server" :details="folder" :name="foldername" />
+    </div>
+    <div v-if="folder !== null && folder.files && folder.files.length > 0" class="transform transition-all border-l h-screen border-gray-300 dark:border-gray-900 w-full max-w-sm z-20 items-top absolute lg:relative inset-0 flex bg-gray-100 dark:bg-gray-840 flex-col pt-safe pb-safe">
       <book-details
-        v-if="folder !== null && folder.files && folder.files.length > 0"
         :server="server"
         :details="folder"
         :name="foldername" />
