@@ -26,13 +26,55 @@
 
 export default {
   name: 'Layout',
+  components: {
+  },
   data () {
     return {
       foldername: ''
     }
   },
-  components: {
+  computed: {
+    currentFolder () {
+      return this.$route.query.folder || ''
+    },
+    loginStatus () {
+      return this.$store.state.app.loginStatus
+    },
+    server () {
+      return this.$store.state.app.server
+    },
+    folder () {
+      return this.$store.state.app.folder
+    },
+    location () {
+      return this.$store.state.app.location
+    },
+    rightbar () {
+      return this.$store.state.app.rightbar
+    },
+    showplayer () {
+      return this.$store.state.app.player
+    },
+    player () {
+      return this.$store.state.player.player
+    },
+    currentFile () {
+      return this.$store.state.player.currentFile
+    },
+    current () {
+      return this.$store.state.player.current
+    },
+    playing () {
+      return this.$store.state.player.playing
+    },
+    darkMode () {
+      return this.$store.state.app.groupDetails.darkMode
+    },
+    groupDetails () {
+      return this.$store.state.app.groupDetails
+    }
   },
+
   watch: {
     async loginStatus (to, from) {
       console.log('login status updated')
@@ -67,6 +109,13 @@ export default {
       immediate: true
     }
   },
+  created () {
+    window.onbeforeunload = function () {
+      if (this.playing) {
+        this.$store.dispatch('app/savePauseEvent', this.currentFile.start + this.current)
+      }
+    }
+  },
   async mounted () {
     await this.$store.dispatch('app/initialiseApp')
 
@@ -86,44 +135,6 @@ export default {
     this.player.onended = (event) => {
       console.log('track ended')
       that.nextTrack()
-    }
-  },
-  computed: {
-    currentFolder () {
-      return this.$route.query.folder || ''
-    },
-    loginStatus () {
-      return this.$store.state.app.loginStatus
-    },
-    server () {
-      return this.$store.state.app.server
-    },
-    folder () {
-      return this.$store.state.app.folder
-    },
-    location () {
-      return this.$store.state.app.location
-    },
-    rightbar () {
-      return this.$store.state.app.rightbar
-    },
-    showplayer () {
-      return this.$store.state.app.player
-    },
-    player () {
-      return this.$store.state.player.player
-    },
-    currentFile () {
-      return this.$store.state.player.currentFile
-    },
-    playing () {
-      return this.$store.state.player.playing
-    },
-    darkMode () {
-      return this.$store.state.app.groupDetails.darkMode
-    },
-    groupDetails () {
-      return this.$store.state.app.groupDetails
     }
   },
   methods: {
