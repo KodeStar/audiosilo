@@ -109,10 +109,11 @@ export default {
       immediate: true
     }
   },
-  created () {
+  beforeMount  () {
+    const that = this
     window.onbeforeunload = function () {
-      if (this.playing) {
-        this.$store.dispatch('app/savePauseEvent', this.currentFile.start + this.current)
+      if (that.playing) {
+        that.$store.dispatch('app/savePauseEvent', that.currentFile.start + that.current)
       }
     }
   },
