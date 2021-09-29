@@ -3,9 +3,9 @@
     <h2 class="my-6 text-lg font-semibold">Continue reading</h2>
     <div v-if="active.length > 0">
       <div class="flex lg:flex-wrap overflow-x-scroll">
-        <div v-for="book in active" :key="book.hash" @click="$store.dispatch('app/selectFolder', book)" class="flex m-1 flex-col cursor-pointer">
+        <div v-for="(book, index) in active" :key="index" @click="$store.dispatch('app/selectFolder', book)" class="flex m-1 flex-col cursor-pointer">
 
-          <div class="text w-28 h-28 lg:w-48 lg:h-48 flex justify-center flex-shrink">
+          <div v-if="book" class="text w-28 h-28 lg:w-48 lg:h-48 flex justify-center flex-shrink">
             <div class="w-full relative cover-container bg-gray-300 dark:bg-gray-860 justify-center flex items-center rounded-md shadow-inner">
               <Cover :mini="true" :image="book.cover" :path="book.path" />
             </div>

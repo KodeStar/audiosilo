@@ -10,7 +10,7 @@
       <div
         v-for="(subfolder, index) in folder.subfolders"
         :key="index"
-        class="bg-gray-50 dark:bg-gray-840 filter drop-shadow dark:drop-shadow-none dark:border-gray-860 dark:border rounded-lg my-2 w-full flex max-w-xl items-center cursor-pointer"
+        class="bg-gray-50 dark:bg-gray-840 filter drop-shadow dark:drop-shadow-none dark:border-gray-900 dark:border rounded-lg my-2 w-full flex max-w-xl items-center cursor-pointer"
         @click="$store.dispatch('app/selectFolder', subfolder)"
       >
         <div class="p-4 flex self-stretch text-gray-50 bg-pink-600 rounded-l-lg items-center">
@@ -31,7 +31,7 @@
       <div
         v-for="(file, index) in folder.files"
         :key="index"
-        class="bg-gray-50 dark:bg-gray-840 min-h-[3.5rem] filter drop-shadow dark:drop-shadow-none dark:border-gray-860 dark:border rounded-lg hover:opacity-80 my-2 w-full flex max-w-xl items-center cursor-pointer"
+        class="bg-gray-50 dark:bg-gray-840 min-h-[3.5rem] filter drop-shadow dark:drop-shadow-none dark:border-gray-900 dark:border rounded-lg hover:opacity-80 my-2 w-full flex max-w-xl items-center cursor-pointer"
         :class="{ 'opacity-50': (seek > 0 || current > 0 || currentFile.index > 0) && currentFile.index !== index }"
         @click="selectFile(index)"
       >

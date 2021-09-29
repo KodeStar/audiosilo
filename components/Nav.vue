@@ -14,7 +14,7 @@
         <i class="fa-light fa-fw fa-house lg:mr-2 fa-lg"></i>
         <span class="text-xs font-semibold lg:font-normal lg:text-base">Home</span>
       </NuxtLink>
-      <NuxtLink :class="{ active: activepage === 'library' }" class="w-16 lg:w-full flex flex-col lg:flex-row items-center my-1 lg:my-2 p-1 lg:p-3 lg:px-5 rounded-lg nav" to="/library">
+      <NuxtLink :class="{ active: activepage === 'library' }" class="w-16 lg:w-full flex flex-col lg:flex-row items-center my-1 lg:my-2 p-1 lg:p-3 lg:px-5 rounded-lg nav" :to="'/library' + (currentCollection > 0 ? '?collection=' + currentCollection : '')">
         <i class="fa-light fa-fw fa-rectangle-vertical-history lg:mr-2 fa-lg"></i>
         <span class="text-xs font-semibold lg:font-normal lg:text-base">Library</span>
       </NuxtLink>

@@ -25,7 +25,7 @@ export function setGroupDetails (context) {
   localForage.setItem('group-' + context.state.group, context.state.groupDetails)
 }
 
-export function login (context, data) {
+export async function login (context, data) {
   let loginStatus = false
   let loginsecret = null
   if (data.secret) {
@@ -58,16 +58,6 @@ export function login (context, data) {
           loginsecret = await response.text()
           VueCookies.set('audioserve_token', loginsecret)
           loginStatus = true
-          context.commit('loginStatus', loginStatus)
-
-          const collections = await fetchCollections(context)
-
-          setDetails(context, {
-            ...data,
-            loginStatus,
-            collections: collections.names,
-            currentCollection: 0
-          })
         }).catch((err) => {
           console.log(err)
         })
@@ -82,12 +72,19 @@ export function login (context, data) {
     loginStatus = true
     loginsecret = 'noauth'
   }
+
+  const collections = await fetchCollections(context)
+
   context.commit('loginsecret', loginsecret)
   context.commit('loginStatus', loginStatus)
+  context.commit('collections', collections.names)
+  context.commit('currentCollection', 0)
 
   setDetails(context, {
     ...data,
-    loginStatus
+    loginStatus,
+    collections: collections.names,
+    currentCollection: 0
   })
 }
 
