@@ -23,8 +23,8 @@
         <div class="flex flex-wrap">
           <div v-for="book in cached" :key="book.hash" @click="$store.dispatch('app/selectFolder', book)" class="flex m-3 flex-col cursor-pointer">
 
-            <div class="text w-28 h-28 lg:w-60 lg:h-60 flex justify-center flex-shrink">
-              <div class="w-full relative cover-container bg-gray-300 dark:bg-gray-800 justify-center flex items-center rounded-md shadow-inner">
+            <div v-if="book" class="text w-28 h-28 lg:w-48 lg:h-48 flex justify-center flex-shrink">
+              <div class="w-full relative cover-container bg-gray-300 dark:bg-gray-860 justify-center flex items-center rounded-md shadow-inner">
                 <Cover :image="book.cover" :path="book.path" />
               </div>
             </div>
@@ -41,8 +41,8 @@
       <div class="flex flex-wrap">
         <div v-for="book in finished" :key="book.hash" @click="$store.dispatch('app/selectFolder', book)" class="flex m-3 flex-col cursor-pointer">
 
-          <div class="text w-28 h-28 lg:w-60 lg:h-60 flex justify-center flex-shrink">
-            <div class="w-full relative cover-container bg-gray-300 dark:bg-gray-800 justify-center flex items-center rounded-md shadow-inner">
+          <div v-if="book" class="text w-28 h-28 lg:w-48 lg:h-48 flex justify-center flex-shrink">
+            <div class="w-full relative cover-container bg-gray-300 dark:bg-gray-860 justify-center flex items-center rounded-md shadow-inner">
               <Cover :image="book.cover" :path="book.path" />
             </div>
           </div>
