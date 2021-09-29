@@ -64,14 +64,3 @@ export default {
   }
 }
 </script>
-    async getImage () {
-      if (this.details && this.details.cover) {
-        const src = this.$store.getters['app/getServerUrl'] + 'cover/' + this.details.cover.path
-        const options = await this.$store.dispatch('app/fetchOptions')
-        const getcover = await fetch(src, options)
-        const cover = await getcover.blob()
-        const coverUrl = URL.createObjectURL(cover)
-
-        this.image = coverUrl
-      }
-    }
