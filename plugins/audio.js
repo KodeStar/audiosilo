@@ -56,4 +56,9 @@ export default ({ app }, inject) => {
     }).format(time)
     return date
   })
+  inject('fetchOptions', () => {
+    return {
+      credentials: 'include'
+    }
+  })
 }

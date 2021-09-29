@@ -99,7 +99,7 @@ export /* async */ function selectFolder (context, subfolder) {
 }
 
 export async function fetchFolder (context, name = '') {
-  const folder = await fetch(context.getters.getServerUrl + 'folder/' + name, fetchOptions(context))
+  const folder = await fetch(context.getters.getServerUrl + 'folder/' + name, this.$fetchOptions())
 
   if (folder.status === 401) {
     context.commit('loginStatus', false)
@@ -128,7 +128,7 @@ export async function fileList (context, files) {
 }
 
 export async function fetchCollections (context) {
-  const collections = await fetch(context.state.server + 'collections', fetchOptions(context))
+  const collections = await fetch(context.state.server + 'collections', this.$fetchOptions())
   return collections.json()
 }
 
@@ -197,7 +197,7 @@ export async function setBookDetails (context, book) {
 
 export async function getDescription (context, path) {
   const description = context.state.server + 'desc/' + path
-  const response = await fetch(description, fetchOptions(context))
+  const response = await fetch(description, this.$fetchOptions())
 
   const mime = response.headers.get('Content-Type')
   const data = await response.text()
@@ -269,12 +269,6 @@ export function contentToExtension (mime) {
   return extension
 }
 
-export function fetchOptions (context) {
-  return {
-    credentials: 'include'
-  }
-}
-
 export async function getCachedFile (context, details) {
   const cacheName = context.state.cacheKey + details.hash
   const cacheStorage = await caches.open(cacheName)
@@ -298,7 +292,7 @@ export async function cacheFile (context, details) {
   const cacheName = context.state.cacheKey + details.hash
   const cacheStorage = await caches.open(cacheName)
   // await cacheStorage.add(details.file)
-  const response = await fetch(details.file, fetchOptions(context))
+  const response = await fetch(details.file, this.$fetchOptions())
   const response2 = response.clone()
   cacheStorage.put(details.file, response)
   return response2

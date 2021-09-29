@@ -52,9 +52,7 @@ export default {
       console.log('image: ' + this.image)
       if (this.image) {
         const src = this.$store.getters['app/getServerUrl'] + 'cover/' + this.image
-        const options = await this.$store.dispatch('app/fetchOptions')
-        console.log(options)
-        const getcover = await fetch(src, options)
+        const getcover = await fetch(src, this.$fetchOptions())
         const cover = await getcover.blob()
         const coverUrl = URL.createObjectURL(cover)
 
