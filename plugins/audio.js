@@ -58,6 +58,7 @@ export default ({ app }, inject) => {
   })
   inject('fetchOptions', () => {
     return {
+      mode: 'cors',
       credentials: 'include'
     }
   })
