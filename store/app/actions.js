@@ -147,7 +147,7 @@ export async function getBookDetails (context, hash) {
     }
     let cover = null
     if (context.state.folder.cover) {
-      cover = context.state.server + 'cover/' + context.state.folder.cover.path
+      cover = context.state.folder.cover.path
     }
 
     book = {

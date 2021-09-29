@@ -3,7 +3,7 @@
     <div class="text pt-3 lg:pt-8 p-8 pb-5 flex flex-col justify-center">
       <div class="lg:hidden"><BreadCrumbs /></div>
       <div class="w-full relative cover-container bg-gray-300 dark:bg-gray-800 justify-center flex items-center rounded-md shadow-inner">
-        <Cover :image="image" :path="$route.query.folder" />
+        <Cover :image="details.cover.path" :path="$route.query.folder" />
       </div>
     </div>
     <div class="text-xl flex justify-center px-8 font-bold">{{ name }}</div>
@@ -73,7 +73,7 @@ export default {
       return this.$store.state.app.book.seek
     },
     hash () {
-      return this.$store.getters['app/hash'](this.$route.fullPath)
+      return this.$store.getters['app/hash'](this.$route.query.folder)
     },
     totalTime () {
       let total = 0
@@ -98,7 +98,6 @@ export default {
 
   /* async */ mounted () {
     // const keys = await caches.keys()
-    this.getImage()
     // const path = (this.details && this.details.description) ? this.details.description.path : null
     // const cover = (this.details && this.details.cover) ? this.server + 'cover/' + this.details.cover.path : null
     /*  */
@@ -119,17 +118,6 @@ export default {
     async loadPlayer () {
       await this.$store.dispatch('player/load')
       this.$store.commit('app/player', true)
-    },
-    async getImage () {
-      if (this.details && this.details.cover) {
-        const src = this.$store.getters['app/getServerUrl'] + 'cover/' + this.details.cover.path
-        const options = await this.$store.dispatch('app/fetchOptions')
-        const getcover = await fetch(src, options)
-        const cover = await getcover.blob()
-        const coverUrl = URL.createObjectURL(cover)
-
-        this.image = coverUrl
-      }
     },
     async download () {
       this.downloading = true

@@ -16,6 +16,9 @@ export function getFileUrl (state) {
 
 export function hash (state) {
   return (route) => {
+    if (route === undefined) {
+      return null
+    }
     return sha256(route)
   }
 }

@@ -121,7 +121,7 @@ export default {
       return this.$store.state.player.playing
     },
     hash () {
-      return this.$store.getters['app/hash'](this.$route.fullPath)
+      return this.$store.getters['app/hash'](this.$route.query.folder)
     }
   },
 

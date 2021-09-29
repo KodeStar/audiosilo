@@ -160,6 +160,7 @@ export default {
 
   mounted () {
     this.$store.commit('app/activepage', 'settings')
+    this.$store.commit('app/resetFolder')
   },
 
   methods: {

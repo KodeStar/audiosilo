@@ -99,6 +99,7 @@ export default {
   mounted () {
     this.$store.commit('app/rightbar', false)
     this.$store.commit('app/activepage', 'home')
+    this.$store.commit('app/resetFolder')
     this.$store.dispatch('app/cachedBooks')
     // this.$store.dispatch('app/fetchFolder')
   },

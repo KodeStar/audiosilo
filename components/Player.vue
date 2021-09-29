@@ -156,7 +156,7 @@ export default {
       return this.$store.state.app.book.seek
     },
     hash () {
-      return this.$store.getters['app/hash'](this.$route.fullPath)
+      return this.$store.getters['app/hash'](this.$route.query.folder)
     },
     remaining () {
       return this.currentFile.duration - this.current

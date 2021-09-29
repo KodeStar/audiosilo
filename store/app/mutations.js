@@ -22,6 +22,15 @@ export function book (state, data) {
   state.book = data
 }
 
+export function resetFolder (state) {
+  state.folder = {
+    cover: null,
+    description: null,
+    files: [],
+    subfolders: []
+  }
+}
+
 export function folder (state, data) {
   state.folder = {
     ...data
