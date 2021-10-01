@@ -105,7 +105,7 @@ export default {
     fadeout (to, from) {
       if (to !== from) {
         if (to !== null) {
-          if(this.grantdevicemotion !== false) {
+          if (this.grantdevicemotion !== false) {
             console.log('permission granted')
             window.addEventListener('devicemotion', this.motion, false)
           }
