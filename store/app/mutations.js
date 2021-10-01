@@ -98,3 +98,8 @@ export function addCachedBook (state, book) {
   // mutate state
   state.groupDetails.cached_books.push(book)
 }
+
+export function grantdevicemotion (state, data) {
+  // mutate state
+  state.grantdevicemotion = data
+}

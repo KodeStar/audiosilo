@@ -96,6 +96,14 @@ export default {
         }
       }
     },
+    grantdevicemotion (to, from) {
+      if (to !== from) {
+        if (to !== null) {
+          console.log('permission granteds')
+          window.addEventListener('devicemotion', this.motion, false)
+        }
+      }
+    },
     darkMode: {
       handler (to, from) {
         if (to !== from) {
@@ -116,7 +124,6 @@ export default {
   },
   beforeMount  () {
     const that = this
-    window.addEventListener('devicemotion', this.motion, false)
     window.onbeforeunload = function () {
       if (that.playing) {
         that.$store.dispatch('app/savePauseEvent', that.currentFile.start + that.current)
@@ -144,6 +151,9 @@ export default {
       console.log('track ended')
       that.nextTrack()
     }
+  },
+  destroyed () {
+    window.removeEventListener('devicemotion', this.motion, false)
   },
   methods: {
     updatePlayerDetails (current, last = 0) {

@@ -49,10 +49,22 @@
           </select>
         </div>
       </div>
+      <div class="p-4 flex flex-col lg:flex-row justify-between items-center border-b border-gray-200 dark:border-gray-800">
+        <div class="flex flex-col mb-4 lg:mb-0">
+          <span class="font-semibold mb-1">Shake to cancel sleep timer</span>
+          <span class="">Grant permission to devicemotion in order to allow shake to wake on the sleep timer</span>
+        </div>
+        <div class="w-full max-w-xs"><button @click="grantPermission">Grant Permission</button></div>
+      </div>
+
     </div>
     <div class="lg:flex cursor-pointer border border-gray-300 dark:border-gray-900 items-center p-5 px-10 " @click="logout">
       <i class="fa-light fa-fw fa-right-from-bracket mr-2 fa-lg"></i>
       Logout
+    </div>
+    <div class="lg:flex cursor-pointer border border-gray-300 dark:border-gray-900 items-center p-5 px-10 " @click="logout">
+      <i class="fa-light fa-fw fa-right-from-bracket mr-2 fa-lg"></i>
+      Grant devicemotion permission in order to shake
     </div>
 
   </div>
@@ -166,6 +178,21 @@ export default {
   methods: {
     logout () {
       this.$store.commit('app/loginStatus', false)
+    },
+    grantPermission () {
+      console.log('permission clicked')
+      if (typeof DeviceMotionEvent.requestPermission === 'function') {
+        console.log('DeviceMotionEvent exists')
+        DeviceMotionEvent.requestPermission()
+          .then((permissionState) => {
+            if (permissionState === 'granted') {
+              this.$store.commit('app/grantdevicemotion', true)
+            }
+          })
+          .catch(console.error)
+      } else {
+        // handle regular non iOS 13+ devices
+      }
     }
   }
 }

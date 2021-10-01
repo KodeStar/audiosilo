@@ -48,6 +48,7 @@ export default function () {
     player: false,
     transcode: '0',
     rightbar: false,
-    automaticsleep: null
+    automaticsleep: null,
+    grantdevicemotion: false
   }
 }
