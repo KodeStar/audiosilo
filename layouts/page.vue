@@ -105,7 +105,7 @@ export default {
     fadeout (to, from) {
       if (to !== from) {
         if (to !== null) {
-          if(this.grantdevicemotion !== null) {
+          if(this.grantdevicemotion !== false) {
             console.log('permission granted')
             window.addEventListener('devicemotion', this.motion, false)
           }
@@ -215,6 +215,7 @@ export default {
         if (this.moveCounter > 2) {
           this.$store.dispatch('player/clearFadeout')
           this.moveCounter = 0
+          return
         }
 
         this.lastX = acc.x

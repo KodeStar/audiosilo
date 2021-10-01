@@ -77,8 +77,11 @@ export function setGlobalSeek (context) {
 }
 
 export function sleeptimer (context, mins) {
+  console.log('sleeptimer')
+  console.log(mins)
   const seconds = mins * 60 // mins to seconds
   const milliseconds = seconds * 1000 // conds to milliseconds
+  console.log(milliseconds)
 
   context.commit('player/sleepamount', mins)
   context.commit('player/sleepend', Date.now() + milliseconds)
