@@ -192,6 +192,7 @@ export default {
 
         if (this.moveCounter > 2) {
           console.log('SHAKE!!!')
+          alert('shake!!')
           this.moveCounter = 0
         }
 
