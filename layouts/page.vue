@@ -24,7 +24,49 @@
 </template>
 
 <script>
+function motion (e) {
+  console.log('start motion detection')
+  let acc = e.acceleration
+  if (!Object.prototype.hasOwnProperty.call(acc, 'x')) {
+    acc = e.accelerationIncludingGravity
+  }
 
+  if (!acc.x) {
+    return
+  }
+  // only log if x,y,z > 1
+  if (Math.abs(acc.x) >= 1 &&
+  Math.abs(acc.y) >= 1 &&
+  Math.abs(acc.z) >= 1) {
+    // console.log('motion', acc)
+    if (!this.lastX) {
+      this.lastX = acc.x
+      this.lastY = acc.y
+      this.lastZ = acc.z
+      return
+    }
+
+    const deltaX = Math.abs(acc.x - this.lastX)
+    const deltaY = Math.abs(acc.y - this.lastY)
+    const deltaZ = Math.abs(acc.z - this.lastZ)
+
+    if (deltaX + deltaY + deltaZ > 3) {
+      this.moveCounter++
+    } else {
+      this.moveCounter = Math.max(0, --this.moveCounter)
+    }
+
+    if (this.moveCounter > 2) {
+      console.log('SHAKE!!!')
+      alert('shake!!')
+      this.moveCounter = 0
+    }
+
+    this.lastX = acc.x
+    this.lastY = acc.y
+    this.lastZ = acc.z
+  }
+}
 export default {
   name: 'Layout',
   components: {
@@ -105,7 +147,7 @@ export default {
       if (to !== from) {
         if (to !== null) {
           console.log('permission granteds')
-          window.addEventListener('devicemotion', this.motion, false)
+          window.addEventListener('devicemotion', motion, false)
         }
       }
     },
@@ -133,7 +175,7 @@ export default {
       if (that.playing) {
         that.$store.dispatch('app/savePauseEvent', that.currentFile.start + that.current)
       }
-      window.removeEventListener('devicemotion', this.motion, false)
+      window.removeEventListener('devicemotion', motion, false)
     }
   },
   async mounted () {
@@ -158,7 +200,7 @@ export default {
     }
   },
   destroyed () {
-    window.removeEventListener('devicemotion', this.motion, false)
+    window.removeEventListener('devicemotion', motion, false)
   },
   methods: {
     updatePlayerDetails (current, last = 0) {
@@ -172,49 +214,6 @@ export default {
         window.requestAnimationFrame(function () {
           that.updatePlayerDetails(current, last)
         })
-      }
-    },
-    motion (e) {
-      console.log('start motion detection')
-      let acc = e.acceleration
-      if (!Object.prototype.hasOwnProperty.call(acc, 'x')) {
-        acc = e.accelerationIncludingGravity
-      }
-
-      if (!acc.x) {
-        return
-      }
-      // only log if x,y,z > 1
-      if (Math.abs(acc.x) >= 1 &&
-      Math.abs(acc.y) >= 1 &&
-      Math.abs(acc.z) >= 1) {
-        // console.log('motion', acc)
-        if (!this.lastX) {
-          this.lastX = acc.x
-          this.lastY = acc.y
-          this.lastZ = acc.z
-          return
-        }
-
-        const deltaX = Math.abs(acc.x - this.lastX)
-        const deltaY = Math.abs(acc.y - this.lastY)
-        const deltaZ = Math.abs(acc.z - this.lastZ)
-
-        if (deltaX + deltaY + deltaZ > 3) {
-          this.moveCounter++
-        } else {
-          this.moveCounter = Math.max(0, --this.moveCounter)
-        }
-
-        if (this.moveCounter > 2) {
-          console.log('SHAKE!!!')
-          alert('shake!!')
-          this.moveCounter = 0
-        }
-
-        this.lastX = acc.x
-        this.lastY = acc.y
-        this.lastZ = acc.z
       }
     },
     async nextTrack () {
