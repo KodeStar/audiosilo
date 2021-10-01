@@ -110,6 +110,7 @@ export default {
             window.addEventListener('devicemotion', this.motion, false)
           }
         } else {
+          console.log('removeEventListener')
           window.removeEventListener('devicemotion', this.motion, false)
         }
       }

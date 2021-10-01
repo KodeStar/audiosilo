@@ -80,6 +80,9 @@ export function sleeptimer (context, mins) {
   const seconds = mins * 60 // mins to seconds
   const milliseconds = seconds * 1000 // conds to milliseconds
 
+  context.commit('player/sleepamount', mins)
+  context.commit('player/sleepend', Date.now() + milliseconds)
+
   const timerid = setTimeout(() => {
     // context.state.player.pause()
     context.commit('sleepend', null)
@@ -88,9 +91,6 @@ export function sleeptimer (context, mins) {
   }, milliseconds)
 
   context.commit('sleep', timerid)
-  context.commit('player/sleepamount', mins)
-  context.commit('player/sleepend', Date.now() + milliseconds)
-
 }
 
 export function fadeOut (context) {
@@ -119,6 +119,7 @@ export function clearSleepTmer (context) {
 export function clearFadeout (context) {
   const mins = context.state.sleepamount
   clearInterval(context.state.fadeout)
+  context.commit('fadeout', null)
   context.state.player.volume = 1
   sleeptimer(context, mins)
 }
