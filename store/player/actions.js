@@ -97,11 +97,14 @@ export function sleeptimer (context, mins) {
 }
 
 export function fadeOut (context) {
+  console.log('fadout')
   let to = 20
   const fadeout = setInterval(() => {
     const vol = to / 20
     context.state.player.volume = vol
+    console.log(vol)
     if (to <= 0) {
+      console.log('clear fadeout')
       clearInterval(fadeout)
       context.commit('fadeout', null)
       context.dispatch('app/savePauseEvent', context.state.currentFile.start + context.state.current, { root: true })
