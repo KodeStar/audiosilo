@@ -52,7 +52,7 @@ export default {
       return this.$store.state.app.folder
     },
     grantdevicemotion () {
-      return this.$store.state.app.location
+      return this.$store.state.app.grantdevicemotion
     },
     location () {
       return this.$store.state.app.location
