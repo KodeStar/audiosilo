@@ -51,6 +51,9 @@ export default {
     folder () {
       return this.$store.state.app.folder
     },
+    grantdevicemotion () {
+      return this.$store.state.app.location
+    },
     location () {
       return this.$store.state.app.location
     },
