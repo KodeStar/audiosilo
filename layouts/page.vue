@@ -100,6 +100,8 @@ export default {
       }
     },
     grantdevicemotion (to, from) {
+      console.log('grantdevicemotion event')
+      console.log(to)
       if (to !== from) {
         if (to !== null) {
           console.log('permission granteds')
