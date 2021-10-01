@@ -1,5 +1,6 @@
 export default {
   player: new Audio(),
+  chime: new Audio('chime.wav'),
   playing: false,
   loading: false,
   current: 0,

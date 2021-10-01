@@ -95,6 +95,8 @@ export function sleeptimer (context, mins) {
 
 export function fadeOut (context) {
   console.log('fadout')
+  context.state.chime.value = 0.5
+  context.state.chime.play()
   let to = 20
   const fadeout = setInterval(() => {
     const vol = to / 20
@@ -125,7 +127,6 @@ export function clearFadeout (context) {
   context.commit('fadeout', null)
   context.state.player.volume = 1
   sleeptimer(context, mins)
-  const chime = new Audio()
-  chime.src = 'chime.wav'
-  chime.play()
+  context.state.chime.value = 0.5
+  context.state.chime.play()
 }
