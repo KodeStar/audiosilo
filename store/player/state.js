@@ -9,5 +9,7 @@ export default {
     start: 0,
     duration: 0,
     path: ''
-  }
+  },
+  sleep: null,
+  sleepend: null
 }

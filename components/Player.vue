@@ -5,6 +5,11 @@
       <div class="text p-8 pb-5 pt-12 flex justify-center flex-shrink">
         <div class="w-full relative cover-container bg-gray-300 dark:bg-gray-800 justify-center flex items-center rounded-md shadow-inner">
           <Cover :book="book" :path="$route.query.folder" />
+          <div v-if="sleep !== null" class="flex absolute bottom-4 left-4 items-center bg-gray-200 dark:bg-gray-860 rounded">
+            <div @click="clearSleepTimer" class="p-2 bg-pink-600 flex items-center text-white cursor-pointer text-center rounded"><i class="fa-light fa-fw fa-times" /></div>
+            <div v-if="sleep === 'chapter'" class="px-3">End of chapter<i class="ml-3 fa-light fa-alarm-snooze"></i></div>
+            <div v-else class="px-3">{{ $formatToPlayback(($store.state.player.sleepend/1000) - (Date.now()/1000)) }}<i class="ml-3 fa-light fa-alarm-snooze"></i></div>
+          </div>
         </div>
       </div>
       <div class="w-full px-8 flex flex-col text-center items-center">
@@ -66,7 +71,7 @@
     <div class="p-2 w-full">
       <div class="bg-gray-200 dark:bg-gray-800 rounded p-3 px-6 w-full relative flex justify-between">
         <button @click="editPlaybackSpeed = true" class="cursor-pointer">{{ playbackSpeed }}x</button>
-        <button class="cursor-pointer"><i class="fa-light fa-alarm-snooze"></i></button>
+        <button @click="sleeptimer" class="cursor-pointer"><i class="fa-light fa-alarm-snooze"></i></button>
         <button class="cursor-pointer"><i class="fa-light fa-airplay"></i></button>
         <button @click="playerdetails = true" class="cursor-pointer"><i class="fa-light fa-sliders-up"></i></button>
         <div v-if="editPlaybackSpeed" class="absolute inset-0 flex bg-gray-200 dark:bg-gray-800 rounded justify-between p-3 px-6">
@@ -118,6 +123,20 @@
         </template>
       </div>
     </div>
+    <div v-if="setsleeptimer" class="absolute inset-0 bg-gray-100 dark:bg-gray-860 z-40">
+      <div class="p-4 pt-safe pb-safe flex flex-col">
+        <div class="flex my-1 justify-end"><div @click="setsleeptimer = false" class="p-4 py-3 mx-1 bg-pink-600 flex items-center text-white cursor-pointer text-center rounded"><i class="fa-light fa-fw fa-times" /></div></div>
+        <button @click="setSleepTimer(5)" class="bg-gray-300 dark:bg-gray-800 flex p-4 my-1">5 Minutes</button>
+        <button @click="setSleepTimer(10)" class="bg-gray-300 dark:bg-gray-800 flex p-4 my-1">10 Minutes</button>
+        <button @click="setSleepTimer(15)" class="bg-gray-300 dark:bg-gray-800 flex p-4 my-1">15 Minutes</button>
+        <button @click="setSleepTimer(20)" class="bg-gray-300 dark:bg-gray-800 flex p-4 my-1">20 Minutes</button>
+        <button @click="setSleepTimer(30)" class="bg-gray-300 dark:bg-gray-800 flex p-4 my-1">30 Minutes</button>
+        <button @click="setSleepTimer(40)" class="bg-gray-300 dark:bg-gray-800 flex p-4 my-1">40 Minutes</button>
+        <button @click="setSleepTimer(50)" class="bg-gray-300 dark:bg-gray-800 flex p-4 my-1">50 Minutes</button>
+        <button @click="setSleepTimer(60)" class="bg-gray-300 dark:bg-gray-800 flex p-4 my-1">60 Minutes</button>
+        <button @click="setSleepTimer('chapter')" class="bg-gray-300 dark:bg-gray-800 flex p-4 my-1">End of chapter</button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -133,13 +152,14 @@ export default {
       bookmarkstab: false,
       historytab: true,
       chapterstab: false,
-      newbookmark: ''
+      newbookmark: '',
+      setsleeptimer: false
     }
   },
 
   computed: {
     ...mapState('app', ['book', 'groupDetails']),
-    ...mapState('player', ['current', 'currentFile', 'loading', 'player', 'playing']),
+    ...mapState('player', ['current', 'currentFile', 'loading', 'player', 'playing', 'sleep']),
     history () {
       return this.$store.state.app.book.history
     },
@@ -204,6 +224,28 @@ export default {
       this.player.currentTime = goToTime
       this.$store.commit('player/current', goToTime)
       // this.playerdetails = false
+    },
+    sleeptimer () {
+      this.setsleeptimer = true
+      /* const chime = new Audio()
+      chime.src = 'chime.wav'
+      chime.play() */
+    },
+    setSleepTimer (mins) {
+      if (mins === 'chapter') {
+        this.$store.commit('player/sleep', 'chapter')
+      } else {
+        const seconds = mins * 60 // mins to seconds
+        const milliseconds = seconds * 1000 // conds to milliseconds
+        this.$store.dispatch('player/sleeptimer', milliseconds)
+        this.$store.commit('player/sleepend', Date.now() + milliseconds)
+      }
+      this.setsleeptimer = false
+    },
+    clearSleepTimer () {
+      if (this.sleep === 'chapter') {
+        this.$store.commit('player/sleep', null)
+      }
     },
     prevFile () {
       return {

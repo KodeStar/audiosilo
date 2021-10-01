@@ -163,6 +163,12 @@ export default {
       })
 
       await this.$store.dispatch('player/load')
+
+      if (this.$store.state.app.sleep === 'chapter') {
+        this.$store.commit('app/sleep', null)
+        return null
+      }
+
       await this.player.play()
     }
   }

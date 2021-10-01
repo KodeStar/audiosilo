@@ -47,6 +47,7 @@ export default function () {
     secret: null,
     player: false,
     transcode: '0',
-    rightbar: false
+    rightbar: false,
+    automaticsleep: null
   }
 }

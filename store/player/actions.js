@@ -75,3 +75,12 @@ export function globalSeekToLocalSeek (context, data) {
 export function setGlobalSeek (context) {
 
 }
+
+export function sleeptimer (context, milliseconds) {
+  const timerid = setTimeout(() => {
+    context.state.player.pause()
+    context.commit('sleepend', null)
+    context.commit('sleep', null)
+  }, milliseconds)
+  context.commit('sleep', timerid)
+}

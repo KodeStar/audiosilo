@@ -30,3 +30,18 @@ export function loading (state, data) {
 export function current (state, data) {
   state.current = data
 }
+
+export function sleep (state, data) {
+  state.sleep = data
+}
+
+export function sleepend (state, data) {
+  state.sleepend = data
+}
+
+export function sleeptimer (state, milliseconds) {
+}
+export function clearsleeptimer (state) {
+  clearTimeout(state.sleep)
+  state.sleep = null
+}
