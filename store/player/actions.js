@@ -90,6 +90,7 @@ export function sleeptimer (context, mins) {
     // context.state.player.pause()
     context.commit('sleepend', null)
     context.commit('sleep', null)
+    console.log('engage fadeout')
     fadeOut(context)
   }, milliseconds)
 
