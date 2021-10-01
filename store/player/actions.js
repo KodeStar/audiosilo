@@ -83,8 +83,8 @@ export function sleeptimer (context, mins) {
   const milliseconds = seconds * 1000 // conds to milliseconds
   console.log(milliseconds)
 
-  context.commit('player/sleepamount', mins)
-  context.commit('player/sleepend', Date.now() + milliseconds)
+  context.commit('sleepamount', mins)
+  context.commit('sleepend', Date.now() + milliseconds)
 
   const timerid = setTimeout(() => {
     // context.state.player.pause()
