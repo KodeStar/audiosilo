@@ -77,11 +77,8 @@ export function setGlobalSeek (context) {
 }
 
 export function sleeptimer (context, mins) {
-  console.log('sleeptimer')
-  console.log(mins)
   const seconds = mins * 60 // mins to seconds
   const milliseconds = seconds * 1000 // conds to milliseconds
-  console.log(milliseconds)
 
   context.commit('sleepamount', mins)
   context.commit('sleepend', Date.now() + milliseconds)
@@ -90,7 +87,6 @@ export function sleeptimer (context, mins) {
     // context.state.player.pause()
     context.commit('sleepend', null)
     context.commit('sleep', null)
-    console.log('engage fadeout')
     fadeOut(context)
   }, milliseconds)
 
@@ -100,9 +96,8 @@ export function sleeptimer (context, mins) {
 export function fadeOut (context) {
   console.log('fadout')
   let to = 20
-  let vol = 1
   const fadeout = setInterval(() => {
-    vol = to / 20
+    const vol = to / 20
     context.state.player.volume = vol
     console.log(vol)
     if (to <= 0) {
@@ -130,4 +125,7 @@ export function clearFadeout (context) {
   context.commit('fadeout', null)
   context.state.player.volume = 1
   sleeptimer(context, mins)
+  const chime = new Audio()
+  chime.src = 'chime.wav'
+  chime.play()
 }
