@@ -134,7 +134,6 @@ export default {
   },
   beforeMount  () {
     const that = this
-    window.addEventListener('devicemotion', this.motion, false)
     window.onbeforeunload = function () {
       if (that.playing) {
         that.$store.dispatch('app/savePauseEvent', that.currentFile.start + that.current)
