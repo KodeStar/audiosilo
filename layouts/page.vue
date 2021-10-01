@@ -160,6 +160,7 @@ export default {
       }
     },
     motion (e) {
+      console.log('start motion detection')
       let acc = e.acceleration
       if (!Object.prototype.hasOwnProperty.call(acc, 'x')) {
         acc = e.accelerationIncludingGravity
