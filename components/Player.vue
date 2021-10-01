@@ -164,12 +164,6 @@ export default {
     history () {
       return this.$store.state.app.book.history
     },
-    sleepRemaining () {
-      if (this.$store.state.player.sleepend !== null) {
-        return (this.$store.state.player.sleepend / 1000) - (Date.now() / 1000)
-      }
-      return null
-    },
     bookmarks () {
       return this.$store.state.app.book.bookmarks
     },
@@ -210,16 +204,6 @@ export default {
     }
   },
   watch: {
-    sleepRemaining (to, from) {
-      if (to !== from) {
-        if (to !== null) {
-          if (to < 30) {
-            const vol = to / 30
-            this.player.volume = vol
-          }
-        }
-      }
-    }
   },
   mounted () {
     /* if (this.player.src === '') {

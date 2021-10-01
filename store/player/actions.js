@@ -78,11 +78,29 @@ export function setGlobalSeek (context) {
 
 export function sleeptimer (context, milliseconds) {
   const timerid = setTimeout(() => {
-    context.state.player.pause()
+    // context.state.player.pause()
     context.commit('sleepend', null)
     context.commit('sleep', null)
+    fadeOut(context)
   }, milliseconds)
   context.commit('sleep', timerid)
+}
+
+export function fadeOut (context) {
+  let to = 20
+  const fadeout = setInterval(() => {
+    const vol = to / 20
+    context.state.player.volume = vol
+    if (to <= 0) {
+      clearInterval(fadeout)
+      context.commit('fadeout', null)
+      context.dispatch('app/savePauseEvent', context.state.currentFile.start + context.state.current, { root: true })
+      context.state.player.pause()
+      context.state.player.volume = 1
+    }
+    to--
+  }, 1000)
+  context.commit('fadeout', fadeout)
 }
 
 export function clearSleepTmer (context) {

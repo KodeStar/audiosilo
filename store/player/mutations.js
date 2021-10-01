@@ -35,6 +35,10 @@ export function sleep (state, data) {
   state.sleep = data
 }
 
+export function fadeout (state, data) {
+  state.fadeout = data
+}
+
 export function sleepend (state, data) {
   state.sleepend = data
 }
