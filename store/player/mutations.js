@@ -38,10 +38,3 @@ export function sleep (state, data) {
 export function sleepend (state, data) {
   state.sleepend = data
 }
-
-export function sleeptimer (state, milliseconds) {
-}
-export function clearsleeptimer (state) {
-  clearTimeout(state.sleep)
-  state.sleep = null
-}

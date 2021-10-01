@@ -8,7 +8,7 @@
           <div v-if="sleep !== null" class="flex absolute bottom-4 left-4 items-center bg-gray-200 dark:bg-gray-860 rounded">
             <div @click="clearSleepTimer" class="p-2 bg-pink-600 flex items-center text-white cursor-pointer text-center rounded"><i class="fa-light fa-fw fa-times" /></div>
             <div v-if="sleep === 'chapter'" class="px-3">End of chapter<i class="ml-3 fa-light fa-alarm-snooze"></i></div>
-            <div v-else class="px-3">{{ $formatToPlayback(($store.state.player.sleepend/1000) - (Date.now()/1000)) }}<i class="ml-3 fa-light fa-alarm-snooze"></i></div>
+            <div v-else class="px-3">{{ $formatToPlayback(($store.state.player.sleepend / 1000) - (Date.now() / 1000)) }}<i class="ml-3 fa-light fa-alarm-snooze"></i></div>
           </div>
         </div>
       </div>
@@ -126,6 +126,7 @@
     <div v-if="setsleeptimer" class="absolute inset-0 bg-gray-100 dark:bg-gray-860 z-40">
       <div class="p-4 pt-safe pb-safe flex flex-col">
         <div class="flex my-1 justify-end"><div @click="setsleeptimer = false" class="p-4 py-3 mx-1 bg-pink-600 flex items-center text-white cursor-pointer text-center rounded"><i class="fa-light fa-fw fa-times" /></div></div>
+        <button @click="setSleepTimer(1)" class="bg-gray-300 dark:bg-gray-800 flex p-4 my-1">1 Minutes</button>
         <button @click="setSleepTimer(5)" class="bg-gray-300 dark:bg-gray-800 flex p-4 my-1">5 Minutes</button>
         <button @click="setSleepTimer(10)" class="bg-gray-300 dark:bg-gray-800 flex p-4 my-1">10 Minutes</button>
         <button @click="setSleepTimer(15)" class="bg-gray-300 dark:bg-gray-800 flex p-4 my-1">15 Minutes</button>
@@ -162,6 +163,12 @@ export default {
     ...mapState('player', ['current', 'currentFile', 'loading', 'player', 'playing', 'sleep']),
     history () {
       return this.$store.state.app.book.history
+    },
+    sleepRemaining () {
+      if (this.$store.state.player.sleepend !== null) {
+        return (this.$store.state.player.sleepend / 1000) - (Date.now() / 1000)
+      }
+      return null
     },
     bookmarks () {
       return this.$store.state.app.book.bookmarks
@@ -202,7 +209,18 @@ export default {
       return 'Chapter 1'
     }
   },
-
+  watch: {
+    sleepRemaining (to, from) {
+      if (to !== from) {
+        if (to !== null) {
+          if (to < 30) {
+            const vol = to / 30
+            this.player.volume = vol
+          }
+        }
+      }
+    }
+  },
   mounted () {
     /* if (this.player.src === '') {
       // this.$store.commit('player/loading', true)
@@ -246,6 +264,7 @@ export default {
       if (this.sleep === 'chapter') {
         this.$store.commit('player/sleep', null)
       }
+      this.$store.dispatch('player/clearSleepTmer')
     },
     prevFile () {
       return {

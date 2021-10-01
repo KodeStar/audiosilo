@@ -84,3 +84,9 @@ export function sleeptimer (context, milliseconds) {
   }, milliseconds)
   context.commit('sleep', timerid)
 }
+
+export function clearSleepTmer (context) {
+  clearTimeout(context.state.sleep)
+  context.commit('sleepend', null)
+  context.commit('sleep', null)
+}
