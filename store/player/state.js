@@ -11,6 +11,7 @@ export default {
     path: ''
   },
   sleep: null,
+  sleepamount: null,
   sleepend: null,
   fadeout: null
 }

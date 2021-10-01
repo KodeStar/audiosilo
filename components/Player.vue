@@ -237,10 +237,7 @@ export default {
       if (mins === 'chapter') {
         this.$store.commit('player/sleep', 'chapter')
       } else {
-        const seconds = mins * 60 // mins to seconds
-        const milliseconds = seconds * 1000 // conds to milliseconds
-        this.$store.dispatch('player/sleeptimer', milliseconds)
-        this.$store.commit('player/sleepend', Date.now() + milliseconds)
+        this.$store.dispatch('player/sleeptimer', mins)
       }
       this.setsleeptimer = false
     },

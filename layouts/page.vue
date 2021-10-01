@@ -63,6 +63,9 @@ export default {
     showplayer () {
       return this.$store.state.app.player
     },
+    fadeout () {
+      return this.$store.state.player.fadeout
+    },
     player () {
       return this.$store.state.player.player
     },
@@ -99,13 +102,15 @@ export default {
         }
       }
     },
-    grantdevicemotion (to, from) {
-      console.log('grantdevicemotion event')
-      console.log(to)
+    fadeout (to, from) {
       if (to !== from) {
         if (to !== null) {
-          console.log('permission granteds')
-          window.addEventListener('devicemotion', this.motion, false)
+          if(this.grantdevicemotion !== null) {
+            console.log('permission granted')
+            window.addEventListener('devicemotion', this.motion, false)
+          }
+        } else {
+          window.removeEventListener('devicemotion', this.motion, false)
         }
       }
     },
@@ -208,8 +213,7 @@ export default {
         }
 
         if (this.moveCounter > 2) {
-          console.log('SHAKE!!!')
-          alert('shake!!')
+          this.$store.dispatch('player/clearFadeout')
           this.moveCounter = 0
         }
 
