@@ -54,7 +54,7 @@ export function loginStatus (state, data) {
 }
 
 export function server (state, data) {
-  state.server = data
+  state.server = new URL('', data).href
 }
 
 export function secret (state, data) {
