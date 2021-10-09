@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">audiosilo</string>
+    <string name="title_activity_main">audiosilo</string>
+    <string name="package_name">app.audiosilo.app</string>
+    <string name="custom_url_scheme">app.audiosilo.app</string>
+</resources>

@@ -11,6 +11,10 @@
     "lint": "yarn lint:js"
   },
   "dependencies": {
+    "@capacitor/android": "^3.2.4",
+    "@capacitor/cli": "^3.2.4",
+    "@capacitor/core": "^3.2.4",
+    "@capacitor/ios": "^3.2.4",
     "@nuxtjs/pwa": "^3.3.5",
     "@tailwindcss/typography": "^0.4.1",
     "base64-js": "^1.5.1",

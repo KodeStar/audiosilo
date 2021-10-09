@@ -1,0 +1,6 @@
+{
+  "appId": "app.audiosilo.app",
+  "appName": "audiosilo",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}
